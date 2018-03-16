@@ -1,11 +1,15 @@
 package com.wordpress.honeymoonbridge.bridgeapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class PlayActivity extends AppCompatActivity {
 
@@ -54,6 +58,33 @@ public class PlayActivity extends AppCompatActivity {
 
     }
 
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.item1:
+                Intent i = new Intent(PlayActivity.this, MainActivity.class);
+                startActivity(i);
+                return true;
+
+            case R.id.item2:
+                Toast toast1 = Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT);
+                toast1.show();
+                return true;
+
+            case R.id.item3:
+                Toast toast2 = Toast.makeText(this, "Help clicked", Toast.LENGTH_SHORT);
+                toast2.show();
+                return true;
+
+            default:
+                return true;
+        }
+    }
+
     public void onClick(View view){
         View target = findViewById(R.id.OpponentPlayedCard);
         target.getWidth();
@@ -88,4 +119,6 @@ public class PlayActivity extends AppCompatActivity {
 
 
     }
+
+
 }
