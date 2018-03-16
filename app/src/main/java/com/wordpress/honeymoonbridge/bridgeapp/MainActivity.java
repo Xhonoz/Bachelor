@@ -5,15 +5,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    Button play;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        startActivity(new Intent(MainActivity.this, PlayActivity.class));
+        play = findViewById(R.id.play);
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, BiddingActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -24,13 +38,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.item1:
-                Toast toast = Toast.makeText(this, "Home clicked", Toast.LENGTH_SHORT);
-                toast.show();
                 return true;
 
             case R.id.item2:
-                Toast toast1 = Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT);
-                toast1.show();
+               Intent i = new Intent(MainActivity.this, SettingsActivity.class);
+               startActivity(i);
                 return true;
 
             case R.id.item3:

@@ -71,8 +71,8 @@ public class PlayActivity extends AppCompatActivity {
                 return true;
 
             case R.id.item2:
-                Toast toast1 = Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT);
-                toast1.show();
+                Intent is = new Intent(PlayActivity.this, SettingsActivity.class);
+                startActivity(is);
                 return true;
 
             case R.id.item3:

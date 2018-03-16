@@ -38,6 +38,7 @@
                 android:layout_weight="0.2"/>
 
             <Button
+                android:id="@+id/play"
                 android:layout_width="0dp"
                 android:layout_marginRight="10dp"
                 android:layout_height="match_parent"
