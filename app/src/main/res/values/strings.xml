@@ -75,4 +75,6 @@
     <string name="pref_description_sound">Turn off and on game sound</string>
     <string name="pref_title_sound">Sound</string>
     <string name="pref_title_gamemodes">Change game mode</string>
+    <string name="play">Play</string>
+    <string name="chooseNet">Choose net</string>
 </resources>
