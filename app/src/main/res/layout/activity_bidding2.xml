@@ -15,7 +15,6 @@
 
         <!--board-->
         <LinearLayout
-            android:clipChildren="false"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
@@ -29,11 +28,19 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="@string/N"
                     android:textSize="30dp"
-                    android:layout_weight="1"/>
+                    android:textColor="#000000"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/SouthHistory"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"/>
 
 
             </LinearLayout>
@@ -43,11 +50,18 @@
                 android:layout_height="0dp"
                 android:layout_weight="2">
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textColor="#000000"
                     android:text="@string/S"
-                    android:textSize="30dp"
-                    android:layout_weight="1"/>
+                    android:textSize="30dp"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/NorthHistory"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"/>
 
             </LinearLayout>
 
@@ -86,6 +100,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="3"
                 android:orientation="horizontal">
+
 
                 <Button
                     android:layout_width="0dp"
