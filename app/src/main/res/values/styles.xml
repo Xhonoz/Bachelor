@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="LevelPickerText">
+        <item name="android:textSize">45dp</item>
+    </style>
+    <style name="SuitPickerText">
+        <item name="android:textSize">45dp</item>
+    </style>
+
 </resources>

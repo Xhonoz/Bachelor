@@ -77,4 +77,11 @@
     <string name="pref_title_gamemodes">Change game mode</string>
     <string name="play">Play</string>
     <string name="chooseNet">Choose net</string>
+    <string name="Bid">Bid</string>
+    <string name="Double">X</string>
+    <string name="Pass">Pass</string>
+    <string name="Opponent">Opponent:</string>
+    <string name="N">North:</string>
+    <string name="S">South:</string>
+
 </resources>
