@@ -18,44 +18,6 @@ public class PlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
-        final int amountToMoveRight = 700;
-        final int amountToMoveDown = -800;
-
-        LinearLayout ll = findViewById(R.id.yourHand);
-
-
-        final View view = ll.getChildAt(0);
-        TranslateAnimation anim = new TranslateAnimation(0, amountToMoveRight, 0, amountToMoveDown);
-        anim.setDuration(1000);
-
-        anim.setAnimationListener(new TranslateAnimation.AnimationListener() {
-
-            @Override
-            public void onAnimationStart(Animation animation) { }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) { }
-
-            @Override
-            public void onAnimationEnd(Animation animation)
-            {
-//                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)view.getLayoutParams();
-//                params.topMargin += amountToMoveDown;
-//                params.leftMargin += amountToMoveRight;
-//                view.setLayoutParams(params);
-            }
-        });
-
-        view.startAnimation(anim);
-
-
-
-
-
-
-
-
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
