@@ -20,7 +20,8 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
         <activity android:name=".PlayActivity" />
-        <activity android:name=".BiddingActivity"></activity>
+        <activity android:name=".BiddingActivity" />
+        <activity android:name=".ChooseCardActivity"></activity>
     </application>
 
 </manifest>

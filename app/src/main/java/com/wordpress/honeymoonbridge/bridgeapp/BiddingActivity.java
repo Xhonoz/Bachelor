@@ -38,11 +38,15 @@ public class BiddingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+<<<<<<< Updated upstream
         setContentView(R.layout.activity_bidding2);
         biddingHistory = new BiddingHistory();
+=======
+        setContentView(R.layout.activity_bidding);
+>>>>>>> Stashed changes
 
         setUpRecyclerViews();
-        setUpNumberPickers();
+       // setUpNumberPickers();
 
     }
 
@@ -142,7 +146,7 @@ public class BiddingActivity extends AppCompatActivity {
     }
 
     public void playGame(View view){
-        Intent i = new Intent(BiddingActivity.this, PlayActivity.class);
+        Intent i = new Intent(BiddingActivity.this, ChooseCardActivity.class);
         startActivity(i);
     }
 
