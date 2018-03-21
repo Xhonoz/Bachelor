@@ -13,6 +13,9 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Adapters.BiddingHistoryAdapter;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 
 import java.util.ArrayList;
 
@@ -24,38 +27,40 @@ public class BiddingActivity extends AppCompatActivity {
     private RecyclerView.Adapter southAdapter;
     private RecyclerView.LayoutManager northLayoutManager;
     private RecyclerView.LayoutManager southLayoutManager;
+    private NumberPicker LevelPicker;
+    private NumberPicker TrumpPicker;
+
+    private BiddingHistory biddingHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bidding2);
+        biddingHistory = new BiddingHistory();
 
         setUpRecyclerViews();
         setUpNumberPickers();
 
-
     }
 
     public void setUpNumberPickers(){
-        NumberPicker numberPicker1 = findViewById(R.id.np1);
-        numberPicker1.setMaxValue(7);
-        numberPicker1.setMinValue(1);
-        numberPicker1.setWrapSelectorWheel(true);
-        numberPicker1.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        NumberPicker numberPicker2 = findViewById(R.id.np2);
-        numberPicker2.setMaxValue(5);
-        numberPicker2.setMinValue(1);
-        numberPicker2.setWrapSelectorWheel(true);
-        numberPicker2.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        numberPicker2.setDisplayedValues(new String[]{"♣", "♦", "♥", "♠", "NT"});
+        LevelPicker = findViewById(R.id.np1);
+        LevelPicker.setMaxValue(7);
+        LevelPicker.setMinValue(1);
+        LevelPicker.setWrapSelectorWheel(true);
+        LevelPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        TrumpPicker = findViewById(R.id.np2);
+        TrumpPicker.setMaxValue(5);
+        TrumpPicker.setMinValue(1);
+        TrumpPicker.setWrapSelectorWheel(true);
+        TrumpPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        TrumpPicker.setDisplayedValues(new String[]{"♣", "♦", "♥", "♠", "NT"});
 
 
 
     }
 
     public void setUpRecyclerViews(){
-
-
         northRecyclerView = (RecyclerView) findViewById(R.id.NorthHistory);
         southRecyclerView = (RecyclerView) findViewById(R.id.SouthHistory);
 
@@ -71,18 +76,61 @@ public class BiddingActivity extends AppCompatActivity {
         northRecyclerView.setLayoutManager(northLayoutManager);
         southRecyclerView.setLayoutManager(southLayoutManager);
 
-        String[] myDataset1 = {"1♥", "2♥"};
-        String[] myDataset2 = {"1♠", "2♠","3♠"};
+
 
 
         // specify an adapter (see also next example)
-        northAdapter = new BiddingHistoryAdapter(myDataset1);
-        southAdapter = new BiddingHistoryAdapter(myDataset2);
+        northAdapter = new BiddingHistoryAdapter(biddingHistory.getNorth());
+        southAdapter = new BiddingHistoryAdapter(biddingHistory.getSouth());
 
 
         northRecyclerView.setAdapter(northAdapter);
         southRecyclerView.setAdapter(southAdapter);
 
+    }
+
+    private void updateRecyclerViews(){
+
+        northAdapter = new BiddingHistoryAdapter(biddingHistory.getNorth());
+        southAdapter = new BiddingHistoryAdapter(biddingHistory.getSouth());
+
+        northRecyclerView.setAdapter(northAdapter);
+        southRecyclerView.setAdapter(southAdapter);
+
+
+
+    }
+
+    private  void updateNumberPickers(){
+
+        ArrayList<Bid> south = biddingHistory.getSouth();
+        ArrayList<Bid> north = biddingHistory.getNorth();
+        Bid lastbid = south.get(south.size() -1 );
+        if(!lastbid.isPass()) {
+
+            int level = lastbid.getLevel();
+            int trumpInt = lastbid.getTrumpInt();
+
+//            if the last bid was 7NT the numberPickers should be disabled
+            if ((level == 7 && trumpInt == 5)) {
+                LevelPicker.setEnabled(false);
+                TrumpPicker.setEnabled(false);
+
+            } else {
+                if(trumpInt == 5) {
+                    LevelPicker.setValue(level + 1);
+                    LevelPicker.setMinValue(level + 1);
+                }else {
+                    LevelPicker.setValue(level);
+                    LevelPicker.setMinValue(level);
+
+                    TrumpPicker.setValue(trumpInt + 1);
+                    TrumpPicker.setMinValue(trumpInt + 1);
+                }
+
+            }
+
+        }
 
     }
 
@@ -117,4 +165,26 @@ public class BiddingActivity extends AppCompatActivity {
                 return true;
         }
     }
+
+    public void onClickBid(View view){
+
+    Bid bid = new Bid(LevelPicker.getValue(), TrumpPicker.getValue());
+
+    biddingHistory.getNorth().add(bid);
+
+    updateRecyclerViews();
+
+    
+
+    }
+
+    public void OpponentBid(Bid bid){
+
+        biddingHistory.getSouth().add(bid);
+
+        updateRecyclerViews();
+        updateNumberPickers();
+
+    }
+
 }

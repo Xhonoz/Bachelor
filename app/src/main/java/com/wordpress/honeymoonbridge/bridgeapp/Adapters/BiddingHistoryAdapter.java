@@ -7,7 +7,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
+
+import java.util.ArrayList;
 
 /**
  * Created by Eier on 18.03.2018.
@@ -15,7 +18,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 
 public class BiddingHistoryAdapter extends RecyclerView.Adapter<BiddingHistoryAdapter.ViewHolder> {
-    private String[] mDataset;
+    private ArrayList<Bid> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -30,7 +33,7 @@ public class BiddingHistoryAdapter extends RecyclerView.Adapter<BiddingHistoryAd
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public BiddingHistoryAdapter(String[] myDataset) {
+    public BiddingHistoryAdapter(ArrayList<Bid> myDataset) {
         mDataset = myDataset;
     }
 
@@ -50,13 +53,13 @@ public class BiddingHistoryAdapter extends RecyclerView.Adapter<BiddingHistoryAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.button.setText(mDataset[position]);
+        holder.button.setText(mDataset.get(position).toString());
 
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 }
