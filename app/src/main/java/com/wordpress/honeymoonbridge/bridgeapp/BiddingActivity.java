@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,8 +17,10 @@ import com.wordpress.honeymoonbridge.bridgeapp.Adapters.BiddingHistoryAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
+import com.wordpress.honeymoonbridge.bridgeapp.NetMock.AIMock;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 public class BiddingActivity extends AppCompatActivity {
 
@@ -103,32 +106,36 @@ public class BiddingActivity extends AppCompatActivity {
 
     private  void updateNumberPickers(){
 
-        ArrayList<Bid> south = biddingHistory.getSouth();
         ArrayList<Bid> north = biddingHistory.getNorth();
-        Bid lastbid = south.get(south.size() -1 );
+        Bid lastbid = north.get(north.size() -1 );
         if(!lastbid.isPass()) {
 
             int level = lastbid.getLevel();
             int trumpInt = lastbid.getTrumpInt();
 
+            Log.i("BiddingActivity", "Opponent's last bid: " + level + ", " + trumpInt);
+
 //            if the last bid was 7NT the numberPickers should be disabled
-            if ((level == 7 && trumpInt == 5)) {
-                LevelPicker.setEnabled(false);
-                TrumpPicker.setEnabled(false);
-
-            } else {
-                if(trumpInt == 5) {
-                    LevelPicker.setValue(level + 1);
-                    LevelPicker.setMinValue(level + 1);
-                }else {
-                    LevelPicker.setValue(level);
-                    LevelPicker.setMinValue(level);
-
-                    TrumpPicker.setValue(trumpInt + 1);
-                    TrumpPicker.setMinValue(trumpInt + 1);
-                }
-
-            }
+//            if ((level == 7 && trumpInt == 5)) {
+//                LevelPicker.setEnabled(false);
+//                TrumpPicker.setEnabled(false);
+//
+//            }
+//             else {
+//                if(trumpInt == 5) {
+//                    LevelPicker.setValue(level + 1);
+//                    LevelPicker.setMinValue(level + 1);
+//                }else {
+//                    LevelPicker.setValue(level);
+//                    LevelPicker.setMinValue(level);
+//
+//                    LevelPicker.setWrapSelectorWheel(true);
+//
+////                    TrumpPicker.setValue(trumpInt + 1);
+////                    TrumpPicker.setMinValue(trumpInt + 1);
+//                }
+//
+//            }
 
         }
 
@@ -170,17 +177,42 @@ public class BiddingActivity extends AppCompatActivity {
 
     Bid bid = new Bid(LevelPicker.getValue(), TrumpPicker.getValue());
 
-    biddingHistory.getNorth().add(bid);
+    if(playerBidIsValid(bid)) {
 
-    updateRecyclerViews();
+        biddingHistory.getSouth().add(bid);
 
-    
+        updateRecyclerViews();
+
+        OpponentBid(AIMock.getBid(biddingHistory));
+
+    }else
+        Toast.makeText(this, "This bid is not valid, you must bid over " + biddingHistory.getNorth().get(biddingHistory.getNorth().size()-1), Toast.LENGTH_SHORT).show();
+
+    }
+//    Does not handle double and redouble
+    private boolean playerBidIsValid(Bid bid){
+        ArrayList<Bid> north = biddingHistory.getNorth();
+        if(!north.isEmpty()) {
+            Bid lastBid = north.get(north.size() - 1);
+            int lastLevel = lastBid.getLevel();
+            int lastTrumpInt = lastBid.getTrumpInt();
+            int newLevel = bid.getLevel();
+            int newTrumpInt = bid.getTrumpInt();
+
+            if(newLevel > lastLevel)
+                return true;
+            if((newLevel == lastLevel) && (newTrumpInt > lastTrumpInt))
+                return true;
+
+            return false;
+        }
+        return true;
 
     }
 
     public void OpponentBid(Bid bid){
 
-        biddingHistory.getSouth().add(bid);
+        biddingHistory.getNorth().add(bid);
 
         updateRecyclerViews();
         updateNumberPickers();

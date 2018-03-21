@@ -41,7 +41,7 @@
                     />
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/SouthHistory"
+                    android:id="@+id/NorthHistory"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
@@ -62,7 +62,7 @@
                     android:textSize="30dp"/>
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/NorthHistory"
+                    android:id="@+id/SouthHistory"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
