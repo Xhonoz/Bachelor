@@ -90,5 +90,11 @@
     <string name="Opponent">Opponent:</string>
     <string name="N">North:</string>
     <string name="S">South:</string>
+    <string name="win">You win!</string>
+    <string name="lose">You lose!</string>
+    <string name="draw">Draw!</string>
+    <string name="playAgain">Play again</string>
+    <string name="mainMenu">Main Menu</string>
+
 
 </resources>

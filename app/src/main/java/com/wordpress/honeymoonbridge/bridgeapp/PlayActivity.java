@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -17,6 +18,16 @@ public class PlayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+
+        ImageView nextActivity = findViewById(R.id.YourPlayedCard);
+
+        nextActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(PlayActivity.this,ResultActivity.class);
+                startActivity(i);
+            }
+        });
 
     }
 

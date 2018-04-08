@@ -38,12 +38,10 @@ public class BiddingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-<<<<<<< Updated upstream
-        setContentView(R.layout.activity_bidding2);
+
         biddingHistory = new BiddingHistory();
-=======
+
         setContentView(R.layout.activity_bidding);
->>>>>>> Stashed changes
 
         setUpRecyclerViews();
        // setUpNumberPickers();

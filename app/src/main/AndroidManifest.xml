@@ -21,7 +21,8 @@
             android:label="@string/title_activity_settings" />
         <activity android:name=".PlayActivity" />
         <activity android:name=".BiddingActivity" />
-        <activity android:name=".ChooseCardActivity"></activity>
+        <activity android:name=".ChooseCardActivity" />
+        <activity android:name=".ResultActivity"></activity>
     </application>
 
 </manifest>
