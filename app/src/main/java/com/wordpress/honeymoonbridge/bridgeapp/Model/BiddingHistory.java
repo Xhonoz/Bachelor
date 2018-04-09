@@ -25,5 +25,21 @@ public class BiddingHistory {
         return South;
     }
 
+    public boolean isNorthEmpty(){
+        return North.isEmpty();
+    }
+
+    public boolean isSouthEmpty(){
+        return South.isEmpty();
+    }
+
+    public Bid getLastSouthBid(){
+        return South.get(getSouth().size() - 1);
+    }
+
+    public Bid getLastNorthBid(){
+        return North.get(getNorth().size() - 1);
+    }
+
 
 }

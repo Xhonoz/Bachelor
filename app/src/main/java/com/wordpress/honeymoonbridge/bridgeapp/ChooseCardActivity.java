@@ -17,7 +17,7 @@ public class ChooseCardActivity extends AppCompatActivity {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(ChooseCardActivity.this, PlayActivity.class);
+                Intent i = new Intent(ChooseCardActivity.this, BiddingActivity.class);
                 startActivity(i);
             }
         });

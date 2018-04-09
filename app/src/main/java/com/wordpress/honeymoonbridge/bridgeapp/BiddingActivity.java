@@ -39,12 +39,12 @@ public class BiddingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_bidding2);
         biddingHistory = new BiddingHistory();
 
-        setContentView(R.layout.activity_bidding);
 
         setUpRecyclerViews();
-       // setUpNumberPickers();
+        setUpNumberPickers();
 
     }
 
@@ -102,20 +102,21 @@ public class BiddingActivity extends AppCompatActivity {
         northRecyclerView.setAdapter(northAdapter);
         southRecyclerView.setAdapter(southAdapter);
 
+        northLayoutManager.scrollToPosition(biddingHistory.getNorth().size() - 1);
+        southLayoutManager.scrollToPosition(biddingHistory.getSouth().size() - 1);
+
 
 
     }
 
     private  void updateNumberPickers(){
 
-        ArrayList<Bid> north = biddingHistory.getNorth();
-        Bid lastbid = north.get(north.size() -1 );
+        Bid lastbid = biddingHistory.getLastNorthBid();
         if(!lastbid.isPass()) {
 
             int level = lastbid.getLevel();
             int trumpInt = lastbid.getTrumpInt();
 
-            Log.i("BiddingActivity", "Opponent's last bid: " + level + ", " + trumpInt);
 
 //            if the last bid was 7NT the numberPickers should be disabled
 //            if ((level == 7 && trumpInt == 5)) {
@@ -188,14 +189,42 @@ public class BiddingActivity extends AppCompatActivity {
         OpponentBid(AIMock.getBid(biddingHistory));
 
     }else
-        Toast.makeText(this, "This bid is not valid, you must bid over " + biddingHistory.getNorth().get(biddingHistory.getNorth().size()-1), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "This bid is not valid, you must bid over " + biddingHistory.getLastNorthBid(), Toast.LENGTH_SHORT).show();
 
     }
+
+    public void onClickDouble(View view){
+
+        Bid lastBid = biddingHistory.getLastNorthBid();
+
+        if(lastBid.isDouble())
+            biddingHistory.getSouth().add(new Bid(biddingHistory.getLastNorthBid(), false, true));
+        else if(lastBid.isRedouble())
+            Log.i("BiddingActivity", "Can't double/redouble a redouble");
+        else
+            biddingHistory.getSouth().add(new Bid(biddingHistory.getLastNorthBid(), true, false));
+
+        updateRecyclerViews();
+
+       OpponentBid(AIMock.getBid(biddingHistory));
+    }
+
+    public void onClickPass(View view){
+        biddingHistory.getSouth().add(new Bid());
+
+        updateRecyclerViews();
+
+        OpponentBid(AIMock.getBid(biddingHistory));
+
+        startActivity(new Intent(BiddingActivity.this, PlayActivity.class));
+
+    }
+
+
 //    Does not handle double and redouble
     private boolean playerBidIsValid(Bid bid){
-        ArrayList<Bid> north = biddingHistory.getNorth();
-        if(!north.isEmpty()) {
-            Bid lastBid = north.get(north.size() - 1);
+        if(!biddingHistory.isNorthEmpty()) {
+            Bid lastBid = biddingHistory.getLastNorthBid();
             int lastLevel = lastBid.getLevel();
             int lastTrumpInt = lastBid.getTrumpInt();
             int newLevel = bid.getLevel();

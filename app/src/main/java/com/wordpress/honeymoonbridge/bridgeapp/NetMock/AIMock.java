@@ -14,11 +14,20 @@ import java.util.ArrayList;
 public class AIMock {
 
     public static Bid getBid(BiddingHistory biddingHistory){
-        ArrayList<Bid> south = biddingHistory.getSouth();
-        Bid lastBid = south.get(south.size() - 1);
+        Bid lastBid = biddingHistory.getLastSouthBid();
+
+        Log.i("AIMock", lastBid.getInfo());
 
         int level = lastBid.getLevel();
         int trumpInt = lastBid.getTrumpInt();
+        if(lastBid.isPass())
+            return new Bid();
+        if(lastBid.isDouble())
+            return new Bid(lastBid, false, true);
+        if(lastBid.isRedouble())
+            return new Bid();
+        if(lastBid.getLevel() == 3)
+            return new Bid(lastBid, true, false);
 
         int newTrump = trumpInt + 1;
         int newLevel = level;

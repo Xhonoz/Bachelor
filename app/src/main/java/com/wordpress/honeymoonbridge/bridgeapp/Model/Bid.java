@@ -165,6 +165,13 @@ public class Bid {
         this.level = level;
     }
 
+    public Bid(Bid bid, boolean isDouble, boolean isRedouble){
+        level = bid.getLevel();
+        trump = bid.getTrump();
+        this.isDouble = isDouble;
+        this.isRedouble = isRedouble;
+    }
+
     public boolean isPass() {
         return isPass;
     }
@@ -210,6 +217,8 @@ public class Bid {
     }
 
     public int getTrumpInt(){
+        if(isPass)
+            return 0;
         switch(trump){
 
             case Clubs:
@@ -228,8 +237,38 @@ public class Bid {
             case NoTrump:
                 return 5;
 
+
+
         }
         return 0;
+    }
+
+    public String getTrumpString(){
+
+        if(isPass)
+            return "";
+
+        switch(trump){
+
+            case Clubs:
+                return "♣";
+
+            case Diamonds:
+                return "♦";
+
+            case Hearts:
+                return "♥";
+
+            case Spades:
+                return "♠";
+
+            case NoTrump:
+                return "NT";
+
+        }
+        return "";
+
+
     }
 
     public int getLevel() {
@@ -242,5 +281,17 @@ public class Bid {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+
+    public String getInfo(){
+        if(isPass)
+            return "Bid: \n PASS";
+        return "Bid: \n" +
+                "Level: " + level + "\n" +
+                "Trump: " + getTrumpString() + "\n" +
+                "Double: " + isDouble + "\n" +
+                "Redouble: " + isRedouble;
+
     }
 }

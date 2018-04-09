@@ -74,7 +74,7 @@
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="0.2"/>
 
             <!--Bidding wheel-->
             <LinearLayout
@@ -86,6 +86,8 @@
 
 
                 <NumberPicker
+                android:dividerPadding="100dp"
+
                 android:id="@+id/np1"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -107,7 +109,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="3"
+                android:layout_weight="2.4"
                 android:orientation="horizontal">
 
 
@@ -116,6 +118,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/orange_button"
                     android:text="@string/Bid"
+                    android:textSize="30dp"
                     android:layout_weight="1"
                     android:onClick="onClickBid"/>
                 <Button
@@ -123,12 +126,18 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:text="@string/Double"
+                    android:onClick="onClickDouble"
+                    android:textSize="30dp"
+
                     android:layout_weight="1"/>
                 <Button
                     android:background="@drawable/green_button"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:text="@string/Pass"
+                    android:onClick="onClickPass"
+                    android:textSize="30dp"
+
                     android:layout_weight="1"/>
 
             </LinearLayout>
@@ -136,7 +145,7 @@
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="0.4"/>
             <!--Your Hand-->
             <LinearLayout
                 android:orientation="horizontal"
