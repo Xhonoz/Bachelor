@@ -39,6 +39,4 @@ public class GameState {
         this.southHand = southHand;
     }
 
-    getStartingHandNorth()
-
 }
