@@ -73,5 +73,5 @@ assertEquals(0, gamestate.getNorth26Cards().size());
 
         assertTrue(gamestate.getStack().size()==48);
     }
-    
+
 }

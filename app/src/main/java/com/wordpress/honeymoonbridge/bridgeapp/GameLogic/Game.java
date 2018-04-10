@@ -52,7 +52,6 @@ public void PickCard(Player player, boolean first){
         gamestate.getSouth26Cards().add(fi);
         gamestate.getSouth26Cards().add(se);
         gamestate.getSouthChoseFirst().add(first);
-
         if (first)
             gamestate.getSouthHand().add(fi);
         else
@@ -60,15 +59,7 @@ public void PickCard(Player player, boolean first){
     }
 }
 
-public GameState getGameState(){
-    return gamestate;
-}
-
-
-
-
-
-
-
-
+    public GameState getGamestate() {
+        return gamestate;
+    }
 }
