@@ -11,7 +11,7 @@ public class Game {
 private GameState gamestate;
 private AIPlayer AI;
 
-public Game game(){
+public Game(){
     gamestate = new GameState(true);
 
 }
@@ -37,8 +37,8 @@ public Card peakTopCard(){
 
 public void PickCard(Player player, boolean first){
 
-        Card fi = getAndRemoveTopCard();
-        Card se = getAndRemoveTopCard();
+        Card fi = popTopCard();
+        Card se = popTopCard();
     if(player == Player.NORTH) {
         gamestate.getNorth26Cards().add(fi);
         gamestate.getNorth26Cards().add(se);
