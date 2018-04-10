@@ -8,6 +8,9 @@ public class Game {
 private GameState gamestate;
 private AIPlayer AI;
 
+public Card getTopCard(){
+
+}
 
 
 

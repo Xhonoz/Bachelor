@@ -2,6 +2,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 
 import java.util.ArrayList;
 
@@ -26,19 +27,63 @@ public class GameState {
     private ArrayList<Card> northHand;
     private ArrayList<Card> southHand;
 
+    private CardStack stack;
+
     public GameState(boolean isSouthTurn) {
         this.isSouthTurn = isSouthTurn;
-        this.north26Cards = new ArrayList<Card>();
-        this.northChoseFirst = northChoseFirst;
-        this.south26Cards = south26Cards;
-        this.southChoseFirst = southChoseFirst;
-        this.northBid = northBid;
-        this.southBid = southBid;
-        this.tricks = tricks;
-        this.northHand = northHand;
-        this.southHand = southHand;
+        this.north26Cards = new ArrayList<>();
+        this.northChoseFirst = new ArrayList<>();
+        this.south26Cards = new ArrayList<>();
+        this.southChoseFirst = new ArrayList<>();
+        this.northBid = new ArrayList<>();
+        this.southBid = new ArrayList<>();
+        this.tricks = new ArrayList<>();
+        this.northHand = new ArrayList<>();
+        this.southHand = new ArrayList<>();
+        this.stack = new CardStack();
     }
 
-    getStartingHandNorth()
+    public boolean isSouthTurn() {
+        return isSouthTurn;
+    }
 
+    public ArrayList<Card> getNorth26Cards() {
+        return north26Cards;
+    }
+
+    public ArrayList<Boolean> getNorthChoseFirst() {
+        return northChoseFirst;
+    }
+
+    public ArrayList<Card> getSouth26Cards() {
+        return south26Cards;
+    }
+
+    public ArrayList<Boolean> getSouthChoseFirst() {
+        return southChoseFirst;
+    }
+
+    public ArrayList<Bid> getNorthBid() {
+        return northBid;
+    }
+
+    public ArrayList<Bid> getSouthBid() {
+        return southBid;
+    }
+
+    public ArrayList<Trick> getTricks() {
+        return tricks;
+    }
+
+    public ArrayList<Card> getNorthHand() {
+        return northHand;
+    }
+
+    public ArrayList<Card> getSouthHand() {
+        return southHand;
+    }
+
+    public CardStack getStack() {
+        return stack;
+    }
 }
