@@ -47,7 +47,6 @@ public class GameState {
         return isSouthTurn;
     }
 
-<<<<<<< HEAD
     public ArrayList<Card> getNorth26Cards() {
         return north26Cards;
     }
@@ -87,6 +86,4 @@ public class GameState {
     public CardStack getStack() {
         return stack;
     }
-=======
->>>>>>> 367cd807f9392408ade231f6e83b99563a23a488
 }
