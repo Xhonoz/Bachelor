@@ -12,4 +12,15 @@ public class Card {
         this.suit = suit;
         this.cardValue = cardValue;
     }
+
+    public Suit getSuit() {
+        return suit;
+    }
+
+    public int getCardValue() {
+        return cardValue;
+    }
+    public boolean equals(Card card){
+        return this.suit == (card.suit) && this.cardValue == card.cardValue;
+    }
 }
