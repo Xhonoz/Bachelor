@@ -36,30 +36,31 @@ public Card peakTopCard(){
     }
 
 public void PickCard(Player player, boolean first){
-
-        Card fi = popTopCard();
-        Card se = popTopCard();
-    if(player == Player.NORTH) {
-        gamestate.getNorth26Cards().add(fi);
-        gamestate.getNorth26Cards().add(se);
-        gamestate.getNorthChoseFirst().add(first);
-        if (first)
-            gamestate.getNorthHand().add(fi);
-        else
-            gamestate.getNorthHand().add(se);
-    }
-    if(player == Player.SOUTH) {
-        gamestate.getSouth26Cards().add(fi);
-        gamestate.getSouth26Cards().add(se);
-        gamestate.getSouthChoseFirst().add(first);
-        if (first)
-            gamestate.getSouthHand().add(fi);
-        else
-            gamestate.getSouthHand().add(se);
-    }
+        if(!gamestate.getStack().isEmpty()) {
+            Card fi = popTopCard();
+            Card se = popTopCard();
+            if (player == Player.NORTH) {
+                gamestate.getNorth26Cards().add(fi);
+                gamestate.getNorth26Cards().add(se);
+                gamestate.getNorthChoseFirst().add(first);
+                if (first)
+                    gamestate.getNorthHand().add(fi);
+                else
+                    gamestate.getNorthHand().add(se);
+            }
+            if (player == Player.SOUTH) {
+                gamestate.getSouth26Cards().add(fi);
+                gamestate.getSouth26Cards().add(se);
+                gamestate.getSouthChoseFirst().add(first);
+                if (first)
+                    gamestate.getSouthHand().add(fi);
+                else
+                    gamestate.getSouthHand().add(se);
+            }
+        }
 }
 
-    public GameState getGamestate() {
+    public GameState getGameState() {
         return gamestate;
     }
 }

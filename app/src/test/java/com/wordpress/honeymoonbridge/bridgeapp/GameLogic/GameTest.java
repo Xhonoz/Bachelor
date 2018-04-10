@@ -3,6 +3,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 import android.util.Log;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 
 import org.junit.After;
@@ -27,10 +28,12 @@ public class GameTest {
         firstCard = new Card(Suit.Clubs, 2);
         fourthCard = new Card(Suit.Clubs, 5);
         gamestate = game.getGameState();
+
     }
     @Test
     public void correctTopCard() {
 assertTrue(firstCard.equals(game.peakTopCard()));
+
     }
 
     @Test

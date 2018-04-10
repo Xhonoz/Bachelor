@@ -1,6 +1,7 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by Carmen on 09.04.2018.
@@ -65,54 +66,10 @@ public class CardStack extends ArrayList{
         this.add(new Card(Suit.Spades,13));
         this.add(new Card(Suit.Spades,14));
 
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public void shuffleCardStack(){
+        Collections.shuffle(this);
     }
 
 
