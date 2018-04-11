@@ -14,8 +14,10 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Adapters.BiddingHistoryAdapter;
+import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 import com.wordpress.honeymoonbridge.bridgeapp.NetMock.AIMock;
 
@@ -34,18 +36,22 @@ public class BiddingActivity extends AppCompatActivity {
     private NumberPicker TrumpPicker;
 
     private BiddingHistory biddingHistory;
+    private HandAdapter handAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         setContentView(R.layout.activity_bidding2);
         biddingHistory = new BiddingHistory();
 
-
+        handAdapter = new HandAdapter(new CardStack(), (LinearLayout) findViewById(R.id.yourHand), getApplicationContext());
         setUpRecyclerViews();
         setUpNumberPickers();
 
+
+        Log.i("BiddingActivity", "" + ((LinearLayout) findViewById(R.id.yourHand)).getChildCount());
     }
 
     public void setUpNumberPickers(){

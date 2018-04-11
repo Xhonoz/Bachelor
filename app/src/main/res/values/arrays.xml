@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <integer-array name="CardIDs">
+        <item>@drawable/clubs_2</item>
+        <item>@drawable/clubs_3</item>
+        <item>@drawable/clubs_4</item>
+        <item>@drawable/clubs_5</item>
+        <item>@drawable/clubs_6</item>
+        <item>@drawable/clubs_7</item>
+        <item>@drawable/clubs_8</item>
+        <item>@drawable/clubs_9</item>
+        <item>@drawable/clubs_10</item>
+        <item>@drawable/jack_of_clubs2</item>
+        <item>@drawable/queen_of_clubs2</item>
+        <item>@drawable/king_of_clubs2</item>
+        <item>@drawable/ace_of_clubs</item>
+
+
+        <item>@drawable/diamonds_2</item>
+        <item>@drawable/diamonds_3</item>
+        <item>@drawable/diamonds_4</item>
+        <item>@drawable/diamonds_5</item>
+        <item>@drawable/diamonds_6</item>
+        <item>@drawable/diamonds_7</item>
+        <item>@drawable/diamonds_8</item>
+        <item>@drawable/diamonds_9</item>
+        <item>@drawable/diamonds_10</item>
+        <item>@drawable/jack_of_diamonds2</item>
+        <item>@drawable/queen_of_diamonds2</item>
+        <item>@drawable/king_of_diamonds2</item>
+        <item>@drawable/ace_of_diamonds</item>
+
+
+        <item>@drawable/hearts_2</item>
+        <item>@drawable/hearts_3</item>
+        <item>@drawable/hearts_4</item>
+        <item>@drawable/hearts_5</item>
+        <item>@drawable/hearts_6</item>
+        <item>@drawable/hearts_7</item>
+        <item>@drawable/hearts_8</item>
+        <item>@drawable/hearts_9</item>
+        <item>@drawable/hearts_10</item>
+        <item>@drawable/jack_of_hearts2</item>
+        <item>@drawable/queen_of_hearts2</item>
+        <item>@drawable/king_of_hearts2</item>
+        <item>@drawable/ace_of_hearts</item>
+
+
+        <item>@drawable/spades_2</item>
+        <item>@drawable/spades_3</item>
+        <item>@drawable/spades_4</item>
+        <item>@drawable/spades_5</item>
+        <item>@drawable/spades_6</item>
+        <item>@drawable/spades_7</item>
+        <item>@drawable/spades_8</item>
+        <item>@drawable/spades_9</item>
+        <item>@drawable/spades_10</item>
+        <item>@drawable/jack_of_spades2</item>
+        <item>@drawable/queen_of_spades2</item>
+        <item>@drawable/king_of_spades2</item>
+        <item>@drawable/ace_of_spades2</item>
+
+
+    </integer-array>
+
+
+</resources>

@@ -11,9 +11,9 @@ public class Game {
 private GameState gamestate;
 private AIPlayer AI;
 
-public Game(){
-    gamestate = new GameState(true);
 
+public Game(boolean isSouthTurn){
+    gamestate = new GameState(true);
 }
 
 public Card peakTopCard(){
@@ -35,7 +35,7 @@ public Card peakTopCard(){
         return null;
     }
 
-public void PickCard(Player player, boolean first){
+private void PickCard(Player player, boolean first){
 
         Card fi = popTopCard();
         Card se = popTopCard();
