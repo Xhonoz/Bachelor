@@ -35,6 +35,14 @@ public Card peakTopCard(){
         return null;
     }
 
+    public void UIPickCard(boolean first){
+        if(gamestate.getPhase().equals(Phase.PICKING) && gamestate.isSouthTurn()){
+            PickCard(Player.SOUTH, first);
+            AITakesTurn();
+        }
+
+    }
+
 public void PickCard(Player player, boolean first){
         if(!gamestate.getStack().isEmpty()) {
             Card fi = popTopCard();
@@ -57,10 +65,19 @@ public void PickCard(Player player, boolean first){
                 else
                     gamestate.getSouthHand().add(se);
             }
+        } else{
+            //Husk å endre hvis spilleren har huket av i settings at bidding ikke skal
+            //være med da går vi rett til spille fasen
+            gamestate.setPhase(Phase.BIDDING);
         }
 }
 
     public GameState getGameState() {
         return gamestate;
+    }
+
+    private void AITakesTurn(){
+    boolean first = AI.pickCard(gamestate);
+    PickCard(Player.SOUTH,first);
     }
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class GameState {
 
     private boolean isSouthTurn;
+    private Phase phase;
 
     private ArrayList<Card> north26Cards;
     private ArrayList<Boolean> northChoseFirst;
@@ -41,6 +42,7 @@ public class GameState {
         this.northHand = new ArrayList<>();
         this.southHand = new ArrayList<>();
         this.stack = new CardStack();
+        phase = Phase.PICKING;
     }
 
     public boolean isSouthTurn() {
@@ -85,5 +87,13 @@ public class GameState {
 
     public CardStack getStack() {
         return stack;
+    }
+
+    public Phase getPhase() {
+        return phase;
+    }
+
+    public void setPhase(Phase phase) {
+        this.phase = phase;
     }
 }

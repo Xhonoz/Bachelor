@@ -68,6 +68,17 @@ public class CardStack extends ArrayList{
 
     }
 
+    //for testing
+    public ArrayList<Card> hand(){
+    shuffleCardStack();
+    ArrayList<Card> temp = new ArrayList<>();
+    for(int i = 0; i < 13; i++){
+        temp.add((Card)this.get(i));
+       this.remove(i);
+    }
+     return temp;
+    }
+
     public void shuffleCardStack(){
         Collections.shuffle(this);
     }
