@@ -32,4 +32,9 @@ public class Card implements Comparable<Card>{
         int compareValue = card.getCardValue();
         return compareValue - this.cardValue;
     }
+
+    @Override
+    public String toString(){
+        return "" + this.getSuit() + this.getCardValue();
+    }
 }
