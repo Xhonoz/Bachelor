@@ -1,12 +1,8 @@
 package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 
-import android.util.Log;
-
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
-import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
