@@ -72,7 +72,7 @@ public class CardStack extends ArrayList{
     public ArrayList<Card> hand(){
     shuffleCardStack();
     ArrayList<Card> temp = new ArrayList<>();
-    for(int i = 0; i < 13; i++){
+    for(int i = 0; i < 2; i++){
         temp.add((Card)this.get(i));
        this.remove(i);
     }

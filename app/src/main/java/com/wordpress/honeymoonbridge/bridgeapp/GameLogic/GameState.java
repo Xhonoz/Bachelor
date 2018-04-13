@@ -28,6 +28,7 @@ public class GameState {
     private ArrayList<Card> northHand;
     private ArrayList<Card> southHand;
 
+
     private CardStack stack;
 
     public GameState(boolean isSouthTurn) {

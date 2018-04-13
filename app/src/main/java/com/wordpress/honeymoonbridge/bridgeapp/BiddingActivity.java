@@ -17,7 +17,9 @@ import com.wordpress.honeymoonbridge.bridgeapp.Adapters.BiddingHistoryAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 import com.wordpress.honeymoonbridge.bridgeapp.NetMock.AIMock;
 
@@ -37,6 +39,7 @@ public class BiddingActivity extends AppCompatActivity {
 
     private BiddingHistory biddingHistory;
     private HandAdapter handAdapter;
+    private ArrayList<Card> hand;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,9 @@ public class BiddingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_bidding2);
         biddingHistory = new BiddingHistory();
 
-        handAdapter = new HandAdapter(new CardStack(), (LinearLayout) findViewById(R.id.yourHand), getApplicationContext());
+        hand = new CardStack().hand();
+
+        handAdapter = new HandAdapter(hand, (LinearLayout) findViewById(R.id.yourHand), getApplicationContext());
         setUpRecyclerViews();
         setUpNumberPickers();
 
@@ -200,6 +205,8 @@ public class BiddingActivity extends AppCompatActivity {
     }
 
     public void onClickDouble(View view){
+
+        handAdapter.addToHand(new Card( Suit.Clubs, 7));
 
         Bid lastBid = biddingHistory.getLastNorthBid();
 
