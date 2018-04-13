@@ -11,8 +11,9 @@ public class Game {
     private GameState gamestate;
     private AIPlayer AI;
 
-    public Game(){
-        gamestate = new GameState(true);
+    public Game(boolean isSouthTurn, AIPlayer aiPlayer){
+        gamestate = new GameState(isSouthTurn);
+        AI = aiPlayer;
 
     }
 
@@ -35,15 +36,19 @@ public class Game {
         return null;
     }
 
-    public void UIPickCard(boolean first){
+    public Card UIPickCard(boolean first){
         if(gamestate.getPhase().equals(Phase.PICKING) && gamestate.isSouthTurn()){
-            PickCard(Player.SOUTH, first);
-            AITakesTurn();
+            Card c = PickCard(Player.SOUTH, first);
+            //TODO: Should later be a seperate thread
+            AITakesTurnPicking();
+            return c;
         }
-
+        return null;
     }
 
-    public void PickCard(Player player, boolean first){
+    public Card PickCard(Player player, boolean first){
+
+        Card picked = null;
         if(!gamestate.getStack().isEmpty()) {
             Card fi = popTopCard();
             Card se = popTopCard();
@@ -51,32 +56,41 @@ public class Game {
                 gamestate.getNorth26Cards().add(fi);
                 gamestate.getNorth26Cards().add(se);
                 gamestate.getNorthChoseFirst().add(first);
-                if (first)
+                if (first) {
+                    picked = fi;
                     gamestate.getNorthHand().add(fi);
-                else
+                }
+                else {
+                    picked = se;
                     gamestate.getNorthHand().add(se);
+                }
             }
             if (player == Player.SOUTH) {
                 gamestate.getSouth26Cards().add(fi);
                 gamestate.getSouth26Cards().add(se);
                 gamestate.getSouthChoseFirst().add(first);
-                if (first)
+                if (first) {
+                    picked = fi;
                     gamestate.getSouthHand().add(fi);
-                else
+                }
+                else {
+                    picked = se;
                     gamestate.getSouthHand().add(se);
+                }
             }
         } else{
-            //Husk å endre hvis spilleren har huket av i settings at bidding ikke skal
-            //være med da går vi rett til spille fasen
+            //TODO:Husk å endre hvis spilleren har huket av i settings at bidding ikke skal være med da går vi rett til spille fasen
             gamestate.setPhase(Phase.BIDDING);
         }
+
+        return picked;
     }
 
     public GameState getGameState() {
         return gamestate;
     }
 
-    private void AITakesTurn(){
+    private void AITakesTurnPicking(){
         boolean first = AI.pickCard(gamestate);
         PickCard(Player.SOUTH,first);
     }

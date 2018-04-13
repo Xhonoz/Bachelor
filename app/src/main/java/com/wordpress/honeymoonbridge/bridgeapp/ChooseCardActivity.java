@@ -5,14 +5,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.MockAI;
+import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.CardViewAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 
 public class ChooseCardActivity extends AppCompatActivity {
 
     private HandAdapter handAdapter;
+    private Game game;
+    private CardViewAdapter cardView;
 
 
     @Override
@@ -21,6 +28,14 @@ public class ChooseCardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_choose_card);
 
         Button play = findViewById(R.id.trump);
+
+        game = new Game(true, new MockAI());
+
+        cardView = new CardViewAdapter((ImageView)findViewById(R.id.firstCard), getApplicationContext());
+
+        updateChoiceUI();
+
+
 
 
 
@@ -37,14 +52,25 @@ public class ChooseCardActivity extends AppCompatActivity {
     }
 
     public void onClickFirst(View view){
-        
-
+        Card picked = game.UIPickCard(true);
+        handAdapter.addToHand(picked);
+        updateChoiceUI();
     }
+
 
     public void onClickSecond(View view){
-
+        Card picked = game.UIPickCard(false);
+        handAdapter.addToHand(picked);
+        updateChoiceUI();
 
     }
+
+
+    private void updateChoiceUI(){
+        cardView.setCard(game.peakTopCard());
+
+    }
+
 
     public void onClick(View view){
 

@@ -184,6 +184,7 @@
 
             <ImageView
                 android:id="@+id/firstCard"
+                android:onClick="onClickFirst"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:layout_height="wrap_content"
@@ -193,6 +194,7 @@
 
                 <ImageView
                     android:id="@+id/secondCard"
+                    android:onClick="onClickSecond"
                     android:layout_width="match_parent"
                     android:layout_weight="4"
                     android:layout_height="wrap_content"
