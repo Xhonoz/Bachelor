@@ -1,6 +1,5 @@
 package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
