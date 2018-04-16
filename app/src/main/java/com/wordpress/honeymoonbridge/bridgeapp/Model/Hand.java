@@ -22,6 +22,13 @@ public class Hand {
         handHeart = new ArrayList<>();
     }
 
+    public Hand(ArrayList<Card> handClub, ArrayList<Card> handSpade, ArrayList<Card> handDiamond, ArrayList<Card> handHeart) {
+        this.handClub = handClub;
+        this.handSpade = handSpade;
+        this.handDiamond = handDiamond;
+        this.handHeart = handHeart;
+    }
+
     public void addCard(Card card) {
 
         if (card != null) {
@@ -184,4 +191,9 @@ public class Hand {
         return handHeart;
     }
 
+    public Hand clone(){
+
+       return new Hand(handSpade,handHeart,handClub,handDiamond);
+
+    }
 }
