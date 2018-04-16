@@ -40,11 +40,11 @@ public class Hand {
                     int i = 0;
                     for (; i < handHeart.size(); i++) {
                         if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
-                            handHeart.add(i,card);
+                            handHeart.add(i, card);
                             return;
                         }
                     }
-                    handHeart.add(i,card);
+                    handHeart.add(i, card);
                 }
             }
             if (card.getSuit() == (Suit.Spades)) {
@@ -55,11 +55,11 @@ public class Hand {
                     int i = 0;
                     for (; i < handSpade.size(); i++) {
                         if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
-                            handSpade.add(i,card);
+                            handSpade.add(i, card);
                             return;
                         }
                     }
-                    handSpade.add(i,card);
+                    handSpade.add(i, card);
                 }
             }
             if (card.getSuit() == (Suit.Diamonds)) {
@@ -70,11 +70,11 @@ public class Hand {
                     int i = 0;
                     for (; i < handDiamond.size(); i++) {
                         if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
-                            handDiamond.add(i,card);
+                            handDiamond.add(i, card);
                             return;
                         }
                     }
-                    handDiamond.add(i,card);
+                    handDiamond.add(i, card);
                 }
 
             }
@@ -86,11 +86,11 @@ public class Hand {
                     int i = 0;
                     for (; i < handClub.size(); i++) {
                         if (card.getCardValue() >= handClub.get(i).getCardValue()) {
-                            handClub.add(i,card);
+                            handClub.add(i, card);
                             return;
                         }
                     }
-                    handClub.add(i,card);
+                    handClub.add(i, card);
                 }
             }
 
@@ -99,72 +99,72 @@ public class Hand {
 
     }
 
-    public Card removeCard(Card card){
+    public Card removeCard(Card card) {
         Card removed = null;
 
-        if(card.getSuit().equals(Suit.Hearts)){
+        if (card.getSuit().equals(Suit.Hearts)) {
 
-            for(int i = 0; i < handHeart.size(); i++){
-                if(handHeart.get(0).equals(card))
+            for (int i = 0; i < handHeart.size(); i++) {
+                if (handHeart.get(0).equals(card))
                     removed = handHeart.remove(i);
             }
 
         }
-        if(card.getSuit().equals(Suit.Clubs)){
+        if (card.getSuit().equals(Suit.Clubs)) {
 
-            for(int i = 0; i < handClub.size(); i++){
-                if(handClub.get(0).equals(card))
+            for (int i = 0; i < handClub.size(); i++) {
+                if (handClub.get(0).equals(card))
                     removed = handClub.remove(i);
             }
 
         }
-        if(card.getSuit().equals(Suit.Spades)){
+        if (card.getSuit().equals(Suit.Spades)) {
 
-            for(int i = 0; i < handSpade.size(); i++){
-                if(handSpade.get(0).equals(card))
+            for (int i = 0; i < handSpade.size(); i++) {
+                if (handSpade.get(0).equals(card))
                     removed = handSpade.remove(i);
             }
 
         }
-        if(card.getSuit().equals(Suit.Diamonds)){
+        if (card.getSuit().equals(Suit.Diamonds)) {
 
-            for(int i = 0; i < handDiamond.size(); i++){
-                if(handDiamond.get(0).equals(card))
+            for (int i = 0; i < handDiamond.size(); i++) {
+                if (handDiamond.get(0).equals(card))
                     removed = handDiamond.remove(i);
             }
 
         }
-        
+
         return removed;
     }
 
-    public ArrayList<Card> getSortedHand(Trump trump){
+    public ArrayList<Card> getSortedHand(Trump trump) {
         //spar, hjerte, kløver, ruter
         //TODO:Skal vi flytte fargene slik at det alltid er annenhver rød og svart farge?
         ArrayList<Card> sorted = new ArrayList<>();
 
-        if(trump.equals(Trump.NoTrump) || trump.equals(Trump.Diamonds)){
+        if (trump.equals(Trump.NoTrump) || trump.equals(Trump.Diamonds)) {
             sorted.addAll(handSpade);
             sorted.addAll(handHeart);
             sorted.addAll(handClub);
             sorted.addAll(handDiamond);
         }
 
-        if(trump.equals(Trump.Spades)){
+        if (trump.equals(Trump.Spades)) {
             sorted.addAll(handHeart);
             sorted.addAll(handClub);
             sorted.addAll(handDiamond);
             sorted.addAll(handSpade);
         }
 
-        if(trump.equals(Trump.Hearts)){
+        if (trump.equals(Trump.Hearts)) {
             sorted.addAll(handSpade);
             sorted.addAll(handClub);
             sorted.addAll(handDiamond);
             sorted.addAll(handHeart);
         }
 
-        if(trump.equals(Trump.Clubs)){
+        if (trump.equals(Trump.Clubs)) {
             sorted.addAll(handSpade);
             sorted.addAll(handHeart);
             sorted.addAll(handDiamond);
@@ -191,13 +191,216 @@ public class Hand {
         return handHeart;
     }
 
-    public Hand clone(){
+    public Hand clone() {
 
-       return new Hand(handSpade,handHeart,handClub,handDiamond);
+        return new Hand(handSpade, handHeart, handClub, handDiamond);
 
     }
 
-    public int getSize(){
-        return handClub.size()+handSpade.size()+handDiamond.size()+handHeart.size();
+    public int getSize() {
+        return handClub.size() + handSpade.size() + handDiamond.size() + handHeart.size();
+    }
+
+    public int getNewIndex(Card card, Trump trump) {
+
+        switch (trump) {
+            case NoTrump:
+                int index = 0;
+                if (card.getSuit().equals(Suit.Spades)) {
+                    for (int i = 0; i < handSpade.size(); i++) {
+                        if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
+                            index += i;
+                        }
+                        return index;
+                    }
+                }
+                index += handSpade.size();
+                if (card.getSuit().equals(Suit.Hearts)) {
+                    for (int i = 0; i < handHeart.size(); i++) {
+                        if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
+                            index += i;
+                        }
+                        return index;
+                    }
+                }
+                index += handHeart.size();
+                if (card.getSuit().equals(Suit.Clubs)) {
+                    for (int i = 0; i < handClub.size(); i++) {
+                        if (card.getCardValue() >= handClub.get(i).getCardValue()) {
+                            index += i;
+                        }
+                        return index;
+                    }
+                }
+
+                index += handClub.size();
+                if (card.getSuit().equals(Suit.Diamonds)) {
+                    for (int i = 0; i < handDiamond.size(); i++) {
+                        if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
+                            index += i;
+                        }
+                        return index;
+                    }
+                }
+
+                return index;
+
+            case Spades:
+                int index2 = 0;
+                if (card.getSuit().equals(Suit.Hearts)) {
+                    for (int i = 0; i < handHeart.size(); i++) {
+                        if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
+                            index2 += i;
+                        }
+                        return index2;
+                    }
+                }
+                index2 += handHeart.size();
+                if (card.getSuit().equals(Suit.Clubs)) {
+                    for (int i = 0; i < handClub.size(); i++) {
+                        if (card.getCardValue() >= handClub.get(i).getCardValue()) {
+                            index2 += i;
+                        }
+                        return index2;
+                    }
+                }
+                index2 += handClub.size();
+                if (card.getSuit().equals(Suit.Diamonds)) {
+                    for (int i = 0; i < handDiamond.size(); i++) {
+                        if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
+                            index2 += i;
+                        }
+                        return index2;
+                    }
+                }
+                index2 += handDiamond.size();
+                if (card.getSuit().equals(Suit.Spades)) {
+                    for (int i = 0; i < handSpade.size(); i++) {
+                        if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
+                            index2 += i;
+                        }
+                        return index2;
+                    }
+                }
+                return index2;
+
+            case Hearts:
+                int index3 = 0;
+                if (card.getSuit().equals(Suit.Spades)) {
+                    for (int i = 0; i < handSpade.size(); i++) {
+                        if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
+                            index3 += i;
+                        }
+                        return index3;
+                    }
+                }
+                index3 += handSpade.size();
+                if (card.getSuit().equals(Suit.Clubs)) {
+                    for (int i = 0; i < handClub.size(); i++) {
+                        if (card.getCardValue() >= handClub.get(i).getCardValue()) {
+                            index3 += i;
+                        }
+                        return index3;
+                    }
+                }
+                index3 += handClub.size();
+                if (card.getSuit().equals(Suit.Diamonds)) {
+                    for (int i = 0; i < handDiamond.size(); i++) {
+                        if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
+                            index3 += i;
+                        }
+                        return index3;
+                    }
+                }
+                index3 += handDiamond.size();
+                if (card.getSuit().equals(Suit.Hearts)) {
+                    for (int i = 0; i < handHeart.size(); i++) {
+                        if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
+                            index3 += i;
+                        }
+                        return index3;
+                    }
+                }
+                return index3;
+
+            case Clubs:
+                int index4 = 0;
+                if (card.getSuit().equals(Suit.Spades)) {
+                    for (int i = 0; i < handSpade.size(); i++) {
+                        if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
+                            index4 += i;
+                        }
+                        return index4;
+                    }
+                }
+                index4 += handSpade.size();
+                if (card.getSuit().equals(Suit.Hearts)) {
+                    for (int i = 0; i < handHeart.size(); i++) {
+                        if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
+                            index4 += i;
+                        }
+                        return index4;
+                    }
+                }
+                index4 += handHeart.size();
+                if (card.getSuit().equals(Suit.Diamonds)) {
+                    for (int i = 0; i < handDiamond.size(); i++) {
+                        if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
+                            index4 += i;
+                        }
+                        return index4;
+                    }
+                }
+                index4 += handDiamond.size();
+                if (card.getSuit().equals(Suit.Clubs)) {
+                    for (int i = 0; i < handClub.size(); i++) {
+                        if (card.getCardValue() >= handClub.get(i).getCardValue()) {
+                            index4 += i;
+                        }
+                        return index4;
+                    }
+                }
+                return index4;
+            case Diamonds:
+                int index5 = 0;
+                if (card.getSuit().equals(Suit.Spades)) {
+                    for (int i = 0; i < handSpade.size(); i++) {
+                        if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
+                            index5 += i;
+                        }
+                        return index5;
+                    }
+                }
+                index5 += handSpade.size();
+                if (card.getSuit().equals(Suit.Hearts)) {
+                    for (int i = 0; i < handHeart.size(); i++) {
+                        if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
+                            index5 += i;
+                        }
+                        return index5;
+                    }
+                }
+                index5 += handHeart.size();
+                if (card.getSuit().equals(Suit.Clubs)) {
+                    for (int i = 0; i < handClub.size(); i++) {
+                        if (card.getCardValue() >= handClub.get(i).getCardValue()) {
+                            index5 += i;
+                        }
+                        return index5;
+                    }
+                }
+
+                index5 += handClub.size();
+                if (card.getSuit().equals(Suit.Diamonds)) {
+                    for (int i = 0; i < handDiamond.size(); i++) {
+                        if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
+                            index5 += i;
+                        }
+                        return index5;
+                    }
+                }
+            default:
+                return 0;
+        }
     }
 }
