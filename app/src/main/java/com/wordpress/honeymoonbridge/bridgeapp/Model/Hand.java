@@ -196,4 +196,8 @@ public class Hand {
        return new Hand(handSpade,handHeart,handClub,handDiamond);
 
     }
+
+    public int getSize(){
+        return handClub.size()+handSpade.size()+handDiamond.size()+handHeart.size();
+    }
 }
