@@ -202,202 +202,203 @@ public class Hand {
     }
 
     public int getNewIndex(Card card, Trump trump) {
-
+        int index = 0;
         switch (trump) {
             case NoTrump:
-                int index = 0;
                 if (card.getSuit().equals(Suit.Spades)) {
                     for (int i = 0; i < handSpade.size(); i++) {
                         if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
-                            index += i;
+                            return index + i;
                         }
-                        return index;
                     }
+                    return index + handSpade.size();
                 }
                 index += handSpade.size();
                 if (card.getSuit().equals(Suit.Hearts)) {
                     for (int i = 0; i < handHeart.size(); i++) {
                         if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
-                            index += i;
+                            return index + i;
                         }
-                        return index;
+
                     }
+                    return index + handHeart.size();
+
                 }
                 index += handHeart.size();
                 if (card.getSuit().equals(Suit.Clubs)) {
                     for (int i = 0; i < handClub.size(); i++) {
                         if (card.getCardValue() >= handClub.get(i).getCardValue()) {
-                            index += i;
+                           return index + i;
                         }
-                        return index;
                     }
+                    return index + handClub.size();
                 }
 
                 index += handClub.size();
                 if (card.getSuit().equals(Suit.Diamonds)) {
                     for (int i = 0; i < handDiamond.size(); i++) {
                         if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
-                            index += i;
+                            return index + i;
                         }
-                        return index;
                     }
+                        return index + handDiamond.size();
                 }
 
                 return index;
 
             case Spades:
-                int index2 = 0;
                 if (card.getSuit().equals(Suit.Hearts)) {
                     for (int i = 0; i < handHeart.size(); i++) {
                         if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
-                            index2 += i;
+                            return index + i;
                         }
-                        return index2;
                     }
+                    return index + handHeart.size();
                 }
-                index2 += handHeart.size();
+                index += handHeart.size();
                 if (card.getSuit().equals(Suit.Clubs)) {
                     for (int i = 0; i < handClub.size(); i++) {
                         if (card.getCardValue() >= handClub.get(i).getCardValue()) {
-                            index2 += i;
+                            return index + i;
                         }
-                        return index2;
                     }
+                    return index + handClub.size();
                 }
-                index2 += handClub.size();
+                index += handClub.size();
                 if (card.getSuit().equals(Suit.Diamonds)) {
                     for (int i = 0; i < handDiamond.size(); i++) {
                         if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
-                            index2 += i;
+                            return index += i;
                         }
-                        return index2;
                     }
+                    return index + handDiamond.size();
                 }
-                index2 += handDiamond.size();
+                index += handDiamond.size();
                 if (card.getSuit().equals(Suit.Spades)) {
                     for (int i = 0; i < handSpade.size(); i++) {
                         if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
-                            index2 += i;
+                            index += i;
                         }
-                        return index2;
+                        return index + i;
                     }
+
+                    return index + handSpade.size();
                 }
-                return index2;
+                return index;
 
             case Hearts:
-                int index3 = 0;
                 if (card.getSuit().equals(Suit.Spades)) {
                     for (int i = 0; i < handSpade.size(); i++) {
                         if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
-                            index3 += i;
+                            return index + i;
                         }
-                        return index3;
                     }
+                    return index + handSpade.size();
                 }
-                index3 += handSpade.size();
+                index += handSpade.size();
                 if (card.getSuit().equals(Suit.Clubs)) {
                     for (int i = 0; i < handClub.size(); i++) {
                         if (card.getCardValue() >= handClub.get(i).getCardValue()) {
-                            index3 += i;
+                            return index + i;
                         }
-                        return index3;
                     }
+                    return index + handClub.size();
                 }
-                index3 += handClub.size();
+                index += handClub.size();
                 if (card.getSuit().equals(Suit.Diamonds)) {
                     for (int i = 0; i < handDiamond.size(); i++) {
                         if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
-                            index3 += i;
+                            return index + i;
                         }
-                        return index3;
                     }
+
+                    return index + handDiamond.size();
                 }
-                index3 += handDiamond.size();
+                index += handDiamond.size();
                 if (card.getSuit().equals(Suit.Hearts)) {
                     for (int i = 0; i < handHeart.size(); i++) {
                         if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
-                            index3 += i;
+                            return index + i;
                         }
-                        return index3;
                     }
+                    return index + handHeart.size();
                 }
-                return index3;
+                return index;
 
             case Clubs:
-                int index4 = 0;
                 if (card.getSuit().equals(Suit.Spades)) {
                     for (int i = 0; i < handSpade.size(); i++) {
                         if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
-                            index4 += i;
+                           return index + i;
                         }
-                        return index4;
                     }
+                    return index + handSpade.size();
                 }
-                index4 += handSpade.size();
+                index += handSpade.size();
                 if (card.getSuit().equals(Suit.Hearts)) {
                     for (int i = 0; i < handHeart.size(); i++) {
                         if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
-                            index4 += i;
+                            return index + i;
                         }
-                        return index4;
                     }
+                    return index + handHeart.size();
                 }
-                index4 += handHeart.size();
+                index += handHeart.size();
                 if (card.getSuit().equals(Suit.Diamonds)) {
                     for (int i = 0; i < handDiamond.size(); i++) {
                         if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
-                            index4 += i;
+                            return index + i;
                         }
-                        return index4;
                     }
+                    return index + handDiamond.size();
                 }
-                index4 += handDiamond.size();
+                index += handDiamond.size();
                 if (card.getSuit().equals(Suit.Clubs)) {
                     for (int i = 0; i < handClub.size(); i++) {
                         if (card.getCardValue() >= handClub.get(i).getCardValue()) {
-                            index4 += i;
+                            return index + i;
                         }
-                        return index4;
                     }
+                    return index + handClub.size();
                 }
-                return index4;
+                return index;
             case Diamonds:
-                int index5 = 0;
                 if (card.getSuit().equals(Suit.Spades)) {
                     for (int i = 0; i < handSpade.size(); i++) {
                         if (card.getCardValue() >= handSpade.get(i).getCardValue()) {
-                            index5 += i;
+                            return index + i;
                         }
-                        return index5;
                     }
+                    return index + handSpade.size();
                 }
-                index5 += handSpade.size();
+                index += handSpade.size();
                 if (card.getSuit().equals(Suit.Hearts)) {
                     for (int i = 0; i < handHeart.size(); i++) {
                         if (card.getCardValue() >= handHeart.get(i).getCardValue()) {
-                            index5 += i;
+                            return index + i;
                         }
-                        return index5;
                     }
+
+                    return index + handHeart.size();
                 }
-                index5 += handHeart.size();
+                index += handHeart.size();
                 if (card.getSuit().equals(Suit.Clubs)) {
                     for (int i = 0; i < handClub.size(); i++) {
                         if (card.getCardValue() >= handClub.get(i).getCardValue()) {
-                            index5 += i;
+                            return index + i;
                         }
-                        return index5;
                     }
+                    return index + handClub.size();
                 }
 
-                index5 += handClub.size();
+                index += handClub.size();
                 if (card.getSuit().equals(Suit.Diamonds)) {
                     for (int i = 0; i < handDiamond.size(); i++) {
                         if (card.getCardValue() >= handDiamond.get(i).getCardValue()) {
-                            index5 += i;
+                            return index + i;
                         }
-                        return index5;
                     }
+                    return index + handDiamond.size();
                 }
             default:
                 return 0;
