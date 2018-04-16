@@ -1,6 +1,7 @@
 package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 
 /**
  * Created by Carmen on 11.04.2018.
@@ -11,8 +12,8 @@ public class MockAI implements AIPlayer {
 
 
     @Override
-    public int playCard(GameState state) {
-        return 0;
+    public Card playCard(GameState state) {
+        return null;
     }
 
     @Override
