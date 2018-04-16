@@ -22,12 +22,15 @@ public class CardViewAdapter {
     }
 
     public void setCard(Card card) {
-        this.card = card;
+        if(card != null) {
+            this.card = card;
 
-        int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
+            int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
 
-        imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                ImageHelper.drawables[index]), 400, true));
+            imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
+                    ImageHelper.drawables[index]), 400, true));
+
+        }
     }
 
     public Card getCard() {

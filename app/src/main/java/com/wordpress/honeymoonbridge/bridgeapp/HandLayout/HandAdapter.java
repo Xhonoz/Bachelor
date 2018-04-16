@@ -36,20 +36,24 @@ public class HandAdapter {
 
     public void SetUpLayout(){
         handLayout.removeAllViews();
+        Log.i("HandAdapter", "hand size: " + hand.size());
         for(int i = 0; i < hand.size(); i++){
+            Log.i("HandAdapter", "Card: " + hand.get(i));
+            Log.i("HandAdapter", "hand size: " + hand.size());
             addImageViewToLayout(hand.get(i), (i == hand.size()-1));
         }
 //        addImageViewToLayout(hand.get(0));
     }
 
     public void addToHand(Card card){
-        hand.add(card);
         //Hugs å legge til margin på forrige kort
+        hand.add(card);
         addImageViewToLayout(card, true);
     }
 
     public void removeCard(int posistion){
         handLayout.removeViewAt(posistion);
+    if(hand.size() != 0)
         fixLast();
     }
 
@@ -64,36 +68,39 @@ public class HandAdapter {
 
     private void addImageViewToLayout(Card card, boolean last) {
 
+        if(card != null) {
+            Log.i("HandAdapter", "addImageViewToLayout");
 
-        Log.i("HandAdapter", "addImageViewToLayout");
+            Log.i("HandAdapter", "Last card: " + last);
 
-        Log.i("HandAdapter", "Last card: " + last);
+            ImageView view = new ImageView(mContext);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.weight = 1;
+            if (!last) {
 
-        ImageView view = new ImageView(mContext);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.weight = 1;
-        if(!last) {
+                params.setMargins(0, 0, -150, 0);
 
-            params.setMargins(0, 0, -150, 0);
+            } else if (hand.size() != 1) {
+                fixLast();
+            }
 
-        }else{
-            fixLast();
+
+            view.setLayoutParams(params);
+
+            int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
+
+
+            view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
+                    ImageHelper.drawables[index]), 400, true));
+
+            handLayout.addView(view);
+
         }
-
-        view.setLayoutParams(params);
-
-        int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
-
-
-        view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                ImageHelper.drawables[index]), 400, true));
-
-        handLayout.addView(view);
-
     }
 
     private void fixLast(){
+        Log.i("HandAdapter", "Fix last is called");
         LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         params2.weight = 1;
@@ -104,12 +111,6 @@ public class HandAdapter {
     }
 
 
-
-//    private int getImageId(Card card) {
-//
-//        return drawables[index];
-//
-//    }
 
 
 }

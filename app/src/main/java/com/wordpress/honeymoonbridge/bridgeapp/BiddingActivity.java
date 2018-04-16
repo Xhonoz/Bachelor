@@ -14,6 +14,8 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Adapters.BiddingHistoryAdapter;
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.GlobalInformation;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
@@ -40,6 +42,7 @@ public class BiddingActivity extends AppCompatActivity {
     private BiddingHistory biddingHistory;
     private HandAdapter handAdapter;
     private ArrayList<Card> hand;
+    private Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +53,9 @@ public class BiddingActivity extends AppCompatActivity {
         biddingHistory = new BiddingHistory();
 
         hand = new CardStack().hand();
+        game = GlobalInformation.game;
 
-        handAdapter = new HandAdapter(hand, (LinearLayout) findViewById(R.id.yourHand), getApplicationContext());
+        handAdapter = new HandAdapter(game.getGameState().getSouthHand(), (LinearLayout) findViewById(R.id.yourHand), getApplicationContext());
         setUpRecyclerViews();
         setUpNumberPickers();
 

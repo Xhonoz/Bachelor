@@ -46,6 +46,10 @@ public class GameState {
         phase = Phase.PICKING;
     }
 
+    public void setSouthTurn(boolean southTurn) {
+        isSouthTurn = southTurn;
+    }
+
     public boolean isSouthTurn() {
         return isSouthTurn;
     }
