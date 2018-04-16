@@ -3,6 +3,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 
 import java.util.ArrayList;
 
@@ -25,8 +26,8 @@ public class GameState {
 
     private ArrayList<Trick> tricks;
 
-    private ArrayList<Card> northHand;
-    private ArrayList<Card> southHand;
+    private Hand northHand;
+    private Hand southHand;
 
 
     private CardStack stack;
@@ -40,8 +41,8 @@ public class GameState {
         this.northBid = new ArrayList<>();
         this.southBid = new ArrayList<>();
         this.tricks = new ArrayList<>();
-        this.northHand = new ArrayList<>();
-        this.southHand = new ArrayList<>();
+        this.northHand = new Hand();
+        this.southHand = new Hand();
         this.stack = new CardStack();
         phase = Phase.PICKING;
     }
@@ -78,11 +79,11 @@ public class GameState {
         return tricks;
     }
 
-    public ArrayList<Card> getNorthHand() {
+    public Hand getNorthHand() {
         return northHand;
     }
 
-    public ArrayList<Card> getSouthHand() {
+    public Hand getSouthHand() {
         return southHand;
     }
 

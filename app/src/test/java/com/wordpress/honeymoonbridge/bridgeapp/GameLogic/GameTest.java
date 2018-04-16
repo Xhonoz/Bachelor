@@ -2,6 +2,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
+import com.wordpress.honeymoonbridge.bridgeapp.NetMock.AIMock;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +21,7 @@ public class GameTest {
 
     @Before
     public void setUp(){
-        game = new Game();
+        game = new Game(true,new MockAI());
         firstCard = new Card(Suit.Clubs, 2);
         fourthCard = new Card(Suit.Clubs, 5);
         gamestate = game.getGameState();
