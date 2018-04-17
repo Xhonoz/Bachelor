@@ -21,6 +21,7 @@ public class TopInLong implements AIPlayer {
     public Card playCard(GameState state) {
 
         Hand hand = state.getNorthHand();
+        Trump trump = state.getTrump();
         ArrayList<Card> handSpade = hand.getHandSpade();
         ArrayList<Card> handHeart = hand.getHandHeart();
         ArrayList<Card> handDiamond = hand.getHandDiamond();
@@ -92,26 +93,31 @@ public class TopInLong implements AIPlayer {
                 return hand.getCardsOfSuit(opponent.getSuit()).get(hand.getCardsOfSuit(opponent.getSuit()).size() - 1);
             }
         } else {
-            int smallest = 14;
-            Card next = null;
-            if (!handClub.isEmpty() && handClub.get(handClub.size() - 1).getCardValue() < smallest) {
-                smallest = handClub.get(handClub.size() - 1).getCardValue();
-                next = handClub.get(handClub.size() - 1);
-            }
-            if ((!handSpade.isEmpty()) && (handSpade.get(handSpade.size() - 1).getCardValue() > smallest)) {
-                smallest = handSpade.get(handSpade.size() - 1).getCardValue();
-                next = handSpade.get(handSpade.size() - 1);
-            }
-            if ((!handDiamond.isEmpty()) && (handDiamond.get(handDiamond.size() - 1).getCardValue() > smallest)) {
-                smallest = handDiamond.get(handDiamond.size() - 1).getCardValue();
-                next = handDiamond.get(handDiamond.size() - 1);
-            }
-            if ((!handHeart.isEmpty()) && (handHeart.get(handHeart.size() - 1).getCardValue() > smallest)) {
-                smallest = handHeart.get(handHeart.size() - 1).getCardValue();
-                next = handHeart.get(handHeart.size() - 1);
+            if(trump.equals(Trump.NoTrump) || hand.getCardsOfSuit(getSuitFromTrump(trump)).isEmpty()) {
+                int smallest = 14;
+                Card next = null;
+                if (!handClub.isEmpty() && handClub.get(handClub.size() - 1).getCardValue() < smallest) {
+                    smallest = handClub.get(handClub.size() - 1).getCardValue();
+                    next = handClub.get(handClub.size() - 1);
+                }
+                if ((!handSpade.isEmpty()) && (handSpade.get(handSpade.size() - 1).getCardValue() > smallest)) {
+                    smallest = handSpade.get(handSpade.size() - 1).getCardValue();
+                    next = handSpade.get(handSpade.size() - 1);
+                }
+                if ((!handDiamond.isEmpty()) && (handDiamond.get(handDiamond.size() - 1).getCardValue() > smallest)) {
+                    smallest = handDiamond.get(handDiamond.size() - 1).getCardValue();
+                    next = handDiamond.get(handDiamond.size() - 1);
+                }
+                if ((!handHeart.isEmpty()) && (handHeart.get(handHeart.size() - 1).getCardValue() > smallest)) {
+                    smallest = handHeart.get(handHeart.size() - 1).getCardValue();
+                    next = handHeart.get(handHeart.size() - 1);
+                }
+
+                return next;
+            }else{
+                return hand.getCardsOfSuit(getSuitFromTrump(trump)).get(hand.getCardsOfSuit(getSuitFromTrump(trump)).size()-1);
             }
 
-            return next;
 
         }
     }
@@ -120,6 +126,22 @@ public class TopInLong implements AIPlayer {
         return null;
 }
 
+    public Suit getSuitFromTrump(Trump trump){
+        switch(trump){
+            case Spades:
+                return Suit.Spades;
+            case Hearts:
+                return Suit.Hearts;
+            case Clubs:
+                return Suit.Clubs;
+            case Diamonds:
+                return Suit.Diamonds;
+            case NoTrump:
+                return null;
+        }
+        return null;
+    }
+
     @Override
     public boolean pickCard(GameState state) {
         return ((Card) state.getStack().get(0)).getCardValue() > 10;
@@ -127,6 +149,6 @@ public class TopInLong implements AIPlayer {
 
     @Override
     public Bid bid(GameState state) {
-        return null;
+        return new Bid();
     }
 }
