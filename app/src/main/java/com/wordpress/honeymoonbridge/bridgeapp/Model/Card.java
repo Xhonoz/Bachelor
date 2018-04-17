@@ -35,6 +35,6 @@ public class Card implements Comparable<Card>{
 
     @Override
     public String toString(){
-        return "" + this.getSuit() + this.getCardValue();
+        return "" + this.getSuit() + " " + this.getCardValue();
     }
 }

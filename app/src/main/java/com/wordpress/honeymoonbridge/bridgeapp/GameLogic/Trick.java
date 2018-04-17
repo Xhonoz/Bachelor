@@ -10,4 +10,10 @@ public class Trick {
     Player lead;
     Card firstCard;
     Card SecondCard;
+
+    public Trick(Player lead, Card firstCard, Card secondCard) {
+        this.lead = lead;
+        this.firstCard = firstCard;
+        SecondCard = secondCard;
+    }
 }

@@ -5,6 +5,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,7 @@ public class GameState {
 
     private boolean isSouthTurn;
     private Phase phase;
+    private Trump trump;
 
     private ArrayList<Card> north26Cards;
     private ArrayList<Boolean> northChoseFirst;
@@ -44,6 +46,7 @@ public class GameState {
         this.southHand = new Hand();
         this.stack = new CardStack();
         phase = Phase.PICKING;
+        trump = Trump.NoTrump;
     }
 
     public void setSouthTurn(boolean southTurn) {
@@ -96,5 +99,49 @@ public class GameState {
 
     public void setPhase(Phase phase) {
         this.phase = phase;
+    }
+
+    public void setNorth26Cards(ArrayList<Card> north26Cards) {
+        this.north26Cards = north26Cards;
+    }
+
+    public void setNorthChoseFirst(ArrayList<Boolean> northChoseFirst) {
+        this.northChoseFirst = northChoseFirst;
+    }
+
+    public void setSouth26Cards(ArrayList<Card> south26Cards) {
+        this.south26Cards = south26Cards;
+    }
+
+    public void setSouthChoseFirst(ArrayList<Boolean> southChoseFirst) {
+        this.southChoseFirst = southChoseFirst;
+    }
+
+    public void setBiddingHistory(BiddingHistory biddingHistory) {
+        this.biddingHistory = biddingHistory;
+    }
+
+    public void setTricks(ArrayList<Trick> tricks) {
+        this.tricks = tricks;
+    }
+
+    public void setNorthHand(Hand northHand) {
+        this.northHand = northHand;
+    }
+
+    public void setSouthHand(Hand southHand) {
+        this.southHand = southHand;
+    }
+
+    public void setStack(CardStack stack) {
+        this.stack = stack;
+    }
+
+    public Trump getTrump() {
+        return trump;
+    }
+
+    public void setTrump(Trump trump) {
+        this.trump = trump;
     }
 }

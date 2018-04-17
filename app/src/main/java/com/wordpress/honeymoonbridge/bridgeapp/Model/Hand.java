@@ -404,4 +404,18 @@ public class Hand {
                 return 0;
         }
     }
+
+    public ArrayList<Card> getCardsOfSuit(Suit suit){
+        switch (suit){
+            case Clubs:
+                return handClub;
+            case Diamonds:
+                return handDiamond;
+            case Hearts:
+                return handHeart;
+            case Spades:
+                return handSpade;
+        }
+        return null;
+    }
 }
