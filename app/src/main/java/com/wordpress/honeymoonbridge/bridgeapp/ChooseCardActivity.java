@@ -3,7 +3,9 @@ package com.wordpress.honeymoonbridge.bridgeapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +20,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.OpponentHand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 
 import java.util.ArrayList;
 
@@ -38,6 +41,7 @@ public class ChooseCardActivity extends AppCompatActivity implements Game.Callba
         Button play = findViewById(R.id.trump);
 
         game = new Game(true, new MockAI());
+        game.getGameState().getStack().shuffleCardStack();
         GlobalInformation.setGame(game);
         game.setCallback(this);
 
@@ -55,8 +59,15 @@ public class ChooseCardActivity extends AppCompatActivity implements Game.Callba
         });
 
 
+        LinearLayout ll = new LinearLayout(getApplicationContext());
+        ((LinearLayout)findViewById(R.id.yourHand)).addView(ll);
+
+        ll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
         opponentHand = new OpponentHand((LinearLayout) findViewById(R.id.opponentHand), getApplicationContext(), 0);
-        handAdapter = new HandAdapter(new ArrayList<Card>(), (LinearLayout) findViewById(R.id.yourHand), getApplicationContext());
+        handAdapter = new HandAdapter(new Hand(), ll, getApplicationContext());
+
+        GlobalInformation.setHandAdapter(handAdapter);
     }
 
     public void onClickFirst(View view){
@@ -124,6 +135,7 @@ public class ChooseCardActivity extends AppCompatActivity implements Game.Callba
     @Override
     public void finishPicking() {
         //TODO: check settings if bidding is activated
+
         Intent intent = new Intent(ChooseCardActivity.this, BiddingActivity.class);
         startActivity(intent);
 
@@ -133,4 +145,11 @@ public class ChooseCardActivity extends AppCompatActivity implements Game.Callba
     public void finishPlaying() {
 
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((LinearLayout) findViewById(R.id.yourHand)).removeViewAt(0);
+    }
+
 }

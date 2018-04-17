@@ -55,7 +55,10 @@ public class BiddingActivity extends AppCompatActivity {
         hand = new CardStack().hand();
         game = GlobalInformation.game;
 
-        handAdapter = new HandAdapter(game.getGameState().getSouthHand(), (LinearLayout) findViewById(R.id.yourHand), getApplicationContext());
+        handAdapter = GlobalInformation.handAdapter;
+
+        ((LinearLayout)findViewById(R.id.yourHand)).addView(handAdapter.getHandLayout());
+
         setUpRecyclerViews();
         setUpNumberPickers();
 

@@ -3,6 +3,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 import android.util.Log;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 
@@ -39,12 +40,17 @@ public class Game{
         mCallback = callback;
     }
 
+    public GameState getGameState() {
+        return gamestate;
+    }
 
     public Game(boolean isSouthTurn, AIPlayer aiPlayer) {
         gamestate = new GameState(isSouthTurn);
         AI = aiPlayer;
 
     }
+
+    //Picking Phase:
 
     public Card peakTopCard() {
         CardStack s = gamestate.getStack();
@@ -89,10 +95,10 @@ public class Game{
                 gamestate.getNorthChoseFirst().add(first);
                 if (first) {
                     picked = fi;
-                    gamestate.getNorthHand().add(fi);
+                    gamestate.getNorthHand().addCard(fi);
                 } else {
                     picked = se;
-                    gamestate.getNorthHand().add(se);
+                    gamestate.getNorthHand().addCard(se);
                 }
             }
             if (player == Player.SOUTH) {
@@ -101,10 +107,10 @@ public class Game{
                 gamestate.getSouthChoseFirst().add(first);
                 if (first) {
                     picked = fi;
-                    gamestate.getSouthHand().add(fi);
+                    gamestate.getSouthHand().addCard(fi);
                 } else {
                     picked = se;
-                    gamestate.getSouthHand().add(se);
+                    gamestate.getSouthHand().addCard(se);
                 }
             }
         } else {
@@ -117,10 +123,6 @@ public class Game{
 
 
         return picked;
-    }
-
-    public GameState getGameState() {
-        return gamestate;
     }
 
     private void AITakesTurnPicking() {
@@ -142,4 +144,157 @@ public class Game{
             gamestate.setPhase(Phase.BIDDING);
         }
     }
+
+    //Bidding Phase:
+
+
+    // 1 = succsessfull
+    // 2 = To low bid
+    // 3 = Not your turn
+    public int UIBid(Bid bid){
+
+        if(!gamestate.isSouthTurn())
+            return 3;
+        if(!isLegalBid(bid, Player.SOUTH))
+            return 2;
+        gamestate.getBiddingHistory().getSouth().add(bid);
+//        TODO: ny tråd
+            AiBid();
+        return 1;
+    }
+
+    // 1 = succsessfull
+    // 2 = Can't Double
+    // 3 = Not your turn
+    public int UIDouble(){
+
+        if(!gamestate.isSouthTurn())
+            return 3;
+
+        if(isLegalToDouble(Player.SOUTH)) {
+            addDoubleBid(Player.SOUTH);
+//        TODO: ny tråd
+            AiBid();
+            return 1;
+        }
+        return 2;
+    }
+
+
+
+    // 1 = succsessfull
+    // 2 = To low bid
+    // 3 = Not your turn
+    public int UIReDouble(){
+
+        if(!gamestate.isSouthTurn())
+            return 3;
+
+        if(isLegalToRedouble(Player.SOUTH)) {
+            addRedoubleBid(Player.SOUTH);
+//        TODO: ny tråd
+            AiBid();
+
+            return 1;
+        }
+        return 2;
+
+    }
+
+    public boolean UIPass(){
+        if(!gamestate.isSouthTurn())
+            return false;
+        addPass(Player.SOUTH);
+        if(biddingIsOver())
+            mCallback.finishBidding();
+        else
+            AiBid();
+
+    }
+
+
+
+//    Doues not handle Dourbles or Redoubles
+    private boolean isLegalBid(Bid bid, Player player){
+        if((player == Player.SOUTH && !gamestate.getBiddingHistory().isNorthEmpty())
+          || player == Player.NORTH && !gamestate.getBiddingHistory().isSouthEmpty()) {
+
+            Bid lastBid = null;
+            if(player == Player.SOUTH)
+                lastBid = gamestate.getBiddingHistory().getLastNorthBid();
+            if(player == Player.NORTH)
+                lastBid = gamestate.getBiddingHistory().getLastSouthBid();
+
+            int lastLevel = lastBid.getLevel();
+            int lastTrumpInt = lastBid.getTrumpInt();
+            int newLevel = bid.getLevel();
+            int newTrumpInt = bid.getTrumpInt();
+
+            if(newLevel > lastLevel)
+                return true;
+            if((newLevel == lastLevel) && (newTrumpInt > lastTrumpInt))
+                return true;
+
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isLegalToDouble(Player player) {
+        if ((player == Player.SOUTH && !gamestate.getBiddingHistory().isNorthEmpty())
+                || player == Player.NORTH && !gamestate.getBiddingHistory().isSouthEmpty()) {
+
+            Bid lastBid = null;
+            if (player == Player.SOUTH)
+                lastBid = gamestate.getBiddingHistory().getLastNorthBid();
+            if (player == Player.NORTH)
+                lastBid = gamestate.getBiddingHistory().getLastSouthBid();
+
+            if (lastBid.isDouble() || lastBid.isRedouble() || lastBid.isPass())
+                return false;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isLegalToRedouble(Player player) {
+        if ((player == Player.SOUTH && !gamestate.getBiddingHistory().isNorthEmpty())
+                || player == Player.NORTH && !gamestate.getBiddingHistory().isSouthEmpty()) {
+
+            Bid lastBid = null;
+            if (player == Player.SOUTH)
+                lastBid = gamestate.getBiddingHistory().getLastNorthBid();
+            if (player == Player.NORTH)
+                lastBid = gamestate.getBiddingHistory().getLastSouthBid();
+
+            if (lastBid.isDouble())
+                return true;
+            return false;
+        }
+        return false;
+    }
+
+    private void addDoubleBid(Player player) {
+        if (player == Player.SOUTH)
+            gamestate.getBiddingHistory().getSouth().add(new Bid(gamestate.getBiddingHistory().getLastNorthBid(), true, false));
+        if (player == Player.NORTH)
+            gamestate.getBiddingHistory().getNorth().add(new Bid(gamestate.getBiddingHistory().getLastSouthBid(), true, false));
+    }
+
+    private void addRedoubleBid(Player player) {
+        if (player == Player.SOUTH)
+            gamestate.getBiddingHistory().getSouth().add(new Bid(gamestate.getBiddingHistory().getLastNorthBid(), false, true));
+        if (player == Player.NORTH)
+            gamestate.getBiddingHistory().getNorth().add(new Bid(gamestate.getBiddingHistory().getLastSouthBid(), false, true));
+    }
+
+    private void addPass(Player player){
+        if (player == Player.SOUTH)
+            gamestate.getBiddingHistory().getSouth().add(new Bid());
+        if (player == Player.NORTH)
+            gamestate.getBiddingHistory().getNorth().add(new Bid());
+
+}
+
+
 }
