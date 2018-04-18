@@ -3,17 +3,14 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 import android.util.Log;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
-import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
-
-import java.io.Serializable;
 
 /**
  * Created by Eier on 09.04.2018.
  */
 
-public class Game{
+public class Game {
     private GameState gamestate;
     private AIPlayer AI;
 
@@ -94,9 +91,11 @@ public class Game{
                 gamestate.getNorth26Cards().add(se);
                 gamestate.getNorthChoseFirst().add(first);
                 if (first) {
+                    Log.i("GAME", "AI Chose the first card: " + fi  + " and discarded: " + se);
                     picked = fi;
                     gamestate.getNorthHand().addCard(fi);
                 } else {
+                    Log.i("GAME", "AI Chose the second card: " + se  + " and discarded: " + fi);
                     picked = se;
                     gamestate.getNorthHand().addCard(se);
                 }
@@ -132,7 +131,7 @@ public class Game{
             PickCard(Player.NORTH, first);
             mCallback.AiPickedCard(first);
             gamestate.setSouthTurn(true);
-            if(gamestate.getStack().isEmpty()) {
+            if (gamestate.getStack().isEmpty()) {
                 gamestate.setPhase(Phase.BIDDING);
                 mCallback.finishPicking();
 
@@ -151,47 +150,49 @@ public class Game{
     // 1 = succsessfull
     // 2 = To low bid
     // 3 = Not your turn
-    public int UIBid(Bid bid){
+    public int UIBid(Bid bid) {
 
-        if(!gamestate.isSouthTurn())
+        if (!gamestate.isSouthTurn())
             return 3;
-        if(!isLegalBid(bid, Player.SOUTH))
+        if (!isLegalBid(bid, Player.SOUTH))
             return 2;
         gamestate.getBiddingHistory().getSouth().add(bid);
 //        TODO: ny tråd
-            AiBid();
+        gamestate.setSouthTurn(false);
+        AiBid();
         return 1;
     }
 
     // 1 = succsessfull
     // 2 = Can't Double
     // 3 = Not your turn
-    public int UIDouble(){
+    public int UIDouble() {
 
-        if(!gamestate.isSouthTurn())
+        if (!gamestate.isSouthTurn())
             return 3;
 
-        if(isLegalToDouble(Player.SOUTH)) {
+        if (isLegalToDouble(Player.SOUTH)) {
             addDoubleBid(Player.SOUTH);
+            gamestate.setSouthTurn(false);
 //        TODO: ny tråd
             AiBid();
             return 1;
         }
         return 2;
     }
-
 
 
     // 1 = succsessfull
     // 2 = To low bid
     // 3 = Not your turn
-    public int UIReDouble(){
+    public int UIReDouble() {
 
-        if(!gamestate.isSouthTurn())
+        if (!gamestate.isSouthTurn())
             return 3;
 
-        if(isLegalToRedouble(Player.SOUTH)) {
+        if (isLegalToRedouble(Player.SOUTH)) {
             addRedoubleBid(Player.SOUTH);
+            gamestate.setSouthTurn(false);
 //        TODO: ny tråd
             AiBid();
 
@@ -201,28 +202,49 @@ public class Game{
 
     }
 
-    public boolean UIPass(){
-        if(!gamestate.isSouthTurn())
+    public boolean UIPass() {
+        if (!gamestate.isSouthTurn())
             return false;
         addPass(Player.SOUTH);
-        if(biddingIsOver())
+        if (biddingIsOver()) {
             mCallback.finishBidding();
-        else
+//                TODO: Check if just wanto bid and not play
+            gamestate.setPhase(Phase.PLAYING);
+        } else {
+            gamestate.setSouthTurn(false);
+//        TODO: ny tråd
             AiBid();
+
+        }
+        return true;
+    }
+
+    private void AiBid() {
+
+        Bid bid = AI.bid(gamestate);
+//        TODO: Add check to if bid is legal
+        gamestate.getBiddingHistory().getNorth().add(bid);
+
+        if (bid.isPass())
+            if (biddingIsOver()) {
+                mCallback.finishBidding();
+//                TODO: Check if just wanto bid and not play
+                gamestate.setPhase(Phase.PLAYING);
+            }
+        gamestate.setSouthTurn(true);
 
     }
 
 
-
-//    Doues not handle Dourbles or Redoubles
-    private boolean isLegalBid(Bid bid, Player player){
-        if((player == Player.SOUTH && !gamestate.getBiddingHistory().isNorthEmpty())
-          || player == Player.NORTH && !gamestate.getBiddingHistory().isSouthEmpty()) {
+    //    Doues not handle Dourbles or Redoubles
+    private boolean isLegalBid(Bid bid, Player player) {
+        if ((player == Player.SOUTH && !gamestate.getBiddingHistory().isNorthEmpty())
+                || player == Player.NORTH && !gamestate.getBiddingHistory().isSouthEmpty()) {
 
             Bid lastBid = null;
-            if(player == Player.SOUTH)
+            if (player == Player.SOUTH)
                 lastBid = gamestate.getBiddingHistory().getLastNorthBid();
-            if(player == Player.NORTH)
+            if (player == Player.NORTH)
                 lastBid = gamestate.getBiddingHistory().getLastSouthBid();
 
             int lastLevel = lastBid.getLevel();
@@ -230,9 +252,9 @@ public class Game{
             int newLevel = bid.getLevel();
             int newTrumpInt = bid.getTrumpInt();
 
-            if(newLevel > lastLevel)
+            if (newLevel > lastLevel)
                 return true;
-            if((newLevel == lastLevel) && (newTrumpInt > lastTrumpInt))
+            if ((newLevel == lastLevel) && (newTrumpInt > lastTrumpInt))
                 return true;
 
             return false;
@@ -288,13 +310,24 @@ public class Game{
             gamestate.getBiddingHistory().getNorth().add(new Bid(gamestate.getBiddingHistory().getLastSouthBid(), false, true));
     }
 
-    private void addPass(Player player){
+    private void addPass(Player player) {
         if (player == Player.SOUTH)
             gamestate.getBiddingHistory().getSouth().add(new Bid());
         if (player == Player.NORTH)
             gamestate.getBiddingHistory().getNorth().add(new Bid());
 
-}
+    }
+
+    private boolean biddingIsOver() {
+        if (gamestate.isSouthTurn()) {
+            if (gamestate.getBiddingHistory().getLastSouthBid().isPass() && !gamestate.getBiddingHistory().getNorth().isEmpty())
+                return true;
+        } else {
+            if (gamestate.getBiddingHistory().getLastNorthBid().isPass() && !gamestate.getBiddingHistory().getSouth().isEmpty())
+                return true;
+        }
+        return false;
+    }
 
 
 }

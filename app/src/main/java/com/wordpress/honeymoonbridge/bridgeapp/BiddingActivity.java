@@ -114,8 +114,8 @@ public class BiddingActivity extends AppCompatActivity {
 
     private void updateRecyclerViews(){
 
-        northAdapter = new BiddingHistoryAdapter(biddingHistory.getNorth());
-        southAdapter = new BiddingHistoryAdapter(biddingHistory.getSouth());
+        northAdapter = new BiddingHistoryAdapter(game.getGameState().getBiddingHistory().getNorth());
+        southAdapter = new BiddingHistoryAdapter(game.getGameState().getBiddingHistory().getSouth());
 
         northRecyclerView.setAdapter(northAdapter);
         southRecyclerView.setAdapter(southAdapter);
@@ -194,49 +194,48 @@ public class BiddingActivity extends AppCompatActivity {
         }
     }
 
-    public void onClickBid(View view){
+    public void onClickBid(View view) {
 
-    Bid bid = new Bid(LevelPicker.getValue(), TrumpPicker.getValue());
+        Bid bid = new Bid(LevelPicker.getValue(), TrumpPicker.getValue());
 
-    if(playerBidIsValid(bid)) {
+        int resultCode = game.UIBid(bid);
 
-        biddingHistory.getSouth().add(bid);
+        if (resultCode == 1) {
 
-        updateRecyclerViews();
+            updateRecyclerViews();
 
-        OpponentBid(AIMock.getBid(biddingHistory));
-
-    }else
-        Toast.makeText(this, "This bid is not valid, you must bid over " + biddingHistory.getLastNorthBid(), Toast.LENGTH_SHORT).show();
+        } else if (resultCode == 2)
+            Toast.makeText(this, "This bid is not valid, you must bid over " + game.getGameState().getBiddingHistory().getLastNorthBid(), Toast.LENGTH_SHORT).show();
+        else if (resultCode == 3)
+            Toast.makeText(this, "It's not your turn", Toast.LENGTH_SHORT).show();
 
     }
 
+//TODO: Fix Redoubles
     public void onClickDouble(View view){
 
-        handAdapter.addToHand(new Card( Suit.Clubs, 7));
+        int resultCode = game.UIDouble();
 
-        Bid lastBid = biddingHistory.getLastNorthBid();
+        if (resultCode == 1) {
 
-        if(lastBid.isDouble())
-            biddingHistory.getSouth().add(new Bid(biddingHistory.getLastNorthBid(), false, true));
-        else if(lastBid.isRedouble())
-            Log.i("BiddingActivity", "Can't double/redouble a redouble");
-        else
-            biddingHistory.getSouth().add(new Bid(biddingHistory.getLastNorthBid(), true, false));
+            updateRecyclerViews();
 
-        updateRecyclerViews();
+        } else if (resultCode == 2)
+            Toast.makeText(this, "You can't double now", Toast.LENGTH_SHORT).show();
+        else if (resultCode == 3)
+            Toast.makeText(this, "It's not your turn", Toast.LENGTH_SHORT).show();
 
-       OpponentBid(AIMock.getBid(biddingHistory));
+
+
     }
 
     public void onClickPass(View view){
-        biddingHistory.getSouth().add(new Bid());
 
-        updateRecyclerViews();
+        if(game.UIPass())
+            updateRecyclerViews();
+        else
+            Toast.makeText(this, "It's not your turn", Toast.LENGTH_SHORT).show();
 
-        OpponentBid(AIMock.getBid(biddingHistory));
-
-        startActivity(new Intent(BiddingActivity.this, PlayActivity.class));
 
     }
 

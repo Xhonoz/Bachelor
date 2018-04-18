@@ -22,7 +22,8 @@
         <activity android:name=".PlayActivity" />
         <activity android:name=".BiddingActivity" />
         <activity android:name=".ChooseCardActivity" />
-        <activity android:name=".ResultActivity"></activity>
+        <activity android:name=".ResultActivity" />
+        <activity android:name=".Activities.GameActivity"></activity>
     </application>
 
 </manifest>
