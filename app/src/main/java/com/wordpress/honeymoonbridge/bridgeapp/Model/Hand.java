@@ -418,4 +418,121 @@ public class Hand {
         }
         return null;
     }
+
+    public boolean isBalancedHand(){
+        int doubeltonCount = 0;
+        if(handClub.size() == 1 || handHeart.size() == 1 || handSpade.size() == 1 || handDiamond.size() == 1)
+            return false;
+        if(handDiamond.size()==2)
+            doubeltonCount++;
+        if(handSpade.size() == 2)
+            doubeltonCount++;
+        if(handHeart.size() == 2)
+            doubeltonCount++;
+
+        return doubeltonCount > 1;
+
+    }
+
+    public int hcp(){
+        int hcp = 0;
+        for(int i = 0; i < handSpade.size(); i++){
+            if(handSpade.get(i).getCardValue() == 11)
+                hcp += 1;
+            if(handSpade.get(i).getCardValue() == 12)
+                hcp += 2;
+            if(handSpade.get(i).getCardValue() == 13)
+                hcp += 3;
+            if(handSpade.get(i).getCardValue() == 14)
+                hcp += 4;
+        }
+
+        for(int i = 0; i < handHeart.size(); i++){
+            if(handHeart.get(i).getCardValue() == 11)
+                hcp += 1;
+            if(handHeart.get(i).getCardValue() == 12)
+                hcp += 2;
+            if(handHeart.get(i).getCardValue() == 13)
+                hcp += 3;
+            if(handHeart.get(i).getCardValue() == 14)
+                hcp += 4;
+        }
+
+        for(int i = 0; i < handClub.size(); i++){
+            if(handClub.get(i).getCardValue() == 11)
+                hcp += 1;
+            if(handClub.get(i).getCardValue() == 12)
+                hcp += 2;
+            if(handClub.get(i).getCardValue() == 13)
+                hcp += 3;
+            if(handClub.get(i).getCardValue() == 14)
+                hcp += 4;
+        }
+
+        for(int i = 0; i < handDiamond.size(); i++){
+            if(handDiamond.get(i).getCardValue() == 11)
+                hcp += 1;
+            if(handDiamond.get(i).getCardValue() == 12)
+                hcp += 2;
+            if(handDiamond.get(i).getCardValue() == 13)
+                hcp += 3;
+            if(handDiamond.get(i).getCardValue() == 14)
+                hcp += 4;
+        }
+return hcp;
+    }
+
+    public Suit longestSuit(){
+        int longest = handSpade.size();
+       Suit color = Suit.Spades;
+        if (longest <= handHeart.size()) {
+
+            if(longest == handHeart.size()){
+                for(int i = 0; i < handHeart.size(); i++){
+                    if(handHeart.get(i).getCardValue() > handSpade.get(i).getCardValue()){
+                        longest = handHeart.size();
+                        color = Suit.Hearts;
+                        break;
+                    }
+                }
+
+            }else {
+                longest = handHeart.size();
+                color = Suit.Hearts;
+            }
+        }
+
+        if (longest <= handDiamond.size()) {
+            if(longest == handDiamond.size()){
+                for(int i = 0; i < handDiamond.size(); i++){
+                    if(handDiamond.get(i).getCardValue() > handHeart.get(i).getCardValue()){
+                        longest = handDiamond.size();
+                        color = Suit.Diamonds;
+                        break;
+                    }
+                }
+
+            }else {
+                longest = handDiamond.size();
+                color = Suit.Diamonds;
+            }
+        }
+        if (longest <= handClub.size()) {
+            if(longest == handHeart.size()){
+                for(int i = 0; i < handHeart.size(); i++){
+                    if(handHeart.get(i).getCardValue() > handSpade.get(i).getCardValue()){
+                        longest = handHeart.size();
+                        color = Suit.Hearts;
+                        break;
+                    }
+                }
+
+            }else {
+                longest = handHeart.size();
+                color = Suit.Hearts;
+            }
+        }
+
+        return color;
+    }
 }

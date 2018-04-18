@@ -38,8 +38,13 @@ public class TopInLong implements AIPlayer {
             longest = handSpade.size();
             color = Suit.Spades;
             if (longest < handHeart.size()) {
-                longest = handHeart.size();
-                color = Suit.Hearts;
+
+                if(longest == handHeart.size()){
+
+                }else {
+                    longest = handHeart.size();
+                    color = Suit.Hearts;
+                }
             }
             if (longest < handDiamond.size()) {
                 longest = handDiamond.size();
@@ -142,13 +147,96 @@ public class TopInLong implements AIPlayer {
         return null;
     }
 
+    public Trump getTrumpFromSuit(Suit suit){
+        switch(suit) {
+            case Spades:
+                return Trump.Spades;
+            case Hearts:
+                return Trump.Hearts;
+            case Clubs:
+                return Trump.Clubs;
+            case Diamonds:
+                return Trump.Diamonds;
+        }
+        return null;
+    }
+
+
     @Override
     public boolean pickCard(GameState state) {
         return ((Card) state.getStack().get(0)).getCardValue() > 10;
     }
 
+    private boolean isLegalBid(Bid bid, GameState gamestate){
+        if((!gamestate.getBiddingHistory().isSouthEmpty())) {
+
+                Bid lastBid = gamestate.getBiddingHistory().getLastSouthBid();
+
+            int lastLevel = lastBid.getLevel();
+            int lastTrumpInt = lastBid.getTrumpInt();
+            int newLevel = bid.getLevel();
+            int newTrumpInt = bid.getTrumpInt();
+
+            if(newLevel > lastLevel)
+                return true;
+            if((newLevel == lastLevel) && (newTrumpInt > lastTrumpInt))
+                return true;
+
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public Bid bid(GameState state) {
+         Hand hand = state.getNorthHand();
+         int hcp = hand.hcp();
+         if(hcp >= 10 && hcp <= 12){
+             if(hand.isBalancedHand()) {
+                 if(isLegalBid(new Bid(1, Trump.NoTrump),state))
+                 return new Bid(1, Trump.NoTrump);
+             }
+             if(isLegalBid(new Bid(1, getTrumpFromSuit(hand.longestSuit())), state))
+             return new Bid(1, getTrumpFromSuit(hand.longestSuit()));
+         }
+         if(hcp >= 13 && hcp <= 15){
+             if(hand.isBalancedHand() && isLegalBid(new Bid(1, Trump.NoTrump),state))
+             return new Bid(1, Trump.NoTrump);
+             if(isLegalBid(new Bid(2, getTrumpFromSuit(hand.longestSuit())), state))
+             return new Bid(2, getTrumpFromSuit(hand.longestSuit()));
+         }
+
+        if(hcp >= 14 && hcp <= 17){
+            if(hand.isBalancedHand() && isLegalBid(new Bid(2, Trump.NoTrump),state))
+                return new Bid(2, Trump.NoTrump);
+            if(isLegalBid(new Bid(2, getTrumpFromSuit(hand.longestSuit())),state))
+                return new Bid(2, getTrumpFromSuit(hand.longestSuit()));
+        }
+        if(hcp >= 18 &&  hcp <=23 ){
+            if(hand.isBalancedHand() && isLegalBid(new Bid(3, Trump.NoTrump), state))
+                return new Bid(3, Trump.NoTrump);
+            if(isLegalBid(new Bid(4, getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(4, getTrumpFromSuit(hand.longestSuit()));
+        }
+
+        if(hcp >= 24 && hcp <=29){
+            if(hand.isBalancedHand() && isLegalBid(new Bid(4, Trump.NoTrump), state))
+                return new Bid(4, Trump.NoTrump);
+            if(isLegalBid(new Bid(6, getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(6, getTrumpFromSuit(hand.longestSuit()));
+        }
+
+        if(hcp >= 30){
+            if(hand.isBalancedHand() && isLegalBid(new Bid(7, Trump.NoTrump), state))
+                return new Bid(7, Trump.NoTrump);
+            if(isLegalBid(new Bid(7, getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(7, getTrumpFromSuit(hand.longestSuit()));
+        }
+
+
+
         return new Bid();
+
     }
+
 }
