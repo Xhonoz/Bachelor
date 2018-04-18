@@ -14,6 +14,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.GlobalInformation;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.MockAI;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.TopInLong;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.CardViewAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.OpponentHand;
@@ -40,7 +41,7 @@ public class ChooseCardActivity extends AppCompatActivity implements Game.Callba
 
         Button play = findViewById(R.id.trump);
 
-        game = new Game(true, new MockAI());
+        game = new Game(true, new TopInLong());
         game.getGameState().getStack().shuffleCardStack();
         GlobalInformation.setGame(game);
         game.setCallback(this);
