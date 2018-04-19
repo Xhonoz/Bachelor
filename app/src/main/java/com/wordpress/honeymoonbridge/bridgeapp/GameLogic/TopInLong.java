@@ -37,22 +37,52 @@ public class TopInLong implements AIPlayer {
         if (state.getTricks().isEmpty() || state.getTricks().get(0).SecondCard == null) {
             longest = handSpade.size();
             color = Suit.Spades;
-            if (longest < handHeart.size()) {
+            if (longest <= handHeart.size()) {
 
                 if(longest == handHeart.size()){
+                    for(int i = 0; i < handHeart.size(); i++){
+                        if(handHeart.get(i).getCardValue() > handSpade.get(i).getCardValue()){
+                            longest = handHeart.size();
+                            color = Suit.Hearts;
+                            break;
+                        }
+                    }
 
                 }else {
                     longest = handHeart.size();
                     color = Suit.Hearts;
                 }
             }
-            if (longest < handDiamond.size()) {
-                longest = handDiamond.size();
-                color = Suit.Diamonds;
+
+            if (longest <= handDiamond.size()) {
+                if(longest == handDiamond.size()){
+                    for(int i = 0; i < handDiamond.size(); i++){
+                        if(handDiamond.get(i).getCardValue() > handHeart.get(i).getCardValue()){
+                            longest = handDiamond.size();
+                            color = Suit.Diamonds;
+                            break;
+                        }
+                    }
+
+                }else {
+                    longest = handDiamond.size();
+                    color = Suit.Diamonds;
+                }
             }
-            if (longest < handClub.size()) {
-                longest = handClub.size();
-                color = Suit.Clubs;
+            if (longest <= handClub.size()) {
+                if(longest == handHeart.size()){
+                    for(int i = 0; i < handHeart.size(); i++){
+                        if(handHeart.get(i).getCardValue() > handSpade.get(i).getCardValue()){
+                            longest = handHeart.size();
+                            color = Suit.Hearts;
+                            break;
+                        }
+                    }
+
+                }else {
+                    longest = handHeart.size();
+                    color = Suit.Hearts;
+                }
             }
         }
 
