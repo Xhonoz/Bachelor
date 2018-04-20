@@ -5,6 +5,8 @@ import android.util.Log;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 
 /**
  * Created by Eier on 09.04.2018.
@@ -13,6 +15,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 public class Game {
     private GameState gamestate;
     private AIPlayer AI;
+    private TopInLong AIPlayer;
 
     public interface Callback {
         // called when the user presses the send button to submit a message
@@ -65,6 +68,56 @@ public class Game {
             return c;
         }
         return null;
+    }
+
+    public boolean isLegal(Player player, Card card){
+        Trick trick = null;
+        Hand hand;
+        if(player.equals(Player.NORTH)){
+            hand = gamestate.getNorthHand();
+        }else{
+            hand = gamestate.getSouthHand();
+        }
+        if(gamestate.getTricks().isEmpty()){
+            return true;
+        }
+        else{
+            trick = gamestate.getTricks().get(gamestate.getTricks().size()-1);
+        }
+
+        if(trick.SecondCard != null){
+            return true;
+        }else{
+            Suit suit = trick.firstCard.getSuit();
+
+            if(card.getSuit().equals(suit) || hand.getCardsOfSuit(suit).isEmpty()){
+                return true;
+            }else{
+                return false;
+            }
+
+        }
+
+
+    }
+
+    public void Play(Card card, Player player){
+        if(gamestate.isSouthTurn() && player.equals(Player.SOUTH) && isLegal(player, card)){
+            gamestate.getSouthHand().removeCard(card);
+           if(gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard != null){
+               gamestate.getTricks().add(new Trick(player,card, null));
+           }else{
+               gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard = card;
+            }
+        }
+
+        if(!gamestate.isSouthTurn() && player.equals(Player.NORTH) && isLegal(player, card)){
+            if(gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard != null){
+                gamestate.getTricks().add(new Trick(player,card, null));
+            }else{
+                gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard = card;
+            }
+        }
     }
 
     public Card UIPickCard(boolean first) {
