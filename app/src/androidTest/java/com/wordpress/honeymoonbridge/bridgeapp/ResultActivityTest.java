@@ -2,6 +2,10 @@ package com.wordpress.honeymoonbridge.bridgeapp;
 
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 
+import com.wordpress.honeymoonbridge.bridgeapp.Activities.MainActivity;
+import com.wordpress.honeymoonbridge.bridgeapp.Activities.PlayActivity;
+import com.wordpress.honeymoonbridge.bridgeapp.Activities.ResultActivity;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,7 +16,6 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static org.junit.Assert.*;
 
 /**
  * Created by Carmen on 02.04.2018.

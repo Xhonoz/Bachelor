@@ -1,4 +1,4 @@
-package com.wordpress.honeymoonbridge.bridgeapp;
+package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -18,6 +18,8 @@ import android.preference.RingtonePreference;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
+
+import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 import java.util.List;
 

@@ -3,6 +3,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  * Created by Eier on 10.04.2018.
  */
 
-public class HandAdapter {
+public class HandAdapter implements View.OnClickListener{
 
     Hand hand;
 
@@ -26,14 +27,25 @@ public class HandAdapter {
 
     Trump trump;
 
+    Callback mCallback;
+
+    public interface Callback{
+        void clickedCard(Card card);
+    }
+
 
     public HandAdapter(Hand hand, LinearLayout handLayout, Context context) {
+        mCallback = null;
         trump = Trump.NoTrump;
         this.hand = hand.clone();
         this.handLayout = handLayout;
         mContext = context;
         SetUpLayout();
 
+    }
+
+    public void setCallback(Callback callback) {
+        this.mCallback = callback;
     }
 
     public Trump getTrump() {
@@ -66,12 +78,14 @@ public class HandAdapter {
         addImageViewToLayout(card, hand.getNewIndex(card, trump));
     }
 
-    public void removeCard(int posistion) {
+    public void removeCard(Card card) {
 //        TODO: Implement removeCard
 //        handLayout.removeViewAt(posistion);
 //
 //        if (hand) != 0)
 //            fixLast();
+
+
     }
 
 
@@ -105,9 +119,11 @@ public class HandAdapter {
 
             view.setLayoutParams(params);
 
+
             int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
 
-
+            view.setId(index);
+            view.setOnClickListener(this);
             view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
                     ImageHelper.drawables[index]), 400, true));
 
@@ -140,7 +156,8 @@ public class HandAdapter {
 
             int indexCard = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
 
-
+            view.setId(indexCard);
+            view.setOnClickListener(this);
             view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
                     ImageHelper.drawables[indexCard]), 400, true));
 
@@ -161,4 +178,12 @@ public class HandAdapter {
     }
 
 
+    @Override
+    public void onClick(View view) {
+        if(mCallback != null) {
+            int index = view.getId();
+            Card card = new Card(index);
+            mCallback.clickedCard(card);
+        }
+    }
 }

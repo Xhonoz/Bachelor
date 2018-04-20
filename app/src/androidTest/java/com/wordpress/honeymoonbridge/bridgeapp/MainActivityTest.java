@@ -1,17 +1,17 @@
 package com.wordpress.honeymoonbridge.bridgeapp;
 
-import android.content.ComponentName;
-import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
-import android.util.Log;
+
+import com.wordpress.honeymoonbridge.bridgeapp.Activities.BiddingActivity;
+import com.wordpress.honeymoonbridge.bridgeapp.Activities.MainActivity;
+import com.wordpress.honeymoonbridge.bridgeapp.Activities.SettingsActivity;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -19,7 +19,6 @@ import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.junit.Assert.*;
 
 /**
  * Created by Carmen on 21.03.2018.

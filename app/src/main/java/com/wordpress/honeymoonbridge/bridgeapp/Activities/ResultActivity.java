@@ -1,10 +1,12 @@
-package com.wordpress.honeymoonbridge.bridgeapp;
+package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 
 public class ResultActivity extends AppCompatActivity {

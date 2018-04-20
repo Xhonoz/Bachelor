@@ -1,9 +1,10 @@
 package com.wordpress.honeymoonbridge.bridgeapp;
 
 import android.support.test.espresso.intent.rule.IntentsTestRule;
-import android.view.View;
 
-import org.hamcrest.Matcher;
+import com.wordpress.honeymoonbridge.bridgeapp.Activities.ChooseCardActivity;
+import com.wordpress.honeymoonbridge.bridgeapp.Activities.PlayActivity;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -14,8 +15,6 @@ import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.Espresso.onView;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Carmen on 21.03.2018.

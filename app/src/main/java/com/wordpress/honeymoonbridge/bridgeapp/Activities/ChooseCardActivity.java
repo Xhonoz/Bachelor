@@ -1,9 +1,8 @@
-package com.wordpress.honeymoonbridge.bridgeapp;
+package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -12,7 +11,6 @@ import android.widget.LinearLayout;
 
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.GlobalInformation;
-import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.MockAI;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.TopInLong;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.CardViewAdapter;
@@ -20,10 +18,8 @@ import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.OpponentHand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
-import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
-
-import java.util.ArrayList;
+import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 public class ChooseCardActivity extends AppCompatActivity implements Game.Callback {
 
@@ -98,10 +94,6 @@ public class ChooseCardActivity extends AppCompatActivity implements Game.Callba
 
     }
 
-
-    public void onClick(View view){
-
-    }
 
 
     private void addCardToOpponentHand() {
