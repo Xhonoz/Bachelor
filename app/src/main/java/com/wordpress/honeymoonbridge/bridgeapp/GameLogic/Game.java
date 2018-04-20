@@ -109,6 +109,8 @@ public class Game {
            }else{
                gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard = card;
             }
+
+            gamestate.setSouthTurn(false);
         }
 
         if(!gamestate.isSouthTurn() && player.equals(Player.NORTH) && isLegal(player, card)){
@@ -117,6 +119,8 @@ public class Game {
             }else{
                 gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard = card;
             }
+            
+            gamestate.setSouthTurn(true);
         }
     }
 
