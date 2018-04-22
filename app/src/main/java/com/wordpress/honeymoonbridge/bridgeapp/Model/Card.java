@@ -16,6 +16,12 @@ public class Card implements Comparable<Card>{
         this.cardValue = cardValue;
     }
 
+    public Card(int index){
+        suit = Suit.values()[index/13];
+        cardValue = index%13 + 2;
+
+    }
+
     public Suit getSuit() {
         return suit;
     }

@@ -1,4 +1,4 @@
-package com.wordpress.honeymoonbridge.bridgeapp;
+package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 public class PlayActivity extends AppCompatActivity {
 

@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.widget.ImageView;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
+import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 /**
  * Created by Eier on 13.04.2018.
@@ -30,7 +31,9 @@ public class CardViewAdapter {
             imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
                     ImageHelper.drawables[index]), 400, true));
 
-        }
+        }else
+            imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
+                    R.drawable.backside), 400, true));
     }
 
     public Card getCard() {

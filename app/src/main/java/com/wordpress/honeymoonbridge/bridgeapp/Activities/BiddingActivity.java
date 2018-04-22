@@ -1,4 +1,4 @@
-package com.wordpress.honeymoonbridge.bridgeapp;
+package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,12 +21,9 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
-import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
-import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
-import com.wordpress.honeymoonbridge.bridgeapp.NetMock.AIMock;
+import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 public class BiddingActivity extends AppCompatActivity {
 

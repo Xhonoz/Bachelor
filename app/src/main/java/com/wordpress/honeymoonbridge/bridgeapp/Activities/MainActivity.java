@@ -1,4 +1,4 @@
-package com.wordpress.honeymoonbridge.bridgeapp;
+package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
+import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, ChooseCardActivity.class);
+                Intent i = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(i);
             }
         });

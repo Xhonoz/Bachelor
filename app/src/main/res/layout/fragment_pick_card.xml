@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.wordpress.honeymoonbridge.bridgeapp.Activities.PickCardFragment">
+    tools:context="com.wordpress.honeymoonbridge.bridgeapp.Fragments.PickCardFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <!--board-->
@@ -77,7 +77,6 @@
 
             <ImageView
                 android:id="@+id/firstCard"
-                android:onClick="onClickFirst"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:layout_height="wrap_content"
@@ -87,7 +86,6 @@
 
             <ImageView
                 android:id="@+id/secondCard"
-                android:onClick="onClickSecond"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
                 android:layout_height="wrap_content"
@@ -98,20 +96,6 @@
         </LinearLayout>
 
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <!--Your Hand-->
-        <LinearLayout
-            android:orientation="horizontal"
-            android:id="@+id/yourHand"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
-            >
-        </LinearLayout>
 
 
     </LinearLayout>

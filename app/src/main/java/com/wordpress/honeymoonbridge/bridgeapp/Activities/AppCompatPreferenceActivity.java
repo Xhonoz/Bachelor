@@ -1,4 +1,4 @@
-package com.wordpress.honeymoonbridge.bridgeapp;
+package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
