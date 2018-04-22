@@ -7,6 +7,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 
 /**
  * Created by Eier on 09.04.2018.
@@ -101,28 +102,77 @@ public class Game {
 
     }
 
+    public boolean compareCards(Trump trump, Trick trick){
+        Card firstCard = trick.firstCard;
+        Card secondCard = trick.SecondCard;
+
+        switch (trump){
+            case NoTrump:
+                if(!firstCard.getSuit().equals(secondCard.getSuit()))
+                    return false;
+                if(firstCard.getCardValue() > secondCard.getCardValue())
+                    return false;
+                return true;
+
+            case Diamonds:
+                if(!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Diamonds))
+                    return false;
+                if(firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
+                    return false;
+                return true;
+
+            case Clubs:
+
+                if(!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Clubs))
+                    return false;
+                if(firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
+                    return false;
+                return true;
+
+            case Hearts:
+
+                if(!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Hearts))
+                    return false;
+                if(firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
+                    return false;
+                return true;
+
+            case Spades:
+
+                if(!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Spades))
+                    return false;
+                if(firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
+                    return false;
+                return true;
+        }
+
+        return true;
+
+    }
+
     public void Play(Card card, Player player){
         if(gamestate.isSouthTurn() && player.equals(Player.SOUTH) && isLegal(player, card)){
             gamestate.getSouthHand().removeCard(card);
            if(gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard != null){
                gamestate.getTricks().add(new Trick(player,card, null));
+               gamestate.setSouthTurn(false);
            }else{
                gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard = card;
+               gamestate.setSouthTurn(compareCards(gamestate.getTrump(),  gamestate.getTricks().get(gamestate.getTricks().size()-1)));
             }
-
-            gamestate.setSouthTurn(false);
         }
 
         if(!gamestate.isSouthTurn() && player.equals(Player.NORTH) && isLegal(player, card)){
             if(gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard != null){
                 gamestate.getTricks().add(new Trick(player,card, null));
+                gamestate.setSouthTurn(true);
             }else{
                 gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard = card;
+                gamestate.setSouthTurn(compareCards(gamestate.getTrump(),  gamestate.getTricks().get(gamestate.getTricks().size()-1)));
             }
-            
-            gamestate.setSouthTurn(true);
         }
     }
+    
 
     public Card UIPickCard(boolean first) {
         if (gamestate.getPhase().equals(Phase.PICKING) && gamestate.isSouthTurn()) {

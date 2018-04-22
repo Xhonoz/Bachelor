@@ -2,6 +2,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 import com.wordpress.honeymoonbridge.bridgeapp.NetMock.AIMock;
 
 import org.junit.Before;
@@ -18,6 +19,8 @@ public class GameTest {
     Card firstCard;
     Card fourthCard;
     GameState gamestate;
+    Trick trick;
+    Trump trump;
 
     @Before
     public void setUp(){
@@ -25,6 +28,8 @@ public class GameTest {
         firstCard = new Card(Suit.Clubs, 2);
         fourthCard = new Card(Suit.Clubs, 5);
         gamestate = game.getGameState();
+        trick = new Trick(Player.NORTH, new Card(Suit.Diamonds, 2), new Card(Suit.Clubs, 4));
+        trump = Trump.Clubs;
 
     }
     @Test
@@ -72,6 +77,11 @@ assertEquals(0, gamestate.getNorth26Cards().size());
 //        assertTrue(fourthCard.equals(gamestate.getSouthHand().get(1)));
 
         assertTrue(gamestate.getStack().size()==48);
+    }
+
+    @Test
+    public void CompareCardsTest(){
+        System.out.println(game.compareCards(trump, trick));
     }
 
 }
