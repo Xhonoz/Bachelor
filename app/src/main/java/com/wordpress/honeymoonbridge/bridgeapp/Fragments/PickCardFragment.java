@@ -127,7 +127,7 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showCardPicked(){
-        secondCardView.setCard(game.getGameState().getSouth26Cards().get(game.getGameState().getNorth26Cards().size()-1));
+        secondCardView.setCard(game.getGameState().getSouth26Cards().get(game.getGameState().getSouth26Cards().size()-1));
     }
 
     private void addCardToOpponentHand() {

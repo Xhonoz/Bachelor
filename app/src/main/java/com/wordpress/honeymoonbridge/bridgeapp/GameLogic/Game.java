@@ -15,7 +15,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 public class Game {
     private GameState gamestate;
     private AIPlayer AI;
-    private TopInLong AIPlayer;
+    private AIPlayer AIPlayer;
 
     public interface Callback {
         // called when the user presses the send button to submit a message
@@ -47,8 +47,29 @@ public class Game {
     public Game(boolean isSouthTurn, AIPlayer aiPlayer) {
         gamestate = new GameState(isSouthTurn);
         AI = aiPlayer;
+    }
+
+    public void startPickingPhase(){
+        if(!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.PICKING)
+            AITakesTurnPicking();
 
     }
+    public void startBiddingPhase(){
+        Log.i("GAME", "startBiddingPhase");
+        if(!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.BIDDING)
+            AiTakesTurnBidding();
+
+    }
+    public void startPlayingPhase(){
+        if(!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.PLAYING)
+            AITakesTurnPlaying();
+
+    }
+
+    public boolean doNext(){
+        return true;
+    }
+
 
     //Picking Phase:
 
@@ -70,29 +91,28 @@ public class Game {
         return null;
     }
 
-    public boolean isLegal(Player player, Card card){
+    public boolean isLegal(Player player, Card card) {
         Trick trick = null;
         Hand hand;
-        if(player.equals(Player.NORTH)){
+        if (player.equals(Player.NORTH)) {
             hand = gamestate.getNorthHand();
-        }else{
+        } else {
             hand = gamestate.getSouthHand();
         }
-        if(gamestate.getTricks().isEmpty()){
+        if (gamestate.getTricks().isEmpty()) {
             return true;
-        }
-        else{
-            trick = gamestate.getTricks().get(gamestate.getTricks().size()-1);
+        } else {
+            trick = gamestate.getTricks().get(gamestate.getTricks().size() - 1);
         }
 
-        if(trick.SecondCard != null){
+        if (trick.SecondCard != null) {
             return true;
-        }else{
+        } else {
             Suit suit = trick.firstCard.getSuit();
 
-            if(card.getSuit().equals(suit) || hand.getCardsOfSuit(suit).isEmpty()){
+            if (card.getSuit().equals(suit) || hand.getCardsOfSuit(suit).isEmpty()) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
 
@@ -101,27 +121,55 @@ public class Game {
 
     }
 
-    public void Play(Card card, Player player){
-        if(gamestate.isSouthTurn() && player.equals(Player.SOUTH) && isLegal(player, card)){
+    public boolean Play(Card card, Player player) {
+        if(card == null)
+            return false;
+        if (gamestate.isSouthTurn() && player.equals(Player.SOUTH) && isLegal(player, card)) {
             gamestate.getSouthHand().removeCard(card);
-           if(gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard != null){
-               gamestate.getTricks().add(new Trick(player,card, null));
-           }else{
-               gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard = card;
+//            Is leading a card
+            if (gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard != null) {
+                gamestate.getTricks().add(new Trick(player, card, null));
+//               Is Playing second card
+            } else {
+                gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard = card;
             }
 
             gamestate.setSouthTurn(false);
+            return true;
         }
 
-        if(!gamestate.isSouthTurn() && player.equals(Player.NORTH) && isLegal(player, card)){
-            if(gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard != null){
-                gamestate.getTricks().add(new Trick(player,card, null));
-            }else{
-                gamestate.getTricks().get(gamestate.getTricks().size()-1).SecondCard = card;
+        if (!gamestate.isSouthTurn() && player.equals(Player.NORTH) && isLegal(player, card)) {
+            gamestate.getNorthHand().removeCard(card);
+//            Is leading a card
+            if (gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard != null) {
+                gamestate.getTricks().add(new Trick(player, card, null));
+//            Is Playing second card
+
+            } else {
+                gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard = card;
             }
-            
+
             gamestate.setSouthTurn(true);
+            return true;
         }
+        return false;
+    }
+
+    public boolean UIPlayCard(Card card) {
+        if (Play(card, Player.SOUTH)) {
+//            TODO: new thread
+            AITakesTurnPlaying();
+            return true;
+
+        }
+        return false;
+    }
+
+    private void AITakesTurnPlaying() {
+        Card card = AI.playCard(gamestate);
+        if (Play(card, Player.NORTH))
+            mCallback.AiPlayedCard(card);
+
     }
 
     public Card UIPickCard(boolean first) {
@@ -148,11 +196,11 @@ public class Game {
                 gamestate.getNorth26Cards().add(se);
                 gamestate.getNorthChoseFirst().add(first);
                 if (first) {
-                    Log.i("GAME", "AI Chose the first card: " + fi  + " and discarded: " + se);
+                    Log.i("GAME", "AI Chose the first card: " + fi + " and discarded: " + se);
                     picked = fi;
                     gamestate.getNorthHand().addCard(fi);
                 } else {
-                    Log.i("GAME", "AI Chose the second card: " + se  + " and discarded: " + fi);
+                    Log.i("GAME", "AI Chose the second card: " + se + " and discarded: " + fi);
                     picked = se;
                     gamestate.getNorthHand().addCard(se);
                 }
@@ -216,7 +264,7 @@ public class Game {
         gamestate.getBiddingHistory().getSouth().add(bid);
 //        TODO: ny tråd
         gamestate.setSouthTurn(false);
-        AiBid();
+        AiTakesTurnBidding();
         return 1;
     }
 
@@ -232,7 +280,7 @@ public class Game {
             addDoubleBid(Player.SOUTH);
             gamestate.setSouthTurn(false);
 //        TODO: ny tråd
-            AiBid();
+            AiTakesTurnBidding();
             return 1;
         }
         return 2;
@@ -251,7 +299,7 @@ public class Game {
             addRedoubleBid(Player.SOUTH);
             gamestate.setSouthTurn(false);
 //        TODO: ny tråd
-            AiBid();
+            AiTakesTurnBidding();
 
             return 1;
         }
@@ -270,18 +318,18 @@ public class Game {
         } else {
             gamestate.setSouthTurn(false);
 //        TODO: ny tråd
-            AiBid();
+            AiTakesTurnBidding();
 
         }
         return true;
     }
 
-    private void AiBid() {
+    private void AiTakesTurnBidding() {
 
         Bid bid = AI.bid(gamestate);
 //        TODO: Add check to if bid is legal
         gamestate.getBiddingHistory().getNorth().add(bid);
-
+        mCallback.AiBid(bid);
         if (bid.isPass())
             if (biddingIsOver()) {
                 mCallback.finishBidding();

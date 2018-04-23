@@ -3,6 +3,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -11,6 +12,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Fragments.BiddingFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PickCardFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PlayFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.TopInLong;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
@@ -50,7 +52,7 @@ public class GameActivity extends AppCompatActivity
         mPlayFragment = new PlayFragment();
 
 
-        game = new Game(true, new TopInLong());
+        game = new Game(false, new TopInLong());
         game.getGameState().getStack().shuffleCardStack();
         game.setCallback(this);
 
@@ -63,8 +65,17 @@ public class GameActivity extends AppCompatActivity
 
         handAdapter = new HandAdapter(new Hand(), (LinearLayout) findViewById(R.id.yourHand), getApplicationContext());
         handAdapter.setCallback(this);
+
+
+
+
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        game.startPickingPhase();
+    }
 
     // Switch UI to the given fragment
     private void switchToFragment(Fragment newFrag) {
@@ -86,18 +97,25 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void AiPlayedCard(Card card) {
+        mPlayFragment.setNorthPlayedCard(card);
+        mPlayFragment.removeCardFromNorthHand();
     }
 
     @Override
     public void finishPicking() {
+        Log.i("GameActivity", "finishPicking");
 //        TODO: check if bidding is enabled
         switchToFragment(mBiddingFragment);
+//        TODO: CHeck prefferences
+        game.startBiddingPhase();
 
     }
 
     @Override
     public void finishBidding() {
         switchToFragment(mPlayFragment);
+//        TODO: CHeck prefferences
+        game.startPlayingPhase();
     }
 
     @Override
@@ -163,6 +181,10 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void clickedCard(Card card) {
-        Toast.makeText(this, card.toString(), Toast.LENGTH_SHORT).show();
+        if(game.getGameState().getPhase() == Phase.PLAYING)
+            if(game.UIPlayCard(card)) {
+                handAdapter.removeCard(card);
+                mPlayFragment.setSouthPlayedCard(card);
+            }
     }
 }

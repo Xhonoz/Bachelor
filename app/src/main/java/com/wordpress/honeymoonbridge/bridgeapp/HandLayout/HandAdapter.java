@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
@@ -79,11 +80,16 @@ public class HandAdapter implements View.OnClickListener{
     }
 
     public void removeCard(Card card) {
-//        TODO: Implement removeCard
-//        handLayout.removeViewAt(posistion);
-//
-//        if (hand) != 0)
-//            fixLast();
+
+      int cardIndex = card.getIndex();
+      hand.removeCard(card);
+      View child = handLayout.findViewById(cardIndex);
+      if(handLayout.getChildCount() > 1 && handLayout.getChildAt(handLayout.getChildCount() - 1).equals(child)) {
+          handLayout.removeView(child);
+          fixLast();
+      }else
+          handLayout.removeView(child);
+
 
 
     }
@@ -106,21 +112,21 @@ public class HandAdapter implements View.OnClickListener{
 
             ImageView view = new ImageView(mContext);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
+                    LinearLayout.LayoutParams.MATCH_PARENT);
             params.weight = 1;
             if (!last) {
 
                 params.setMargins(0, 0, -150, 0);
 
             } else if (hand.getSize() != 1) {
-                fixLast();
+                fixNotLast();
             }
 
 
             view.setLayoutParams(params);
 
 
-            int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
+            int index = card.getIndex();
 
             view.setId(index);
             view.setOnClickListener(this);
@@ -141,21 +147,20 @@ public class HandAdapter implements View.OnClickListener{
 
             ImageView view = new ImageView(mContext);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
+                    LinearLayout.LayoutParams.MATCH_PARENT);
             params.weight = 1;
             if (!last) {
 
                 params.setMargins(0, 0, -150, 0);
 
             } else if (hand.getSize() != 1) {
-                fixLast();
+                fixNotLast();
             }
 
 
             view.setLayoutParams(params);
 
-            int indexCard = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
-
+            int indexCard = card.getIndex();
             view.setId(indexCard);
             view.setOnClickListener(this);
             view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
@@ -166,20 +171,31 @@ public class HandAdapter implements View.OnClickListener{
         }
     }
 
-    private void fixLast() {
+    private void fixNotLast() {
         Log.i("HandAdapter", "Fix last is called");
-        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        params2.weight = 1;
-        params2.setMargins(0, 0, -150, 0);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        params.weight = 1;
+        params.setMargins(0, 0, -150, 0);
 
-        handLayout.getChildAt(handLayout.getChildCount() - 1).setLayoutParams(params2);
+        handLayout.getChildAt(handLayout.getChildCount() - 1).setLayoutParams(params);
 
+    }
+
+    private void fixLast(){
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        params.weight = 1;
+        params.setMargins(0, 0, 0, 0);
+
+        handLayout.getChildAt(handLayout.getChildCount() -1 ).setLayoutParams(params);
     }
 
 
     @Override
     public void onClick(View view) {
+
         if(mCallback != null) {
             int index = view.getId();
             Card card = new Card(index);

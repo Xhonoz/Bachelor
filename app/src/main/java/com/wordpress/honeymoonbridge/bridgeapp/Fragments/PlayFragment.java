@@ -31,9 +31,20 @@ public class PlayFragment extends Fragment {
 
     private OpponentHand opponentHand;
 
+    public void setNorthPlayedCard(Card card) {
+        northPlayedCard.setCard(card);
+    }
+
+    public void setSouthPlayedCard(Card card) {
+        southPlayedCard.setCard(card);
+    }
+
+    public void removeCardFromNorthHand(){
+        opponentHand.removeCard(0);
+    }
 
 
-public interface Callback {
+    public interface Callback {
     // TODO: Update argument type and name
 
 

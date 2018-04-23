@@ -22,6 +22,10 @@ public class Card implements Comparable<Card>{
 
     }
 
+    public int getIndex(){
+        return suit.ordinal() * 13 + cardValue - 2;
+    }
+
     public Suit getSuit() {
         return suit;
     }
