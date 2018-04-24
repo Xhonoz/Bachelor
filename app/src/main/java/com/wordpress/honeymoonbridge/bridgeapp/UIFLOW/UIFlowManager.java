@@ -15,10 +15,11 @@ public class UIFlowManager {
     ArrayList<UIAction> actions;
 
     public boolean next(HandAdapter southHand, Fragment gameFragment){
-        switch(actions.remove(0)){
-            case UIAction.GetNewCards_PICKING:
-
-                break;
-        }
+//        switch(actions.remove(0)){
+//            case UIAction.GetNewCards_PICKING:
+//
+//                break;
+//        }
+        return false;
     }
 }

@@ -7,6 +7,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 
 /**
  * Created by Eier on 09.04.2018.
@@ -49,24 +50,26 @@ public class Game {
         AI = aiPlayer;
     }
 
-    public void startPickingPhase(){
-        if(!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.PICKING)
+    public void startPickingPhase() {
+        if (!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.PICKING)
             AITakesTurnPicking();
 
     }
-    public void startBiddingPhase(){
+
+    public void startBiddingPhase() {
         Log.i("GAME", "startBiddingPhase");
-        if(!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.BIDDING)
+        if (!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.BIDDING)
             AiTakesTurnBidding();
 
     }
-    public void startPlayingPhase(){
-        if(!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.PLAYING)
+
+    public void startPlayingPhase() {
+        if (!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.PLAYING)
             AITakesTurnPlaying();
 
     }
 
-    public boolean doNext(){
+    public boolean doNext() {
         return true;
     }
 
@@ -121,35 +124,78 @@ public class Game {
 
     }
 
+
+    //        Returns true if north wins
+    public boolean compareCards(Trump trump, Card northCard, Card SouthCard) {
+
+
+        switch (trump) {
+            case NoTrump:
+                if (!northCard.getSuit().equals(SouthCard.getSuit()))
+                    return true;
+                if (northCard.getCardValue() > SouthCard.getCardValue())
+                    return true;
+                return false;
+
+            case Diamonds:
+                if (!northCard.getSuit().equals(SouthCard.getSuit()) && !SouthCard.getSuit().equals(Trump.Diamonds))
+                    return true;
+                if (northCard.getSuit().equals(SouthCard.getSuit()) && northCard.getCardValue() > SouthCard.getCardValue())
+                    return true;
+                return false;
+
+            case Clubs:
+
+                if (!northCard.getSuit().equals(SouthCard.getSuit()) && !SouthCard.getSuit().equals(Trump.Clubs))
+                    return true;
+                if (northCard.getSuit().equals(SouthCard.getSuit()) && northCard.getCardValue() > SouthCard.getCardValue())
+                    return true;
+                return false;
+
+            case Hearts:
+
+                if (!northCard.getSuit().equals(SouthCard.getSuit()) && !SouthCard.getSuit().equals(Trump.Hearts))
+                    return true;
+                if (northCard.getSuit().equals(SouthCard.getSuit()) && northCard.getCardValue() > SouthCard.getCardValue())
+                    return true;
+                return false;
+
+            case Spades:
+
+                if (!northCard.getSuit().equals(SouthCard.getSuit()) && !SouthCard.getSuit().equals(Trump.Spades))
+                    return true;
+                if (northCard.getSuit().equals(SouthCard.getSuit()) && northCard.getCardValue() > SouthCard.getCardValue())
+                    return true;
+                return false;
+        }
+
+        return true;
+
+    }
+
     public boolean Play(Card card, Player player) {
-        if(card == null)
+        if (card == null)
             return false;
         if (gamestate.isSouthTurn() && player.equals(Player.SOUTH) && isLegal(player, card)) {
             gamestate.getSouthHand().removeCard(card);
-//            Is leading a card
             if (gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard != null) {
                 gamestate.getTricks().add(new Trick(player, card, null));
-//               Is Playing second card
+                gamestate.setSouthTurn(false);
             } else {
                 gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard = card;
+                gamestate.setSouthTurn(compareCards(gamestate.getTrump(), card, gamestate.getTricks().get(gamestate.getTricks().size() - 1).firstCard));
             }
-
-            gamestate.setSouthTurn(false);
             return true;
         }
 
         if (!gamestate.isSouthTurn() && player.equals(Player.NORTH) && isLegal(player, card)) {
-            gamestate.getNorthHand().removeCard(card);
-//            Is leading a card
             if (gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard != null) {
                 gamestate.getTricks().add(new Trick(player, card, null));
-//            Is Playing second card
-
+                gamestate.setSouthTurn(true);
             } else {
                 gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard = card;
+                gamestate.setSouthTurn(compareCards(gamestate.getTrump(), gamestate.getTricks().get(gamestate.getTricks().size() - 1).firstCard, card));
             }
-
-            gamestate.setSouthTurn(true);
             return true;
         }
         return false;
@@ -171,6 +217,7 @@ public class Game {
             mCallback.AiPlayedCard(card);
 
     }
+
 
     public Card UIPickCard(boolean first) {
         if (gamestate.getPhase().equals(Phase.PICKING) && gamestate.isSouthTurn()) {

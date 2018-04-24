@@ -52,7 +52,7 @@ public class GameActivity extends AppCompatActivity
         mPlayFragment = new PlayFragment();
 
 
-        game = new Game(false, new TopInLong());
+        game = new Game(true, new TopInLong());
         game.getGameState().getStack().shuffleCardStack();
         game.setCallback(this);
 
