@@ -30,6 +30,8 @@ public class HandAdapter implements View.OnClickListener{
 
     Callback mCallback;
 
+    private final int MARGIN_RIGHT = -200;
+
     public interface Callback{
         void clickedCard(Card card);
     }
@@ -116,7 +118,7 @@ public class HandAdapter implements View.OnClickListener{
             params.weight = 1;
             if (!last) {
 
-                params.setMargins(0, 0, -150, 0);
+                params.setMargins(0, 0, MARGIN_RIGHT, 0);
 
             } else if (hand.getSize() != 1) {
                 fixNotLast();
@@ -151,7 +153,7 @@ public class HandAdapter implements View.OnClickListener{
             params.weight = 1;
             if (!last) {
 
-                params.setMargins(0, 0, -150, 0);
+                params.setMargins(0, 0, MARGIN_RIGHT, 0);
 
             } else if (hand.getSize() != 1) {
                 fixNotLast();
@@ -176,7 +178,7 @@ public class HandAdapter implements View.OnClickListener{
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.MATCH_PARENT);
         params.weight = 1;
-        params.setMargins(0, 0, -150, 0);
+        params.setMargins(0, 0, MARGIN_RIGHT, 0);
 
         handLayout.getChildAt(handLayout.getChildCount() - 1).setLayoutParams(params);
 
