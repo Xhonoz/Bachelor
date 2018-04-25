@@ -6,7 +6,6 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -35,78 +34,52 @@ public class TopInLong implements AIPlayer {
 
 //        First time playing
         if (state.getTricks().isEmpty() || state.getTricks().get(0).SecondCard == null) {
-            longest = handSpade.size();
-            color = Suit.Spades;
-            if (longest <= handHeart.size()) {
 
-                if(longest == handHeart.size()){
-                    for(int i = 0; i < handHeart.size(); i++){
-                        if(handHeart.get(i).getCardValue() > handSpade.get(i).getCardValue()){
-                            longest = handHeart.size();
-                            color = Suit.Hearts;
-                            break;
+            ArrayList<ArrayList<Card>> suits = hand.getSuitArrays();
+                       longest = suits.get(0).size();
+            int longestIndex = 0;
+
+            for (int i = 1; i < suits.size(); i++) {
+                ArrayList<Card> current = suits.get(i);
+                if (!current.isEmpty()) {
+                    if (longest <= current.size()) {
+                        if (longest == current.size()) {
+                            for (int j = 0; j < current.size(); j++) {
+                                if (current.get(j).getCardValue() > suits.get(longestIndex).get(j).getCardValue()) {
+                                    longest = current.size();
+                                    longestIndex = i;
+                                    break;
+                                } else if (current.get(j).getCardValue() < suits.get(longestIndex).get(j).getCardValue())
+                                    break;
+                            }
+                        } else {
+                            longest = current.size();
+                            longestIndex = i;
                         }
                     }
 
-                }else {
-                    longest = handHeart.size();
-                    color = Suit.Hearts;
                 }
             }
+            color = Suit.values()[longestIndex];
 
-            if (longest <= handDiamond.size()) {
-                if(longest == handDiamond.size()){
-                    for(int i = 0; i < handDiamond.size(); i++){
-                        if(handDiamond.get(i).getCardValue() > handHeart.get(i).getCardValue()){
-                            longest = handDiamond.size();
-                            color = Suit.Diamonds;
-                            break;
-                        }
-                    }
-
-                }else {
-                    longest = handDiamond.size();
-                    color = Suit.Diamonds;
-                }
-            }
-            if (longest <= handClub.size()) {
-                if(longest == handHeart.size()){
-                    for(int i = 0; i < handHeart.size(); i++){
-                        if(handHeart.get(i).getCardValue() > handSpade.get(i).getCardValue()){
-                            longest = handHeart.size();
-                            color = Suit.Hearts;
-                            break;
-                        }
-                    }
-
-                }else {
-                    longest = handHeart.size();
-                    color = Suit.Hearts;
-                }
-            }
         }
+//        If playing first card
+        if (trick == null || trick.SecondCard != null) {
+            if (!hand.getCardsOfSuit(color).isEmpty())
+                return hand.getCardsOfSuit(color).get(0);
+            else {
 
-        if (trick == null || trick.SecondCard != null){
-        if (!hand.getCardsOfSuit(color).isEmpty())
-            return hand.getCardsOfSuit(color).get(0);
-        else {
-             int highest = 0;
+                ArrayList<ArrayList<Card>> suits = hand.getSuitArrays();
+
+                int highest = 0;
                 Card next = null;
-                if (!handClub.isEmpty() && handClub.get(0).getCardValue() > highest) {
-                    highest = handClub.get(0).getCardValue();
-                    next = handClub.get(0);
-                }
-                if ((!handSpade.isEmpty()) && (handSpade.get(0).getCardValue() > highest)) {
-                    highest = handSpade.get(0).getCardValue();
-                    next = handSpade.get(0);
-                }
-                if ((!handDiamond.isEmpty()) && (handDiamond.get(0).getCardValue() > highest)) {
-                    highest = handDiamond.get(0).getCardValue();
-                    next = handDiamond.get(0);
-                }
-                if ((!handHeart.isEmpty()) && (handHeart.get(0).getCardValue() > highest)) {
-                    highest = handHeart.get(0).getCardValue();
-                    next = handHeart.get(0);
+
+                for(int i = 0; i < suits.size(); i++) {
+                    ArrayList<Card> current = suits.get(i);
+                    if (!current.isEmpty() && current.get(0).getCardValue() > highest) {
+                        highest = current.get(0).getCardValue();
+                        next = current.get(0);
+                    }
                 }
 
                 return next;
@@ -114,55 +87,54 @@ public class TopInLong implements AIPlayer {
 
         }
 
-
-        if(trick.SecondCard ==null)
-
-    {
-        Card opponent = trick.firstCard;
-        if (hand.getCardsOfSuit(opponent.getSuit()).size() != 0) {
-            if (hand.getCardsOfSuit(opponent.getSuit()).get(0).getCardValue() > opponent.getCardValue()) {
-                return hand.getCardsOfSuit(opponent.getSuit()).get(0);
-            } else {
-                if (hand.getCardsOfSuit(opponent.getSuit()).size() == 1)
-                    return hand.getCardsOfSuit(opponent.getSuit()).get(0);
-                return hand.getCardsOfSuit(opponent.getSuit()).get(hand.getCardsOfSuit(opponent.getSuit()).size() - 1);
-            }
-        } else {
-            if(trump.equals(Trump.NoTrump) || hand.getCardsOfSuit(getSuitFromTrump(trump)).isEmpty()) {
-                int smallest = 14;
-                Card next = null;
-                if (!handClub.isEmpty() && handClub.get(handClub.size() - 1).getCardValue() < smallest) {
-                    smallest = handClub.get(handClub.size() - 1).getCardValue();
-                    next = handClub.get(handClub.size() - 1);
+//        If playing second card
+        if (trick.SecondCard == null) {
+            Card opponent = trick.firstCard;
+            ArrayList<Card> sameSuitCards = hand.getCardsOfSuit(opponent.getSuit());
+//            If has the suit
+            if (!sameSuitCards.isEmpty()) {
+//                If can win
+                if (sameSuitCards.get(0).getCardValue() > opponent.getCardValue()) {
+                    for(int i = sameSuitCards.size()-1; i >= 0; i--) {
+                        if(sameSuitCards.get(i).getCardValue() > opponent.getCardValue())
+                            return sameSuitCards.get(i);
+                    }
                 }
-                if ((!handSpade.isEmpty()) && (handSpade.get(handSpade.size() - 1).getCardValue() > smallest)) {
-                    smallest = handSpade.get(handSpade.size() - 1).getCardValue();
-                    next = handSpade.get(handSpade.size() - 1);
-                }
-                if ((!handDiamond.isEmpty()) && (handDiamond.get(handDiamond.size() - 1).getCardValue() > smallest)) {
-                    smallest = handDiamond.get(handDiamond.size() - 1).getCardValue();
-                    next = handDiamond.get(handDiamond.size() - 1);
-                }
-                if ((!handHeart.isEmpty()) && (handHeart.get(handHeart.size() - 1).getCardValue() > smallest)) {
-                    smallest = handHeart.get(handHeart.size() - 1).getCardValue();
-                    next = handHeart.get(handHeart.size() - 1);
-                }
-
-                return next;
-            }else{
-                return hand.getCardsOfSuit(getSuitFromTrump(trump)).get(hand.getCardsOfSuit(getSuitFromTrump(trump)).size()-1);
+//                If can not win
+                    return sameSuitCards.get(sameSuitCards.size() - 1);
             }
 
+                if (trump.equals(Trump.NoTrump) || hand.getCardsOfSuit(getSuitFromTrump(trump)).isEmpty()) {
+                    int smallest = 15;
+                    Card next = null;
 
-        }
-    }
+                    ArrayList<ArrayList<Card>> suits = hand.getSuitArrays();
+
+                    for(ArrayList<Card> suit: suits) {
+                        if(!suit.isEmpty()) {
+                            Card current = suit.get(suit.size() - 1);
+                            if (current.getCardValue() < smallest) {
+                                smallest = current.getCardValue();
+                                next = current;
+                            }
+                        }
+                    }
+
+                    return next;
+                } else {
+                    return hand.getCardsOfSuit(getSuitFromTrump(trump)).get(hand.getCardsOfSuit(getSuitFromTrump(trump)).size() - 1);
+                }
+
+
+            }
+
 
 
         return null;
-}
+    }
 
-    public Suit getSuitFromTrump(Trump trump){
-        switch(trump){
+    public Suit getSuitFromTrump(Trump trump) {
+        switch (trump) {
             case Spades:
                 return Suit.Spades;
             case Hearts:
@@ -177,8 +149,8 @@ public class TopInLong implements AIPlayer {
         return null;
     }
 
-    public Trump getTrumpFromSuit(Suit suit){
-        switch(suit) {
+    public Trump getTrumpFromSuit(Suit suit) {
+        switch (suit) {
             case Spades:
                 return Trump.Spades;
             case Hearts:
@@ -197,19 +169,19 @@ public class TopInLong implements AIPlayer {
         return ((Card) state.getStack().get(0)).getCardValue() > 10;
     }
 
-    private boolean isLegalBid(Bid bid, GameState gamestate){
-        if((!gamestate.getBiddingHistory().isSouthEmpty())) {
+    private boolean isLegalBid(Bid bid, GameState gamestate) {
+        if ((!gamestate.getBiddingHistory().isSouthEmpty())) {
 
-                Bid lastBid = gamestate.getBiddingHistory().getLastSouthBid();
+            Bid lastBid = gamestate.getBiddingHistory().getLastSouthBid();
 
             int lastLevel = lastBid.getLevel();
             int lastTrumpInt = lastBid.getTrumpInt();
             int newLevel = bid.getLevel();
             int newTrumpInt = bid.getTrumpInt();
 
-            if(newLevel > lastLevel)
+            if (newLevel > lastLevel)
                 return true;
-            if((newLevel == lastLevel) && (newTrumpInt > lastTrumpInt))
+            if ((newLevel == lastLevel) && (newTrumpInt > lastTrumpInt))
                 return true;
 
             return false;
@@ -219,50 +191,49 @@ public class TopInLong implements AIPlayer {
 
     @Override
     public Bid bid(GameState state) {
-         Hand hand = state.getNorthHand();
-         int hcp = hand.hcp();
-         if(hcp >= 10 && hcp <= 12){
-             if(hand.isBalancedHand()) {
-                 if(isLegalBid(new Bid(1, Trump.NoTrump),state))
-                 return new Bid(1, Trump.NoTrump);
-             }
-             if(isLegalBid(new Bid(1, getTrumpFromSuit(hand.longestSuit())), state))
-             return new Bid(1, getTrumpFromSuit(hand.longestSuit()));
-         }
-         if(hcp >= 13 && hcp <= 15){
-             if(hand.isBalancedHand() && isLegalBid(new Bid(1, Trump.NoTrump),state))
-             return new Bid(1, Trump.NoTrump);
-             if(isLegalBid(new Bid(2, getTrumpFromSuit(hand.longestSuit())), state))
-             return new Bid(2, getTrumpFromSuit(hand.longestSuit()));
-         }
-
-        if(hcp >= 14 && hcp <= 17){
-            if(hand.isBalancedHand() && isLegalBid(new Bid(2, Trump.NoTrump),state))
-                return new Bid(2, Trump.NoTrump);
-            if(isLegalBid(new Bid(2, getTrumpFromSuit(hand.longestSuit())),state))
+        Hand hand = state.getNorthHand();
+        int hcp = hand.hcp();
+        if (hcp >= 10 && hcp <= 12) {
+            if (hand.isBalancedHand()) {
+                if (isLegalBid(new Bid(1, Trump.NoTrump), state))
+                    return new Bid(1, Trump.NoTrump);
+            }
+            if (isLegalBid(new Bid(1, getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(1, getTrumpFromSuit(hand.longestSuit()));
+        }
+        if (hcp >= 13 && hcp <= 15) {
+            if (hand.isBalancedHand() && isLegalBid(new Bid(1, Trump.NoTrump), state))
+                return new Bid(1, Trump.NoTrump);
+            if (isLegalBid(new Bid(2, getTrumpFromSuit(hand.longestSuit())), state))
                 return new Bid(2, getTrumpFromSuit(hand.longestSuit()));
         }
-        if(hcp >= 18 &&  hcp <=23 ){
-            if(hand.isBalancedHand() && isLegalBid(new Bid(3, Trump.NoTrump), state))
+
+        if (hcp >= 14 && hcp <= 17) {
+            if (hand.isBalancedHand() && isLegalBid(new Bid(2, Trump.NoTrump), state))
+                return new Bid(2, Trump.NoTrump);
+            if (isLegalBid(new Bid(2, getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(2, getTrumpFromSuit(hand.longestSuit()));
+        }
+        if (hcp >= 18 && hcp <= 23) {
+            if (hand.isBalancedHand() && isLegalBid(new Bid(3, Trump.NoTrump), state))
                 return new Bid(3, Trump.NoTrump);
-            if(isLegalBid(new Bid(4, getTrumpFromSuit(hand.longestSuit())), state))
+            if (isLegalBid(new Bid(4, getTrumpFromSuit(hand.longestSuit())), state))
                 return new Bid(4, getTrumpFromSuit(hand.longestSuit()));
         }
 
-        if(hcp >= 24 && hcp <=29){
-            if(hand.isBalancedHand() && isLegalBid(new Bid(4, Trump.NoTrump), state))
+        if (hcp >= 24 && hcp <= 29) {
+            if (hand.isBalancedHand() && isLegalBid(new Bid(4, Trump.NoTrump), state))
                 return new Bid(4, Trump.NoTrump);
-            if(isLegalBid(new Bid(6, getTrumpFromSuit(hand.longestSuit())), state))
+            if (isLegalBid(new Bid(6, getTrumpFromSuit(hand.longestSuit())), state))
                 return new Bid(6, getTrumpFromSuit(hand.longestSuit()));
         }
 
-        if(hcp >= 30){
-            if(hand.isBalancedHand() && isLegalBid(new Bid(7, Trump.NoTrump), state))
+        if (hcp >= 30) {
+            if (hand.isBalancedHand() && isLegalBid(new Bid(7, Trump.NoTrump), state))
                 return new Bid(7, Trump.NoTrump);
-            if(isLegalBid(new Bid(7, getTrumpFromSuit(hand.longestSuit())), state))
+            if (isLegalBid(new Bid(7, getTrumpFromSuit(hand.longestSuit())), state))
                 return new Bid(7, getTrumpFromSuit(hand.longestSuit()));
         }
-
 
 
         return new Bid();

@@ -7,9 +7,9 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
  */
 
 public class Trick {
-    Player lead;
-    Card firstCard;
-    Card SecondCard;
+    public Player lead;
+    public Card firstCard;
+    public Card SecondCard;
 
     public Trick(Player lead, Card firstCard, Card secondCard) {
         this.lead = lead;

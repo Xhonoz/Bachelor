@@ -14,6 +14,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PlayFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.TopInLong;
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Trick;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
@@ -96,9 +97,12 @@ public class GameActivity extends AppCompatActivity
     }
 
     @Override
-    public void AiPlayedCard(Card card) {
+    public void AiPlayedCard(Card card, boolean first) {
         mPlayFragment.setNorthPlayedCard(card);
         mPlayFragment.removeCardFromNorthHand();
+        if(first)
+            mPlayFragment.setSouthPlayedCard(null);
+
     }
 
     @Override
@@ -114,8 +118,6 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void finishBidding() {
         switchToFragment(mPlayFragment);
-//        TODO: CHeck prefferences
-        game.startPlayingPhase();
     }
 
     @Override
@@ -181,10 +183,17 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void clickedCard(Card card) {
-        if(game.getGameState().getPhase() == Phase.PLAYING)
-            if(game.UIPlayCard(card)) {
+        if(game.getGameState().getPhase() == Phase.PLAYING) {
+            if (game.UIPlayCard(card)) {
                 handAdapter.removeCard(card);
                 mPlayFragment.setSouthPlayedCard(card);
             }
+            if (game.getGameState().getTricks().get(game.getGameState().getTricks().size() - 1).SecondCard == null)
+                mPlayFragment.setNorthPlayedCard(null);
+        }
+    }
+
+    public void onClickScreen(View view) {
+        game.next();
     }
 }

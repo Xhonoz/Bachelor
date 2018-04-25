@@ -22,6 +22,16 @@ public class Hand {
         handHeart = new ArrayList<>();
     }
 
+    public ArrayList<ArrayList<Card>> getSuitArrays(){
+
+        ArrayList<ArrayList<Card>> a =  new ArrayList<ArrayList<Card>>();
+        a.add(handClub);
+        a.add(handDiamond);
+        a.add(handHeart);
+        a.add(handSpade);
+        return a;
+    }
+
     public Hand(ArrayList<Card> handClub, ArrayList<Card> handSpade, ArrayList<Card> handDiamond, ArrayList<Card> handHeart) {
         this.handClub = handClub;
         this.handSpade = handSpade;
@@ -100,42 +110,35 @@ public class Hand {
     }
 
     public Card removeCard(Card card) {
-        Card removed = null;
+
+        Log.i("Hand", "Trying to remove " + card);
 
         if (card.getSuit().equals(Suit.Hearts)) {
 
-            for (int i = 0; i < handHeart.size(); i++) {
-                if (handHeart.get(0).equals(card))
-                    removed = handHeart.remove(i);
-            }
+            if(handHeart.remove(card))
+                return card;
 
         }
         if (card.getSuit().equals(Suit.Clubs)) {
 
-            for (int i = 0; i < handClub.size(); i++) {
-                if (handClub.get(0).equals(card))
-                    removed = handClub.remove(i);
-            }
+           if(handClub.remove(card))
+               return card;
 
         }
         if (card.getSuit().equals(Suit.Spades)) {
 
-            for (int i = 0; i < handSpade.size(); i++) {
-                if (handSpade.get(0).equals(card))
-                    removed = handSpade.remove(i);
-            }
+            if(handSpade.remove(card))
+                return card;
 
         }
         if (card.getSuit().equals(Suit.Diamonds)) {
 
-            for (int i = 0; i < handDiamond.size(); i++) {
-                if (handDiamond.get(0).equals(card))
-                    removed = handDiamond.remove(i);
-            }
+          if(handDiamond.remove(card))
+                  return card;
 
         }
+        return null;
 
-        return removed;
     }
 
     public ArrayList<Card> getSortedHand(Trump trump) {
@@ -534,5 +537,27 @@ return hcp;
         }
 
         return color;
+    }
+
+    @Override
+    public String toString() {
+        String str = "";
+        ArrayList<Card> cards = getCardsOfSuit(Suit.Clubs);
+        for(Card c : cards)
+            str += (c + " ");
+        str += "\n";
+        cards = getCardsOfSuit(Suit.Diamonds);
+        for(Card c : cards)
+            str += (c + " ");
+        str += "\n";
+        cards = getCardsOfSuit(Suit.Hearts);
+        for(Card c : cards)
+            str += (c + " ");
+        str += "\n";
+        cards = getCardsOfSuit(Suit.Spades);
+        for(Card c : cards)
+            str += (c + " ");
+        str += "\n";
+        return str;
     }
 }

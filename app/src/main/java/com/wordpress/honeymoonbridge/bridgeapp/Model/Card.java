@@ -33,9 +33,23 @@ public class Card implements Comparable<Card>{
     public int getCardValue() {
         return cardValue;
     }
+
+
+
     public boolean equals(Card card){
-        return this.suit == (card.suit) && this.cardValue == card.cardValue;
+        if (card == null) return false;
+        if (card == this) return true;
+        return (this.suit == card.getSuit()) && (this.cardValue == card.getCardValue());
     }
+
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj == this) return true;
+        if (!(obj instanceof Card)) return false;
+        Card o = (Card) obj;
+        return (this.suit == o.getSuit()) && (this.cardValue == o.getCardValue());
+    }
+
 
     @Override
     public int compareTo(Card card) {
@@ -45,6 +59,27 @@ public class Card implements Comparable<Card>{
 
     @Override
     public String toString(){
-        return "" + this.getSuit() + " " + this.getCardValue();
+        String str = "";
+        switch(suit){
+
+            case Clubs:
+                str = "♣";
+                break;
+            case Diamonds:
+                str = "♦";
+                break;
+
+
+            case Hearts:
+                str = "♥";
+                break;
+
+            case Spades:
+                str = "♠";
+                break;
+
+        }
+        str += cardValue;
+        return str;
     }
 }

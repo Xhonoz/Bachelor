@@ -116,9 +116,11 @@ public class ChooseCardActivity extends AppCompatActivity implements Game.Callba
     }
 
     @Override
-    public void AiPlayedCard(Card card) {
+    public void AiPlayedCard(Card card, boolean first) {
 
     }
+
+
 
     @Override
     public void finishBidding() {
