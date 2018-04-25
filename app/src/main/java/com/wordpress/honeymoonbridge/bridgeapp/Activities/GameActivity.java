@@ -1,9 +1,12 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -70,6 +73,31 @@ public class GameActivity extends AppCompatActivity
 
 
 
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.item1:
+                return true;
+
+            case R.id.item2:
+                Intent i = new Intent(GameActivity.this, SettingsActivity.class);
+                startActivity(i);
+                return true;
+
+            case R.id.item3:
+                Toast toast2 = Toast.makeText(this, "Help clicked", Toast.LENGTH_SHORT);
+                toast2.show();
+                return true;
+
+            default:
+                return true;
+        }
     }
 
     @Override
