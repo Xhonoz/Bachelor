@@ -18,6 +18,7 @@ public class GameState {
     private boolean isSouthTurn;
     private Phase phase;
     private Trump trump;
+    private Player dealer;
 
     private ArrayList<Card> north26Cards;
     private ArrayList<Boolean> northChoseFirst;
@@ -34,6 +35,8 @@ public class GameState {
 
     private CardStack stack;
 
+
+
     public GameState(boolean isSouthTurn) {
         this.isSouthTurn = isSouthTurn;
         this.north26Cards = new ArrayList<>();
@@ -47,6 +50,19 @@ public class GameState {
         this.stack = new CardStack();
         phase = Phase.PICKING;
         trump = Trump.NoTrump;
+
+        if(isSouthTurn)
+            dealer = Player.NORTH;
+        else
+            dealer = Player.SOUTH;
+    }
+
+    public Player getDealer() {
+        return dealer;
+    }
+
+    public void setDealer(Player dealer) {
+        this.dealer = dealer;
     }
 
     public void setSouthTurn(boolean southTurn) {

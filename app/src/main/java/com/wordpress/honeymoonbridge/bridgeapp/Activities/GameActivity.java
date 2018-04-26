@@ -139,7 +139,6 @@ public class GameActivity extends AppCompatActivity
 //        TODO: check if bidding is enabled
         switchToFragment(mBiddingFragment);
 //        TODO: CHeck prefferences
-        game.startBiddingPhase();
 
     }
 

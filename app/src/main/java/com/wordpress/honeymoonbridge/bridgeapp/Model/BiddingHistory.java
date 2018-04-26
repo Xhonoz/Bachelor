@@ -1,5 +1,7 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Model;
 
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
+
 import java.util.ArrayList;
 
 /**
@@ -24,6 +26,15 @@ public class BiddingHistory {
     public ArrayList<Bid> getSouth() {
         return South;
     }
+
+    public Bid getLastBid(Player player){
+        if(player == Player.NORTH && !North.isEmpty())
+            return North.get(North.size()-1);
+        if(player == Player.SOUTH && !South.isEmpty())
+            return South.get(South.size()-1);
+        return null;
+    }
+
 
     public boolean isNorthEmpty(){
         return North.isEmpty();

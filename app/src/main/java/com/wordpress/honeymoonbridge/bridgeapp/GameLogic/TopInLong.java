@@ -104,7 +104,7 @@ public class TopInLong implements AIPlayer {
                     return sameSuitCards.get(sameSuitCards.size() - 1);
             }
 
-                if (trump.equals(Trump.NoTrump) || hand.getCardsOfSuit(getSuitFromTrump(trump)).isEmpty()) {
+                if (trump.equals(Trump.NoTrump) || hand.getCardsOfSuit(Suit.getSuitFromTrump(trump)).isEmpty()) {
                     int smallest = 15;
                     Card next = null;
 
@@ -122,7 +122,7 @@ public class TopInLong implements AIPlayer {
 
                     return next;
                 } else {
-                    return hand.getCardsOfSuit(getSuitFromTrump(trump)).get(hand.getCardsOfSuit(getSuitFromTrump(trump)).size() - 1);
+                    return hand.getCardsOfSuit(Suit.getSuitFromTrump(trump)).get(hand.getCardsOfSuit(Suit.getSuitFromTrump(trump)).size() - 1);
                 }
 
 
@@ -133,35 +133,6 @@ public class TopInLong implements AIPlayer {
         return null;
     }
 
-    public Suit getSuitFromTrump(Trump trump) {
-        switch (trump) {
-            case Spades:
-                return Suit.Spades;
-            case Hearts:
-                return Suit.Hearts;
-            case Clubs:
-                return Suit.Clubs;
-            case Diamonds:
-                return Suit.Diamonds;
-            case NoTrump:
-                return null;
-        }
-        return null;
-    }
-
-    public Trump getTrumpFromSuit(Suit suit) {
-        switch (suit) {
-            case Spades:
-                return Trump.Spades;
-            case Hearts:
-                return Trump.Hearts;
-            case Clubs:
-                return Trump.Clubs;
-            case Diamonds:
-                return Trump.Diamonds;
-        }
-        return null;
-    }
 
 
     @Override
@@ -198,41 +169,41 @@ public class TopInLong implements AIPlayer {
                 if (isLegalBid(new Bid(1, Trump.NoTrump), state))
                     return new Bid(1, Trump.NoTrump);
             }
-            if (isLegalBid(new Bid(1, getTrumpFromSuit(hand.longestSuit())), state))
-                return new Bid(1, getTrumpFromSuit(hand.longestSuit()));
+            if (isLegalBid(new Bid(1, Trump.getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(1, Trump.getTrumpFromSuit(hand.longestSuit()));
         }
         if (hcp >= 13 && hcp <= 15) {
             if (hand.isBalancedHand() && isLegalBid(new Bid(1, Trump.NoTrump), state))
                 return new Bid(1, Trump.NoTrump);
-            if (isLegalBid(new Bid(2, getTrumpFromSuit(hand.longestSuit())), state))
-                return new Bid(2, getTrumpFromSuit(hand.longestSuit()));
+            if (isLegalBid(new Bid(2, Trump.getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(2, Trump.getTrumpFromSuit(hand.longestSuit()));
         }
 
         if (hcp >= 14 && hcp <= 17) {
             if (hand.isBalancedHand() && isLegalBid(new Bid(2, Trump.NoTrump), state))
                 return new Bid(2, Trump.NoTrump);
-            if (isLegalBid(new Bid(2, getTrumpFromSuit(hand.longestSuit())), state))
-                return new Bid(2, getTrumpFromSuit(hand.longestSuit()));
+            if (isLegalBid(new Bid(2, Trump.getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(2, Trump.getTrumpFromSuit(hand.longestSuit()));
         }
         if (hcp >= 18 && hcp <= 23) {
             if (hand.isBalancedHand() && isLegalBid(new Bid(3, Trump.NoTrump), state))
                 return new Bid(3, Trump.NoTrump);
-            if (isLegalBid(new Bid(4, getTrumpFromSuit(hand.longestSuit())), state))
-                return new Bid(4, getTrumpFromSuit(hand.longestSuit()));
+            if (isLegalBid(new Bid(4, Trump.getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(4, Trump.getTrumpFromSuit(hand.longestSuit()));
         }
 
         if (hcp >= 24 && hcp <= 29) {
             if (hand.isBalancedHand() && isLegalBid(new Bid(4, Trump.NoTrump), state))
                 return new Bid(4, Trump.NoTrump);
-            if (isLegalBid(new Bid(6, getTrumpFromSuit(hand.longestSuit())), state))
-                return new Bid(6, getTrumpFromSuit(hand.longestSuit()));
+            if (isLegalBid(new Bid(6, Trump.getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(6, Trump.getTrumpFromSuit(hand.longestSuit()));
         }
 
         if (hcp >= 30) {
             if (hand.isBalancedHand() && isLegalBid(new Bid(7, Trump.NoTrump), state))
                 return new Bid(7, Trump.NoTrump);
-            if (isLegalBid(new Bid(7, getTrumpFromSuit(hand.longestSuit())), state))
-                return new Bid(7, getTrumpFromSuit(hand.longestSuit()));
+            if (isLegalBid(new Bid(7, Trump.getTrumpFromSuit(hand.longestSuit())), state))
+                return new Bid(7, Trump.getTrumpFromSuit(hand.longestSuit()));
         }
 
 
