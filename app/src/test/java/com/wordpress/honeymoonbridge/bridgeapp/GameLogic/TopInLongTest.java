@@ -1,14 +1,13 @@
 package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 
+import com.wordpress.honeymoonbridge.bridgeapp.AI.AIPlayer;
+import com.wordpress.honeymoonbridge.bridgeapp.AI.TopInLong;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
-import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Carmen on 17.04.2018.

@@ -22,9 +22,9 @@ public class ResultActivity extends AppCompatActivity {
         playAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(ResultActivity.this, ChooseCardActivity.class);
+//                Intent i = new Intent(ResultActivity.this, ChooseCardActivity.class);
 
-                startActivity(i);
+//                startActivity(i);
             }
         });
 

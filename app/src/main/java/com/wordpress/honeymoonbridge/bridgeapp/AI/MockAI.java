@@ -1,5 +1,6 @@
-package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
+package com.wordpress.honeymoonbridge.bridgeapp.AI;
 
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.GameState;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 

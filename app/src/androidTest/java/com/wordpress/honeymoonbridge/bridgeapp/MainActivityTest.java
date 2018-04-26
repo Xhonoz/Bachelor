@@ -3,7 +3,6 @@ package com.wordpress.honeymoonbridge.bridgeapp;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 
-import com.wordpress.honeymoonbridge.bridgeapp.Activities.BiddingActivity;
 import com.wordpress.honeymoonbridge.bridgeapp.Activities.MainActivity;
 import com.wordpress.honeymoonbridge.bridgeapp.Activities.SettingsActivity;
 

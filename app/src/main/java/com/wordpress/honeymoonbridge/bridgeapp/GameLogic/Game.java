@@ -2,10 +2,15 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 
 import android.util.Log;
 
+import com.wordpress.honeymoonbridge.bridgeapp.AI.AIPlayer;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Contract;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Double;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Pass;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.ReDouble;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 
@@ -15,7 +20,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 
 public class Game {
     private GameState gamestate;
-    private AIPlayer AI;
+    private com.wordpress.honeymoonbridge.bridgeapp.AI.AIPlayer AI;
     private AIPlayer AIPlayer;
     private int southTricks = 0;
 
@@ -58,24 +63,14 @@ public class Game {
     }
 
     public void startBiddingPhase() {
-        gamestate.setPhase(Phase.BIDDING);
-        if (gamestate.getDealer() == Player.NORTH)
-            gamestate.setSouthTurn(false);
-        else
-            gamestate.setSouthTurn(true);
-        if (!gamestate.isSouthTurn())
+        Log.i("GAME", "startBiddingPhase");
+        if (!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.BIDDING)
             AiTakesTurnBidding();
 
     }
 
     public void startPlayingPhase() {
         gamestate.setPhase(Phase.PLAYING);
-//        TODO: Do properly
-        Trump trump = gamestate.getBiddingHistory().getLastBid(Player.NORTH).getTrump();
-        Log.i("GAME", "Setting trump to: " + trump);
-        gamestate.setTrump(trump);
-        if (!gamestate.isSouthTurn())
-            AITakesTurnPlaying();
 
     }
 
@@ -138,23 +133,48 @@ public class Game {
     //        Returns true if firstCard wins
     public boolean compareCards(Trump trump, Card firstCard, Card secondCard) {
 
-        Log.i("GAME", "Comparing cards: " + firstCard + " and " + secondCard + " with Trump: " + trump);
 
+        switch (trump) {
+            case NoTrump:
+                if (!firstCard.getSuit().equals(secondCard.getSuit()))
+                    return true;
+                if (firstCard.getCardValue() > secondCard.getCardValue())
+                    return true;
+                return false;
 
-        if (trump == Trump.NoTrump) {
-            if (!firstCard.getSuit().equals(secondCard.getSuit()))
-                return true;
-            if (firstCard.getCardValue() > secondCard.getCardValue())
-                return true;
-            return false;
+            case Diamonds:
+                if (!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Diamonds))
+                    return true;
+                if (firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
+                    return true;
+                return false;
+
+            case Clubs:
+
+                if (!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Clubs))
+                    return true;
+                if (firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
+                    return true;
+                return false;
+
+            case Hearts:
+
+                if (!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Hearts))
+                    return true;
+                if (firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
+                    return true;
+                return false;
+
+            case Spades:
+
+                if (!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Spades))
+                    return true;
+                if (firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
+                    return true;
+                return false;
         }
-        if (!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Suit.getSuitFromTrump(trump)))
-            return true;
-        if (firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
-            return true;
 
-        return false;
-
+        return true;
 
     }
 
@@ -272,7 +292,7 @@ public class Game {
         } else {
             //TODO:Husk å endre hvis spilleren har huket av i settings at bidding ikke skal være med da går vi rett til spille fasen
             mCallback.finishPicking();
-            startBiddingPhase();
+            gamestate.setPhase(Phase.BIDDING);
         }
 
         Log.i("GAME", "Deck length: " + gamestate.getStack().size());
@@ -289,7 +309,7 @@ public class Game {
             mCallback.AiPickedCard(first);
             gamestate.setSouthTurn(true);
             if (gamestate.getStack().isEmpty()) {
-                startBiddingPhase();
+                gamestate.setPhase(Phase.BIDDING);
                 mCallback.finishPicking();
 
             }
@@ -297,7 +317,7 @@ public class Game {
         } else {
             //TODO:Husk å endre hvis spilleren har huket av i settings at bidding ikke skal være med da går vi rett til spille fasen
             mCallback.finishPicking();
-            startBiddingPhase();
+            gamestate.setPhase(Phase.BIDDING);
         }
     }
 
@@ -311,7 +331,7 @@ public class Game {
 
         if (!gamestate.isSouthTurn())
             return 3;
-        if (!isLegalBid(bid, Player.SOUTH))
+        if (!isLegalBid(bid))
             return 2;
         gamestate.getBiddingHistory().getSouth().add(bid);
 //        TODO: ny tråd
@@ -328,7 +348,7 @@ public class Game {
         if (!gamestate.isSouthTurn())
             return 3;
 
-        if (isLegalToDouble(Player.SOUTH)) {
+        if (isLegalBid(new Double(Player.SOUTH))) {
             addDoubleBid(Player.SOUTH);
             gamestate.setSouthTurn(false);
 //        TODO: ny tråd
@@ -347,7 +367,7 @@ public class Game {
         if (!gamestate.isSouthTurn())
             return 3;
 
-        if (isLegalToRedouble(Player.SOUTH)) {
+        if (isLegalBid(new ReDouble(Player.SOUTH))) {
             addRedoubleBid(Player.SOUTH);
             gamestate.setSouthTurn(false);
 //        TODO: ny tråd
@@ -382,7 +402,7 @@ public class Game {
 //        TODO: Add check to if bid is legal
         gamestate.getBiddingHistory().getNorth().add(bid);
         mCallback.AiBid(bid);
-        if (bid.isPass())
+        if (bid instanceof Pass)
             if (biddingIsOver()) {
                 mCallback.finishBidding();
 //                TODO: Check if just wanto bid and not play
@@ -393,8 +413,13 @@ public class Game {
     }
 
 
-    //    Doues not handle Dourbles or Redoubles
-    private boolean isLegalBid(Bid bid, Player player) {
+    private boolean isLegalBid(Bid bid) {
+
+        if(bid instanceof Pass)
+            return true;
+
+        Player player = bid.getPlayer();
+
         if ((player == Player.SOUTH && !gamestate.getBiddingHistory().isNorthEmpty())
                 || player == Player.NORTH && !gamestate.getBiddingHistory().isSouthEmpty()) {
 
@@ -404,83 +429,86 @@ public class Game {
             if (player == Player.NORTH)
                 lastBid = gamestate.getBiddingHistory().getLastSouthBid();
 
-            int lastLevel = lastBid.getLevel();
-            int lastTrumpInt = lastBid.getTrumpInt();
-            int newLevel = bid.getLevel();
-            int newTrumpInt = bid.getTrumpInt();
+            Contract lastContract = null;
 
-            if (newLevel > lastLevel)
+            if(lastBid instanceof Pass)
                 return true;
-            if ((newLevel == lastLevel) && (newTrumpInt > lastTrumpInt))
-                return true;
+
+            if (lastBid instanceof Contract) {
+                if (bid instanceof Double)
+                    return true;
+                lastContract = (Contract) lastBid;
+
+            }
+            if (lastBid instanceof Double) {
+                if (bid instanceof ReDouble)
+                    return true;
+                if (player == Player.SOUTH)
+                    lastContract = (Contract) gamestate.getBiddingHistory().getLastSouthBid();
+                if (player == Player.NORTH)
+                    lastContract = (Contract) gamestate.getBiddingHistory().getLastNorthBid();
+            }
+
+            if (lastBid instanceof ReDouble) {
+                if (player == Player.SOUTH)
+                    lastContract = (Contract) gamestate.getBiddingHistory().getNorth().get(gamestate.getBiddingHistory().getNorth().size() - 2);
+                if (player == Player.NORTH)
+                    lastContract = (Contract) gamestate.getBiddingHistory().getSouth().get(gamestate.getBiddingHistory().getSouth().size() - 2);
+            }
+
+            int lastLevel = lastContract.getTricks();
+            int lastTrumpInt = lastContract.getTrump().ordinal();
+
+            if(bid instanceof Contract) {
+                int newLevel = ((Contract)bid).getTricks();
+                int newTrumpInt = ((Contract)bid).getTrump().ordinal();
+
+                if (lastBid instanceof Double)
+
+                    if (newLevel > lastLevel)
+                        return true;
+                if ((newLevel == lastLevel) && (newTrumpInt > lastTrumpInt))
+                    return true;
+
+            }
 
             return false;
         }
+
         return true;
     }
 
-    private boolean isLegalToDouble(Player player) {
-        if ((player == Player.SOUTH && !gamestate.getBiddingHistory().isNorthEmpty())
-                || player == Player.NORTH && !gamestate.getBiddingHistory().isSouthEmpty()) {
 
-            Bid lastBid = null;
-            if (player == Player.SOUTH)
-                lastBid = gamestate.getBiddingHistory().getLastNorthBid();
-            if (player == Player.NORTH)
-                lastBid = gamestate.getBiddingHistory().getLastSouthBid();
 
-            if (lastBid.isDouble() || lastBid.isRedouble() || lastBid.isPass())
-                return false;
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isLegalToRedouble(Player player) {
-        if ((player == Player.SOUTH && !gamestate.getBiddingHistory().isNorthEmpty())
-                || player == Player.NORTH && !gamestate.getBiddingHistory().isSouthEmpty()) {
-
-            Bid lastBid = null;
-            if (player == Player.SOUTH)
-                lastBid = gamestate.getBiddingHistory().getLastNorthBid();
-            if (player == Player.NORTH)
-                lastBid = gamestate.getBiddingHistory().getLastSouthBid();
-
-            if (lastBid.isDouble())
-                return true;
-            return false;
-        }
-        return false;
-    }
 
     private void addDoubleBid(Player player) {
         if (player == Player.SOUTH)
-            gamestate.getBiddingHistory().getSouth().add(new Bid(gamestate.getBiddingHistory().getLastNorthBid(), true, false));
+            gamestate.getBiddingHistory().getSouth().add(new Double(player));
         if (player == Player.NORTH)
-            gamestate.getBiddingHistory().getNorth().add(new Bid(gamestate.getBiddingHistory().getLastSouthBid(), true, false));
+            gamestate.getBiddingHistory().getNorth().add(new Double(player));
     }
 
     private void addRedoubleBid(Player player) {
         if (player == Player.SOUTH)
-            gamestate.getBiddingHistory().getSouth().add(new Bid(gamestate.getBiddingHistory().getLastNorthBid(), false, true));
+            gamestate.getBiddingHistory().getSouth().add(new ReDouble(player));
         if (player == Player.NORTH)
-            gamestate.getBiddingHistory().getNorth().add(new Bid(gamestate.getBiddingHistory().getLastSouthBid(), false, true));
+            gamestate.getBiddingHistory().getNorth().add(new ReDouble(player));
     }
 
     private void addPass(Player player) {
         if (player == Player.SOUTH)
-            gamestate.getBiddingHistory().getSouth().add(new Bid());
+            gamestate.getBiddingHistory().getSouth().add(new Pass(player));
         if (player == Player.NORTH)
-            gamestate.getBiddingHistory().getNorth().add(new Bid());
+            gamestate.getBiddingHistory().getNorth().add(new Pass(player));
 
     }
 
     private boolean biddingIsOver() {
         if (gamestate.isSouthTurn()) {
-            if (gamestate.getBiddingHistory().getLastSouthBid().isPass() && !gamestate.getBiddingHistory().getNorth().isEmpty())
+            if (gamestate.getBiddingHistory().getLastSouthBid() instanceof Pass && !gamestate.getBiddingHistory().getNorth().isEmpty())
                 return true;
         } else {
-            if (gamestate.getBiddingHistory().getLastNorthBid().isPass() && !gamestate.getBiddingHistory().getSouth().isEmpty())
+            if (gamestate.getBiddingHistory().getLastNorthBid() instanceof Pass && !gamestate.getBiddingHistory().getSouth().isEmpty())
                 return true;
         }
         return false;

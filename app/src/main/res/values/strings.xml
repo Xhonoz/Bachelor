@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">bridgeApp</string>
+    <string name="app_name">BridgeApp</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->

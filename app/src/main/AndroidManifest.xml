@@ -19,9 +19,6 @@
         <activity
             android:name=".Activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".Activities.PlayActivity" />
-        <activity android:name=".Activities.BiddingActivity" />
-        <activity android:name=".Activities.ChooseCardActivity" />
         <activity android:name=".Activities.ResultActivity" />
         <activity android:name=".Activities.GameActivity"></activity>
     </application>

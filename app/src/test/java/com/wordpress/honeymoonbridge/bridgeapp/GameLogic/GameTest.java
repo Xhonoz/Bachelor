@@ -3,7 +3,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
-import com.wordpress.honeymoonbridge.bridgeapp.NetMock.AIMock;
+import com.wordpress.honeymoonbridge.bridgeapp.AI.MockAI;
 
 import org.junit.Before;
 import org.junit.Test;

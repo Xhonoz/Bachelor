@@ -1,7 +1,6 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,13 +14,11 @@ import android.widget.NumberPicker;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Adapters.BiddingHistoryAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
-import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
-import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Contract;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -139,11 +136,11 @@ public class BiddingFragment extends Fragment implements View.OnClickListener {
 
     private  void updateNumberPickers(){
 
-        Bid lastbid = biddingHistory.getLastNorthBid();
-        if(!lastbid.isPass()) {
-
-            int level = lastbid.getLevel();
-            int trumpInt = lastbid.getTrumpInt();
+//        Bid lastbid = biddingHistory.getLastNorthBid();
+//        if(!lastbid.isPass()) {
+//
+//            int level = lastbid.getLevel();
+//            int trumpInt = lastbid.getTrumpInt();
 
 
 //            if the last bid was 7NT the numberPickers should be disabled
@@ -168,7 +165,7 @@ public class BiddingFragment extends Fragment implements View.OnClickListener {
 //
 //            }
 
-        }
+//        }
 
     }
 
@@ -224,7 +221,7 @@ public class BiddingFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
 
             case R.id.bid_button:
-                mCallback.Bid(new Bid(LevelPicker.getValue(), TrumpPicker.getValue()));
+                mCallback.Bid(new Contract(TrumpPicker.getValue(), LevelPicker.getValue(), Player.SOUTH));
                 break;
             case R.id.pass_button:
                 mCallback.pass();

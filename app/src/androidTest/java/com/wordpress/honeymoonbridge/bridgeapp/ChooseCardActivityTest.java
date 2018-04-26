@@ -2,9 +2,6 @@ package com.wordpress.honeymoonbridge.bridgeapp;
 
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 
-import com.wordpress.honeymoonbridge.bridgeapp.Activities.ChooseCardActivity;
-import com.wordpress.honeymoonbridge.bridgeapp.Activities.PlayActivity;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
