@@ -24,7 +24,6 @@ public class Game {
     private GameState gamestate;
     private com.wordpress.honeymoonbridge.bridgeapp.AI.AIPlayer AI;
     private AIPlayer AIPlayer;
-    private int southTricks = 0;
 
     public interface Callback {
         // called when the user presses the send button to submit a message
@@ -84,6 +83,11 @@ public class Game {
         }else
             mCallback.finishPlaying();
 
+    }
+
+    private void finishGame() {
+        gamestate.setPhase(Phase.FINISHED);
+        mCallback.finishPlaying();
     }
     
     public Card getCardFromDeck(boolean first){
@@ -207,9 +211,10 @@ public class Game {
                 gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard = card;
                 gamestate.setSouthTurn(!compareCards(gamestate.getTrump(), gamestate.getTricks().get(gamestate.getTricks().size() - 1).firstCard, card));
                 if (gamestate.isSouthTurn())
-                    southTricks++;
-                Log.i("GAME", "southTricks: " + southTricks);
+                    gamestate.incrementSouthTricks();
             }
+            if(gamestate.getNorthHand().getSize() == 0 && gamestate.getSouthHand().getSize() == 0)
+                finishGame();
             return true;
         }
 
@@ -222,13 +227,16 @@ public class Game {
                 gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard = card;
                 gamestate.setSouthTurn(compareCards(gamestate.getTrump(), gamestate.getTricks().get(gamestate.getTricks().size() - 1).firstCard, card));
                 if (gamestate.isSouthTurn())
-                    southTricks++;
-                Log.i("GAME", "southTricks: " + southTricks);
+                    gamestate.incrementSouthTricks();
             }
+            if(gamestate.getNorthHand().getSize() == 0 && gamestate.getSouthHand().getSize() == 0)
+                finishGame();
             return true;
         }
         return false;
     }
+
+
 
     public boolean UIPlayCard(Card card) {
         Log.i("GAME", "South is trying to play: " + card);

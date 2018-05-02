@@ -19,7 +19,7 @@
             android:background="@drawable/border"
             android:gravity="center"
             android:text="Contract:"
-            android:textSize="40" />
+            android:textSize="40dp" />
 
         <android.support.v4.widget.Space
             android:layout_width="match_parent"

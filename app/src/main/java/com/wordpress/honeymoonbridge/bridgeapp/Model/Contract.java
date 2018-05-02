@@ -229,6 +229,11 @@ public class Contract extends Bid {
             text += "XX";
         else if (doubled)
             text += "X";
+
+        if(getPlayer() == Player.NORTH)
+            text += "N";
+        if(getPlayer() == Player.SOUTH)
+            text += "S";
         return text;
     }
 

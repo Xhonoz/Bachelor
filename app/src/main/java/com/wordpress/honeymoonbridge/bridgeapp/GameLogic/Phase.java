@@ -5,5 +5,5 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
  */
 
 public enum Phase {
-    PICKING, BIDDING, PLAYING
+    PICKING, BIDDING, FINISHED, PLAYING
 }

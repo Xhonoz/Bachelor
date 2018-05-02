@@ -1,6 +1,7 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.BiddingFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PickCardFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PlayFragment;
+import com.wordpress.honeymoonbridge.bridgeapp.Fragments.ResultFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
 import com.wordpress.honeymoonbridge.bridgeapp.AI.TopInLong;
@@ -29,12 +31,15 @@ public class GameActivity extends AppCompatActivity
         BiddingFragment.Callback,
         PlayFragment.Callback,
         Game.Callback,
-        HandAdapter.Callback{
+        HandAdapter.Callback,
+        ResultFragment.OnFragmentInteractionListener
+{
 
     //    Fragments
     private BiddingFragment mBiddingFragment;
     private PickCardFragment mPickCardFragment;
     private PlayFragment mPlayFragment;
+    private ResultFragment mResultFragment;
 
     //    game
     private Game game;
@@ -58,6 +63,8 @@ public class GameActivity extends AppCompatActivity
 
         mPlayFragment = new PlayFragment();
 
+        mResultFragment = new ResultFragment();
+
 
         game = new Game(false, new TopInLong());
         game.getGameState().getStack().shuffleCardStack();
@@ -65,6 +72,7 @@ public class GameActivity extends AppCompatActivity
 
         mPickCardFragment.setGame(game);
         mBiddingFragment.setGame(game);
+        mResultFragment.setGame(game);
 
 
         switchToFragment(mPickCardFragment);
@@ -159,6 +167,7 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void finishPlaying() {
+        switchToFragment(mResultFragment);
 
     }
 
@@ -252,5 +261,10 @@ public class GameActivity extends AppCompatActivity
             handAdapter.addToHand(picked);
             picked = null;
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
