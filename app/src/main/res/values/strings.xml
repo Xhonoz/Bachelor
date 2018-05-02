@@ -95,6 +95,10 @@
     <string name="draw">Draw!</string>
     <string name="playAgain">Play again</string>
     <string name="mainMenu">Main Menu</string>
+    <string name="trickScore">Trick score:</string>
+    <string name="OverUnder">Over/under:</string>
+<string name="bonus">Bonus:</string>
+    <string name="totalPoints">Total Points:</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
