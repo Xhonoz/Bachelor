@@ -4,6 +4,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.CardStack;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Contract;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 
@@ -19,6 +20,7 @@ public class GameState {
     private Phase phase;
     private Trump trump;
     private Player dealer;
+    private Contract contract;
 
     private ArrayList<Card> north26Cards;
     private ArrayList<Boolean> northChoseFirst;
@@ -50,11 +52,21 @@ public class GameState {
         this.stack = new CardStack();
         phase = Phase.PICKING;
         trump = Trump.NoTrump;
+        contract = null;
 
         if(isSouthTurn)
             dealer = Player.NORTH;
         else
             dealer = Player.SOUTH;
+    }
+
+    public Contract getContract() {
+        return contract;
+    }
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
+        trump = contract.getTrump();
     }
 
     public Player getDealer() {

@@ -1,7 +1,7 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,10 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.CardViewAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.OpponentHand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Contract;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 /**
@@ -27,6 +29,7 @@ public class PlayFragment extends Fragment {
     private CardViewAdapter northPlayedCard;
     private CardViewAdapter southPlayedCard;
 
+    private Contract contract;
 
 
     private OpponentHand opponentHand;
@@ -39,18 +42,16 @@ public class PlayFragment extends Fragment {
         southPlayedCard.setCard(card);
     }
 
-    public void removeCardFromNorthHand(){
+    public void removeCardFromNorthHand() {
         opponentHand.removeCard(0);
     }
 
 
     public interface Callback {
-    // TODO: Update argument type and name
+        // TODO: Update argument type and name
 
 
-
-
-}
+    }
 
 
     private Callback mCallback;
@@ -59,15 +60,23 @@ public class PlayFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void northPlayCard(Card card){
+    public void northPlayCard(Card card) {
         opponentHand.removeCard(0);
         northPlayedCard.setCard(card);
 
     }
 
-    public void SouthPlayCard(Card card){
+    public void SouthPlayCard(Card card) {
         southPlayedCard.setCard(card);
 
+    }
+
+    public Contract getContract() {
+        return contract;
+    }
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
     }
 
 
@@ -80,6 +89,11 @@ public class PlayFragment extends Fragment {
         opponentHand = new OpponentHand((LinearLayout) view.findViewById(R.id.opponentHand), getContext(), 13);
         northPlayedCard = new CardViewAdapter((ImageView) view.findViewById(R.id.OpponentPlayedCard), getContext());
         southPlayedCard = new CardViewAdapter((ImageView) view.findViewById(R.id.YourPlayedCard), getContext());
+        if (contract != null) {
+            ((TextView) view.findViewById(R.id.contractView)).setText(contract.toString());
+            ((TextView) view.findViewById(R.id.contractView)).setTextColor(Color.BLACK);
+        }
+
         // Inflate the layout for this fragment
         return view;
     }

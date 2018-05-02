@@ -14,6 +14,8 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.ReDouble;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 
+import java.util.ArrayList;
+
 /**
  * Created by Eier on 09.04.2018.
  */
@@ -35,6 +37,8 @@ public class Game {
         void finishPicking();
 
         void finishBidding();
+
+        void startPlaying();
 
         void finishPlaying();
 
@@ -64,18 +68,52 @@ public class Game {
 
     public void startBiddingPhase() {
         Log.i("GAME", "startBiddingPhase");
-        if (!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.BIDDING)
+        gamestate.setPhase(Phase.BIDDING);
+        if (!gamestate.isSouthTurn())
             AiTakesTurnBidding();
 
     }
 
     public void startPlayingPhase() {
-        gamestate.setPhase(Phase.PLAYING);
+        Contract contract = getContract();
+        if(contract != null) {
+            gamestate.setContract(contract);
+            gamestate.setSouthTurn((gamestate.getContract().getPlayer() == Player.NORTH));
+            gamestate.setPhase(Phase.PLAYING);
+            mCallback.startPlaying();
+        }else
+            mCallback.finishPlaying();
 
     }
+    
+    public Card getCardFromDeck(boolean first){
+        if(first)
+            return peakTopCard();
+        else
+            return (Card) gamestate.getStack().get(1);
+    }
 
-    public boolean doNext() {
-        return true;
+
+    private Contract getContract(){
+        boolean doubled = false;
+        boolean reDoubled = false;
+        Contract baseContract = null;
+        ArrayList<Bid> bids = gamestate.getBiddingHistory().getAllBids(gamestate.getDealer());
+        for(int i = bids.size() - 1; i >= 0; i--){
+            Bid current =bids.get(i);
+            if(current instanceof Contract) {
+                baseContract = (Contract) current;
+                break;
+            }
+            if(current instanceof ReDouble)
+                reDoubled = true;
+            if(current instanceof Double)
+                doubled = true;
+        }
+
+        if(baseContract == null)
+            return null;
+        return new Contract(baseContract, doubled, reDoubled);
     }
 
 
@@ -121,6 +159,7 @@ public class Game {
             if (card.getSuit().equals(suit) || hand.getCardsOfSuit(suit).isEmpty()) {
                 return true;
             } else {
+                Log.i("GAME", "Card: " + card + " is not legal to play \nYou still have " + suit + " left, for example: " + hand.getCardsOfSuit(suit).get(0));
                 return false;
             }
 
@@ -133,48 +172,21 @@ public class Game {
     //        Returns true if firstCard wins
     public boolean compareCards(Trump trump, Card firstCard, Card secondCard) {
 
-
-        switch (trump) {
-            case NoTrump:
-                if (!firstCard.getSuit().equals(secondCard.getSuit()))
-                    return true;
-                if (firstCard.getCardValue() > secondCard.getCardValue())
-                    return true;
-                return false;
-
-            case Diamonds:
-                if (!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Diamonds))
-                    return true;
-                if (firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
-                    return true;
-                return false;
-
-            case Clubs:
-
-                if (!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Clubs))
-                    return true;
-                if (firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
-                    return true;
-                return false;
-
-            case Hearts:
-
-                if (!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Hearts))
-                    return true;
-                if (firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
-                    return true;
-                return false;
-
-            case Spades:
-
-                if (!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Trump.Spades))
-                    return true;
-                if (firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
-                    return true;
-                return false;
+    Log.i("GAME","Comparing cards: " + firstCard + " and " + secondCard + " with trump: " + trump);
+        if(trump == Trump.NoTrump) {
+            if (!firstCard.getSuit().equals(secondCard.getSuit()))
+                return true;
+            if (firstCard.getCardValue() > secondCard.getCardValue())
+                return true;
+            return false;
         }
 
-        return true;
+                if (!firstCard.getSuit().equals(secondCard.getSuit()) && !secondCard.getSuit().equals(Suit.getSuitFromTrump(trump)))
+                    return true;
+                if (firstCard.getSuit().equals(secondCard.getSuit()) && firstCard.getCardValue() > secondCard.getCardValue())
+                    return true;
+                return false;
+
 
     }
 
@@ -237,7 +249,7 @@ public class Game {
 
     }
 
-    public void next() {
+    public void northTakeTurn() {
         if (gamestate.getPhase() == Phase.PLAYING)
             if (!gamestate.isSouthTurn())
                 AITakesTurnPlaying();
@@ -292,7 +304,7 @@ public class Game {
         } else {
             //TODO:Husk å endre hvis spilleren har huket av i settings at bidding ikke skal være med da går vi rett til spille fasen
             mCallback.finishPicking();
-            gamestate.setPhase(Phase.BIDDING);
+            startBiddingPhase();
         }
 
         Log.i("GAME", "Deck length: " + gamestate.getStack().size());
@@ -309,7 +321,7 @@ public class Game {
             mCallback.AiPickedCard(first);
             gamestate.setSouthTurn(true);
             if (gamestate.getStack().isEmpty()) {
-                gamestate.setPhase(Phase.BIDDING);
+                startBiddingPhase();
                 mCallback.finishPicking();
 
             }
@@ -317,7 +329,7 @@ public class Game {
         } else {
             //TODO:Husk å endre hvis spilleren har huket av i settings at bidding ikke skal være med da går vi rett til spille fasen
             mCallback.finishPicking();
-            gamestate.setPhase(Phase.BIDDING);
+            startBiddingPhase();
         }
     }
 
@@ -402,13 +414,17 @@ public class Game {
 //        TODO: Add check to if bid is legal
         gamestate.getBiddingHistory().getNorth().add(bid);
         mCallback.AiBid(bid);
-        if (bid instanceof Pass)
+        if (bid instanceof Pass) {
             if (biddingIsOver()) {
                 mCallback.finishBidding();
 //                TODO: Check if just wanto bid and not play
                 startPlayingPhase();
+            } else {
+                gamestate.setSouthTurn(true);
             }
-        gamestate.setSouthTurn(true);
+
+        }else
+            gamestate.setSouthTurn(true);
 
     }
 
@@ -462,8 +478,6 @@ public class Game {
             if(bid instanceof Contract) {
                 int newLevel = ((Contract)bid).getTricks();
                 int newTrumpInt = ((Contract)bid).getTrump().ordinal();
-
-                if (lastBid instanceof Double)
 
                     if (newLevel > lastLevel)
                         return true;

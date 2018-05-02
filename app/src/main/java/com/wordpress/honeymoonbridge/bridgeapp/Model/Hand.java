@@ -486,57 +486,18 @@ return hcp;
     }
 
     public Suit longestSuit(){
-        int longest = handSpade.size();
-       Suit color = Suit.Spades;
-        if (longest <= handHeart.size()) {
 
-            if(longest == handHeart.size()){
-                for(int i = 0; i < handHeart.size(); i++){
-                    if(handHeart.get(i).getCardValue() > handSpade.get(i).getCardValue()){
-                        longest = handHeart.size();
-                        color = Suit.Hearts;
-                        break;
-                    }
-                }
+        int longest = -1;
+        Suit suit = null;
+       ArrayList<ArrayList<Card>> suits = getSuitArrays();
+       for(int i = 0; i < suits.size(); i++){
+           if(suits.size() > longest){
+               longest = suits.size();
+               suit = Suit.values()[i];
+           }
+       }
 
-            }else {
-                longest = handHeart.size();
-                color = Suit.Hearts;
-            }
-        }
-
-        if (longest <= handDiamond.size()) {
-            if(longest == handDiamond.size()){
-                for(int i = 0; i < handDiamond.size(); i++){
-                    if(handDiamond.get(i).getCardValue() > handHeart.get(i).getCardValue()){
-                        longest = handDiamond.size();
-                        color = Suit.Diamonds;
-                        break;
-                    }
-                }
-
-            }else {
-                longest = handDiamond.size();
-                color = Suit.Diamonds;
-            }
-        }
-        if (longest <= handClub.size()) {
-            if(longest == handHeart.size()){
-                for(int i = 0; i < handHeart.size(); i++){
-                    if(handHeart.get(i).getCardValue() > handSpade.get(i).getCardValue()){
-                        longest = handHeart.size();
-                        color = Suit.Hearts;
-                        break;
-                    }
-                }
-
-            }else {
-                longest = handHeart.size();
-                color = Suit.Hearts;
-            }
-        }
-
-        return color;
+        return suit;
     }
 
     @Override

@@ -221,7 +221,7 @@ public class BiddingFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
 
             case R.id.bid_button:
-                mCallback.Bid(new Contract(TrumpPicker.getValue(), LevelPicker.getValue(), Player.SOUTH));
+                mCallback.Bid(new Contract(TrumpPicker.getValue() - 1, LevelPicker.getValue(), Player.SOUTH));
                 break;
             case R.id.pass_button:
                 mCallback.pass();

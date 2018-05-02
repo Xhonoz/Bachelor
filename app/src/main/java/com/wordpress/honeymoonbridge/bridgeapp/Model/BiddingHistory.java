@@ -35,6 +35,18 @@ public class BiddingHistory {
         return null;
     }
 
+    public ArrayList<Bid> getAllBids(Player dealer){
+        ArrayList<Bid> bids = new ArrayList<Bid>();
+        if(dealer == Player.NORTH){
+            bids.addAll(North);
+            bids.addAll(South);
+        }else if( dealer == Player.SOUTH){
+            bids.addAll(South);
+            bids.addAll(North);
+        }
+        return bids;
+    }
+
 
     public boolean isNorthEmpty(){
         return North.isEmpty();

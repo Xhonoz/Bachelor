@@ -17,6 +17,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PlayFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
 import com.wordpress.honeymoonbridge.bridgeapp.AI.TopInLong;
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
@@ -41,6 +42,9 @@ public class GameActivity extends AppCompatActivity
     //    Adapters
     private HandAdapter handAdapter;
 
+
+    private Card picked;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +59,7 @@ public class GameActivity extends AppCompatActivity
         mPlayFragment = new PlayFragment();
 
 
-        game = new Game(true, new TopInLong());
+        game = new Game(false, new TopInLong());
         game.getGameState().getStack().shuffleCardStack();
         game.setCallback(this);
 
@@ -143,8 +147,15 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void finishBidding() {
-        switchToFragment(mPlayFragment);
+
     }
+    @Override
+    public void startPlaying() {
+            mPlayFragment.setContract(game.getGameState().getContract());
+            switchToFragment(mPlayFragment);
+
+    }
+
 
     @Override
     public void finishPlaying() {
@@ -199,27 +210,47 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void pickCard(boolean first) {
+            picked = game.getCardFromDeck(first);
+            if (picked != null) {
+                mPickCardFragment.showCardPickedUI(first);
+            }
 
-        Card picked = game.UIPickCard(first);
-        if (picked != null)
-            handAdapter.addToHand(picked);
-        mPickCardFragment.updateChoiceUI();
 
+    }
+
+    @Override
+    public void confirm() {
+        addCardToHand();
     }
 
     @Override
     public void clickedCard(Card card) {
         if(game.getGameState().getPhase() == Phase.PLAYING) {
+            boolean shoudlBeLegal = game.isLegal(Player.NORTH, card);
             if (game.UIPlayCard(card)) {
                 handAdapter.removeCard(card);
                 mPlayFragment.setSouthPlayedCard(card);
             }
-            if (game.getGameState().getTricks().get(game.getGameState().getTricks().size() - 1).SecondCard == null)
+            if (shoudlBeLegal && !game.getGameState().getTricks().isEmpty() && game.getGameState().getTricks().get(game.getGameState().getTricks().size() - 1).SecondCard == null)
                 mPlayFragment.setNorthPlayedCard(null);
+
         }
     }
 
     public void onClickScreen(View view) {
-        game.next();
+        if(game.getGameState().getPhase() == Phase.PICKING)
+            addCardToHand();
+        if(game.getGameState().getPhase() == Phase.PLAYING)
+            game.northTakeTurn();
+
+    }
+
+    public void addCardToHand(){
+        if(game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn() && picked != null) {
+            game.UIPickCard(picked.equals(game.peakTopCard()));
+            mPickCardFragment.newCardsUI();
+            handAdapter.addToHand(picked);
+            picked = null;
+        }
     }
 }

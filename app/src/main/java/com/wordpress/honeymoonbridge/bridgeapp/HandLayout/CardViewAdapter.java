@@ -2,6 +2,9 @@ package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.support.v4.content.res.ResourcesCompat;
 import android.widget.ImageView;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
@@ -34,6 +37,14 @@ public class CardViewAdapter {
         }else
             imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
                     R.drawable.backside), 400, true));
+    }
+
+    public void addHighlight(){
+        imageView.setColorFilter(ResourcesCompat.getColor(mContext.getResources(), R.color.highligth, null));
+    }
+
+    public void removeHighlight(){
+        imageView.setColorFilter(null);
     }
 
     public Card getCard() {

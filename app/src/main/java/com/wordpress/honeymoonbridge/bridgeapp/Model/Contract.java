@@ -28,8 +28,8 @@ public class Contract extends Bid {
 }
 
     //double or redouble constructor
-    public Contract(Contract contract, boolean doubled, boolean reDoubled, Player player){
-        super(player);
+    public Contract(Contract contract, boolean doubled, boolean reDoubled){
+        super(contract.getPlayer());
         trump = contract.getTrump();
         tricks = contract.getTricks();
         this.doubled = doubled;
@@ -217,11 +217,12 @@ public class Contract extends Bid {
         String text = "" + tricks;
         switch (trump.ordinal())
         {
+
             case (4): text += "NT"; break;
-            case (3): text += "♤"; break;
-            case (2): text += "♡"; break;
-            case (1): text += "♢"; break;
-            case (0): text += "♧"; break;
+            case (3): text += "♠"; break;
+            case (2): text += "♥"; break;
+            case (1): text += "♦"; break;
+            case (0): text += "♣"; break;
             default: break;
         }
         if (reDoubled)

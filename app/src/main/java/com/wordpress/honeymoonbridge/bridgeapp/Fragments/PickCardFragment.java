@@ -2,7 +2,6 @@ package com.wordpress.honeymoonbridge.bridgeapp.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +26,8 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     private CardViewAdapter firstCardView;
     private CardViewAdapter secondCardView;
 
+    private boolean showingCards = false;
+
 
     public void setGame(Game game) {
         this.game = game;
@@ -41,6 +42,7 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     public interface Callback {
         // called when the user presses the send button to submit a message
         void pickCard(boolean first);
+        void confirm();
 
     }
 
@@ -104,35 +106,35 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    public void updateChoiceUI() {
+    public void showCardPickedUI(boolean first) {
         if (game.getGameState().getPhase() == Phase.PICKING) {
-
-            showCardPicked();
-
-            final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    // Do something after 0.5s = 500ms
-                    Card top = game.peakTopCard();
-                    if (top != null)
-                        firstCardView.setCard(game.peakTopCard());
-                    secondCardView.setCard(null);
-
-                }
-            }, 500);
+            showingCards = true;
+            showCardPicked(first);
 
 
         }
     }
 
-    private void showCardPicked(){
-        secondCardView.setCard(game.getGameState().getSouth26Cards().get(game.getGameState().getSouth26Cards().size()-1));
+    public void newCardsUI() {
+        if (game.getGameState().getPhase() == Phase.PICKING) {
+            showingCards = false;
+            firstCardView.removeHighlight();
+            secondCardView.removeHighlight();
+            Card top = game.peakTopCard();
+            if (top != null)
+                firstCardView.setCard(game.peakTopCard());
+            secondCardView.setCard(null);
+        }
     }
 
-    private void addCardToOpponentHand() {
-        opponentHand.addToHand();
+    private void showCardPicked(boolean first) {
+        secondCardView.setCard(game.getCardFromDeck(false));
+        if (first)
+            firstCardView.addHighlight();
+        else
+            secondCardView.addHighlight();
     }
+
 
 
     @Override
@@ -140,10 +142,16 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
 
             case R.id.firstCard:
-                mCallback.pickCard(true);
+                if (showingCards)
+                    mCallback.confirm();
+                else
+                    mCallback.pickCard(true);
                 break;
             case R.id.secondCard:
-                mCallback.pickCard(false);
+                if (showingCards)
+                    mCallback.confirm();
+                else
+                    mCallback.pickCard(false);
                 break;
 
 

@@ -226,8 +226,6 @@ public class TopInLong implements AIPlayer {
                 int newLevel = ((Contract)bid).getTricks();
                 int newTrumpInt = ((Contract)bid).getTrump().ordinal();
 
-                if (lastBid instanceof Double)
-
                     if (newLevel > lastLevel)
                         return true;
                 if ((newLevel == lastLevel) && (newTrumpInt > lastTrumpInt))
