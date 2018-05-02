@@ -22,6 +22,9 @@ public class GameState {
     private Player dealer;
     private Contract contract;
 
+    private Hand initialSouthHand;
+    private Hand initialNorthHand;
+
     private ArrayList<Card> north26Cards;
     private ArrayList<Boolean> northChoseFirst;
     private ArrayList<Card> south26Cards;
@@ -71,6 +74,11 @@ public class GameState {
     public void setContract(Contract contract) {
         this.contract = contract;
         trump = contract.getTrump();
+    }
+
+    public void lockInitialHands(){
+        initialSouthHand = southHand.clone();
+        initialNorthHand = northHand.clone();
     }
 
     public Player getDealer() {
