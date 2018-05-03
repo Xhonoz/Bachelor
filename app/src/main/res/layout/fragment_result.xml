@@ -39,7 +39,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
-                android:background="@drawable/result_bg"
+                android:background="@drawable/border"
                 >
             <Space
                 android:layout_width="0dp"
@@ -102,12 +102,13 @@
 
             </LinearLayout>
 
-            <!--Vertical layout for containing score-->
-
-            <android.support.v4.widget.SlidingPaneLayout
+            <android.support.v4.widget.Space
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5"></android.support.v4.widget.SlidingPaneLayout>
+                android:layout_weight="0.4"/>
+
+            <!--Vertical layout for containing score-->
+
 
             <LinearLayout
                 android:layout_width="0dp"

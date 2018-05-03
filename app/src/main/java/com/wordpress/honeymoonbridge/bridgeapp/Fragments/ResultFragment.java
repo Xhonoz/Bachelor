@@ -1,21 +1,25 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.wordpress.honeymoonbridge.bridgeapp.Activities.GameActivity;
+import com.wordpress.honeymoonbridge.bridgeapp.Activities.MainActivity;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 import org.w3c.dom.Text;
 
 
-public class ResultFragment extends Fragment {
+public class ResultFragment extends Fragment implements View.OnClickListener {
 
 
 
@@ -37,6 +41,18 @@ public class ResultFragment extends Fragment {
         ((TextView)view.findViewById(R.id.bonus)).setText("" + game.getGameState().getContract().Bonus(game.getGameState().getContract().getTricks()));
         ((TextView)view.findViewById(R.id.totalPoints)).setText("" + (game.getGameState().getContract().Bonus(game.getGameState().getContract().getTricks()) + game.getGameState().getContract().Points(game.getGameState().getContract().getTricks())) );
 
+
+        final int[] clickableIds = {
+
+                R.id.replay,
+                R.id.backToMain
+
+
+        };
+
+        for (int clickableId : clickableIds) {
+            view.findViewById(clickableId).setOnClickListener(this);
+        }
 
         return view;
     }
@@ -61,6 +77,23 @@ public class ResultFragment extends Fragment {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.replay:
+                Intent i = getActivity().getIntent();
+                getActivity().finish();
+                startActivity(i);
+
+                break;
+
+            case R.id.backToMain:
+                Intent im = new Intent(getActivity(), MainActivity.class);
+                startActivity(im);
+                break;
+        }
     }
 
     /**
