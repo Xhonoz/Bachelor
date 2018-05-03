@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
+import org.w3c.dom.Text;
+
 
 public class ResultFragment extends Fragment {
 
@@ -31,6 +33,11 @@ public class ResultFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_result, container, false);
         ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.contract) + " " + game.getGameState().getContract());
+        ((TextView)view.findViewById(R.id.trickScore)).setText("" + game.getGameState().getContract().Points(game.getGameState().getContract().getTricks()));
+        ((TextView)view.findViewById(R.id.bonus)).setText("" + game.getGameState().getContract().Bonus(game.getGameState().getContract().getTricks()));
+        ((TextView)view.findViewById(R.id.totalPoints)).setText("" + (game.getGameState().getContract().Bonus(game.getGameState().getContract().getTricks()) + game.getGameState().getContract().Points(game.getGameState().getContract().getTricks())) );
+
+
         return view;
     }
 

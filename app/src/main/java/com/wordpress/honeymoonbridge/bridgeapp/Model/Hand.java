@@ -491,7 +491,7 @@ return hcp;
         Suit suit = null;
        ArrayList<ArrayList<Card>> suits = getSuitArrays();
        for(int i = 0; i < suits.size(); i++){
-           if(suits.size() > longest){
+           if(suits.get(i).size() > longest){
                longest = suits.size();
                suit = Suit.values()[i];
            }

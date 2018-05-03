@@ -1,5 +1,7 @@
 package com.wordpress.honeymoonbridge.bridgeapp.AI;
 
+import android.util.Log;
+
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.GameState;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Trick;
@@ -44,8 +46,10 @@ public class TopInLong implements AIPlayer {
 
             ArrayList<ArrayList<Card>> suits = hand.getSuitArrays();
                        longest = suits.get(0).size();
+
             int longestIndex = 0;
 
+            Log.i("TopInLong", "" + suits.size());
             for (int i = 1; i < suits.size(); i++) {
                 ArrayList<Card> current = suits.get(i);
                 if (!current.isEmpty()) {

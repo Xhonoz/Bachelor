@@ -86,7 +86,7 @@ public class Contract extends Bid {
         return points;
     }
 
-    private int Bonus(int result)
+    public int Bonus(int result)
     {
         int bonus = 0;
 
