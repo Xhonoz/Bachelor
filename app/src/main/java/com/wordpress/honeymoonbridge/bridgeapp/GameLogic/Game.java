@@ -74,6 +74,7 @@ public class Game {
     }
 
     public void startPlayingPhase() {
+        gamestate.lockInitialHands();
         Contract contract = getContract();
         if(contract != null) {
             gamestate.setContract(contract);
