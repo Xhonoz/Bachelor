@@ -34,6 +34,7 @@ public class GameState {
 
     private ArrayList<Trick> tricks;
     private int southTricks;
+    private int northTricks;
 
     private Hand northHand;
     private Hand southHand;
@@ -54,6 +55,7 @@ public class GameState {
         this.biddingHistory = new BiddingHistory();
         this.tricks = new ArrayList<>();
         this.southTricks = 0;
+        this.northTricks = 0;
         this.northHand = new Hand();
         this.southHand = new Hand();
         this.stack = new CardStack();
@@ -193,7 +195,35 @@ public class GameState {
         this.southTricks = southTricks;
     }
 
+    public Hand getInitialSouthHand() {
+        return initialSouthHand;
+    }
+
+    public Hand getInitialNorthHand() {
+        return initialNorthHand;
+    }
+
+    public void setInitialSouthHand(Hand initialSouthHand) {
+        this.initialSouthHand = initialSouthHand;
+    }
+
+    public void setInitialNorthHand(Hand initialNorthHand) {
+        this.initialNorthHand = initialNorthHand;
+    }
+
     public void incrementSouthTricks() {
         southTricks++;
+    }
+
+    public void incrementNorthTricks() {
+        northTricks++;
+    }
+
+    public void setNorthTricks(int northTricks) {
+        this.northTricks = northTricks;
+    }
+
+    public int getNorthTricks() {
+        return northTricks;
     }
 }

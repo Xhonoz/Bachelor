@@ -36,15 +36,24 @@ public class BiddingHistory {
     }
 
     public ArrayList<Bid> getAllBids(Player dealer){
-        ArrayList<Bid> bids = new ArrayList<Bid>();
         if(dealer == Player.NORTH){
-            bids.addAll(North);
-            bids.addAll(South);
+           return merge(North, South);
         }else if( dealer == Player.SOUTH){
-            bids.addAll(South);
-            bids.addAll(North);
+            return merge(South,North);
         }
-        return bids;
+        return null;
+    }
+
+    private ArrayList merge(ArrayList<Bid> a, ArrayList<Bid> b) {
+        ArrayList<Bid> merged = new ArrayList<Bid>();
+        int j = 0;
+        for(int i = 0; i < a.size(); i++){
+            merged.add(a.get(i));
+            if(j < b.size())
+                merged.add(b.get(j));
+            j++;
+        }
+        return merged;
     }
 
 

@@ -196,7 +196,8 @@ public class Hand {
 
     public Hand clone() {
 
-        return new Hand(handSpade, handHeart, handClub, handDiamond);
+        return new Hand((ArrayList<Card>)handClub.clone(), (ArrayList<Card>)handDiamond.clone(), (ArrayList<Card>)handHeart.clone(), (ArrayList<Card>)handSpade.clone());
+
 
     }
 
@@ -492,7 +493,7 @@ return hcp;
        ArrayList<ArrayList<Card>> suits = getSuitArrays();
        for(int i = 0; i < suits.size(); i++){
            if(suits.get(i).size() > longest){
-               longest = suits.size();
+               longest = suits.get(i).size();
                suit = Suit.values()[i];
            }
        }

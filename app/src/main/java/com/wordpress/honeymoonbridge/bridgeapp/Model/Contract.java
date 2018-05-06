@@ -1,6 +1,7 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Model;
 
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Trick;
 
 /**
  * Created by Carmen on 24.04.2018.
@@ -230,12 +231,40 @@ public class Contract extends Bid {
         else if (doubled)
             text += "X";
 
-        if(getPlayer() == Player.NORTH)
-            text += "N";
-        if(getPlayer() == Player.SOUTH)
-            text += "S";
+
         return text;
     }
+
+    public String toStringWithPlayer(){
+        String text = toString();
+
+     if(getPlayer() == Player.NORTH)
+    text += " N";
+        if(getPlayer() == Player.SOUTH)
+    text += " S";
+
+        return text;
+    }
+
+    public String toStringWithPlayerAndWithTricks(int result){
+        String text = toString();
+
+        if(getPlayer() == Player.NORTH)
+            text += " N ";
+        if(getPlayer() == Player.SOUTH)
+            text += " S ";
+        int overUnder = result - (tricks + TrickOffset);
+        if(overUnder >= 0)
+            text += "+" + overUnder;
+        else
+            text += overUnder;
+
+
+        return text;
+    }
+
+
+
 
 
 

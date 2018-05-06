@@ -64,6 +64,7 @@ public class HandAdapter implements View.OnClickListener{
     }
 
     public void SetUpLayout() {
+
         handLayout.removeAllViews();
         ArrayList<Card> sortedHand = hand.getSortedHand(trump);
         Log.i("HandAdapter", "hand size: " + sortedHand.size());
@@ -76,7 +77,7 @@ public class HandAdapter implements View.OnClickListener{
     }
 
     public void addToHand(Card card) {
-        //Hugs å legge til margin på forrige kort
+        //TODO: make Async Task or other multiThread suport
         hand.addCard(card);
         addImageViewToLayout(card, hand.getNewIndex(card, trump));
     }

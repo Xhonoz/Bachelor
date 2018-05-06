@@ -97,7 +97,7 @@
     <string name="mainMenu">Main Menu</string>
     <string name="trickScore">Trick score:</string>
     <string name="OverUnder">Over/under:</string>
-<string name="bonus">Bonus:</string>
+    <string name="bonus">Bonus:</string>
     <string name="totalPoints">Total Points:</string>
 
     <!-- TODO: Remove or change this placeholder text -->

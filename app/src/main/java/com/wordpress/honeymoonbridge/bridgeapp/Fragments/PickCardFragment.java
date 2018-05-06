@@ -34,8 +34,12 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     }
 
     public void addToOpponentHand() {
-        Log.i("PickCardFragment", "AddToOpponentHand");
+        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout)getView().findViewById(R.id.opponentHand)).getChildCount());
+
         opponentHand.addToHand();
+
+        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout)getView().findViewById(R.id.opponentHand)).getChildCount());
+
     }
 
 
@@ -79,7 +83,6 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
             view.findViewById(clickableId).setOnClickListener(this);
         }
 
-        firstCardView.setCard(game.peakTopCard());
 
         // Inflate the layout for this fragment
         return view;

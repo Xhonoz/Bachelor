@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.wordpress.honeymoonbridge.bridgeapp.Activities.GameActivity;
 import com.wordpress.honeymoonbridge.bridgeapp.Activities.MainActivity;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 import org.w3c.dom.Text;
@@ -36,10 +37,16 @@ public class ResultFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_result, container, false);
-        ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.contract) + " " + game.getGameState().getContract());
+        int tricksTaken = 0;
+        if(game.getGameState().getContract().getPlayer() == Player.NORTH)
+            tricksTaken = game.getGameState().getNorthTricks();
+        else
+            tricksTaken = game.getGameState().getSouthTricks();
+
+        ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.contract) + " " + game.getGameState().getContract().toStringWithPlayerAndWithTricks(tricksTaken) );
         ((TextView)view.findViewById(R.id.trickScore)).setText("" + game.getGameState().getContract().Points(game.getGameState().getContract().getTricks()));
         ((TextView)view.findViewById(R.id.bonus)).setText("" + game.getGameState().getContract().Bonus(game.getGameState().getContract().getTricks()));
-        ((TextView)view.findViewById(R.id.totalPoints)).setText("" + (game.getGameState().getContract().Bonus(game.getGameState().getContract().getTricks()) + game.getGameState().getContract().Points(game.getGameState().getContract().getTricks())) );
+        ((TextView)view.findViewById(R.id.totalPoints)).setText("" + (game.getGameState().getContract().Points(tricksTaken) ));
 
 
         final int[] clickableIds = {

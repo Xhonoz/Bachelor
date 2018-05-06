@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.BiddingFragment;
+import com.wordpress.honeymoonbridge.bridgeapp.Fragments.HandFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PickCardFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PlayFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.ResultFragment;
@@ -30,8 +31,8 @@ public class GameActivity extends AppCompatActivity
         implements PickCardFragment.Callback,
         BiddingFragment.Callback,
         PlayFragment.Callback,
+        HandFragment.Callback,
         Game.Callback,
-        HandAdapter.Callback,
         ResultFragment.OnFragmentInteractionListener
 {
 
@@ -40,12 +41,12 @@ public class GameActivity extends AppCompatActivity
     private PickCardFragment mPickCardFragment;
     private PlayFragment mPlayFragment;
     private ResultFragment mResultFragment;
+    private HandFragment mFullHandFragment;
+    private HandFragment mPlayingHandFragment;
 
     //    game
     private Game game;
 
-    //    Adapters
-    private HandAdapter handAdapter;
 
 
     private Card picked;
@@ -65,6 +66,10 @@ public class GameActivity extends AppCompatActivity
 
         mResultFragment = new ResultFragment();
 
+        mFullHandFragment = new HandFragment();
+
+        mPlayingHandFragment = new HandFragment();
+
 
         game = new Game(false, new TopInLong());
         game.getGameState().getStack().shuffleCardStack();
@@ -74,12 +79,14 @@ public class GameActivity extends AppCompatActivity
         mBiddingFragment.setGame(game);
         mResultFragment.setGame(game);
 
+        mFullHandFragment.setUpHandAdapter(this);
+        mPlayingHandFragment.setUpHandAdapter(this);
+
 
         switchToFragment(mPickCardFragment);
+        switchHandFragment(mPlayingHandFragment);
 
 
-        handAdapter = new HandAdapter(new Hand(), (LinearLayout) findViewById(R.id.yourHand), getApplicationContext());
-        handAdapter.setCallback(this);
 
 
 
@@ -115,6 +122,7 @@ public class GameActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         game.startPickingPhase();
+        mPickCardFragment.newCardsUI();
     }
 
     // Switch UI to the given fragment
@@ -145,6 +153,11 @@ public class GameActivity extends AppCompatActivity
     }
 
     @Override
+    public void wonTrick(Player player) {
+        mPlayFragment.updateTricks(game.getGameState());
+    }
+
+    @Override
     public void finishPicking() {
         Log.i("GameActivity", "finishPicking");
 //        TODO: check if bidding is enabled
@@ -167,8 +180,15 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void finishPlaying() {
+        Log.i("GameActivity: ", "" + game.getGameState().getInitialSouthHand().getSize());
+        switchHandFragment(mFullHandFragment);
         switchToFragment(mResultFragment);
 
+    }
+
+    private void switchHandFragment(HandFragment frag) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.handFragmentContainer, frag)
+                .commit();
     }
 
 
@@ -223,8 +243,6 @@ public class GameActivity extends AppCompatActivity
             if (picked != null) {
                 mPickCardFragment.showCardPickedUI(first);
             }
-
-
     }
 
     @Override
@@ -233,11 +251,11 @@ public class GameActivity extends AppCompatActivity
     }
 
     @Override
-    public void clickedCard(Card card) {
+    public void onClickedCard(Card card) {
         if(game.getGameState().getPhase() == Phase.PLAYING) {
             boolean shoudlBeLegal = game.isLegal(Player.NORTH, card);
             if (game.UIPlayCard(card)) {
-                handAdapter.removeCard(card);
+                mPlayingHandFragment.removeFromHand(card);
                 mPlayFragment.setSouthPlayedCard(card);
             }
             if (shoudlBeLegal && !game.getGameState().getTricks().isEmpty() && game.getGameState().getTricks().get(game.getGameState().getTricks().size() - 1).SecondCard == null)
@@ -258,7 +276,8 @@ public class GameActivity extends AppCompatActivity
         if(game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn() && picked != null) {
             game.UIPickCard(picked.equals(game.peakTopCard()));
             mPickCardFragment.newCardsUI();
-            handAdapter.addToHand(picked);
+            mFullHandFragment.addToHand(picked);
+            mPlayingHandFragment.addToHand(picked);
             picked = null;
         }
     }

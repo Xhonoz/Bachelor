@@ -33,6 +33,8 @@ public class Game {
 
         void AiPlayedCard(Card card, boolean first);
 
+        void wonTrick(Player player);
+
         void finishPicking();
 
         void finishBidding();
@@ -68,6 +70,7 @@ public class Game {
     public void startBiddingPhase() {
         Log.i("GAME", "startBiddingPhase");
         gamestate.setPhase(Phase.BIDDING);
+        gamestate.setSouthTurn(gamestate.getDealer() == Player.SOUTH);
         if (!gamestate.isSouthTurn())
             AiTakesTurnBidding();
 
@@ -75,10 +78,11 @@ public class Game {
 
     public void startPlayingPhase() {
         gamestate.lockInitialHands();
+        Log.i("GAME", "Size of initialSouthHand: " + gamestate.getInitialSouthHand().getSize());
         Contract contract = getContract();
         if(contract != null) {
             gamestate.setContract(contract);
-            gamestate.setSouthTurn((gamestate.getContract().getPlayer() == Player.NORTH));
+            gamestate.setSouthTurn((contract.getPlayer() == Player.NORTH));
             gamestate.setPhase(Phase.PLAYING);
             mCallback.startPlaying();
         }else
@@ -211,8 +215,13 @@ public class Game {
             } else {
                 gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard = card;
                 gamestate.setSouthTurn(!compareCards(gamestate.getTrump(), gamestate.getTricks().get(gamestate.getTricks().size() - 1).firstCard, card));
-                if (gamestate.isSouthTurn())
+                if (gamestate.isSouthTurn()) {
                     gamestate.incrementSouthTricks();
+                    mCallback.wonTrick(Player.SOUTH);
+                }else {
+                    gamestate.incrementNorthTricks();
+                    mCallback.wonTrick(Player.NORTH);
+                }
             }
             if(gamestate.getNorthHand().getSize() == 0 && gamestate.getSouthHand().getSize() == 0)
                 finishGame();
@@ -227,8 +236,13 @@ public class Game {
             } else {
                 gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard = card;
                 gamestate.setSouthTurn(compareCards(gamestate.getTrump(), gamestate.getTricks().get(gamestate.getTricks().size() - 1).firstCard, card));
-                if (gamestate.isSouthTurn())
+                if (gamestate.isSouthTurn()) {
                     gamestate.incrementSouthTricks();
+                    mCallback.wonTrick(Player.SOUTH);
+                }else {
+                    gamestate.incrementNorthTricks();
+                    mCallback.wonTrick(Player.NORTH);
+                }
             }
             if(gamestate.getNorthHand().getSize() == 0 && gamestate.getSouthHand().getSize() == 0)
                 finishGame();

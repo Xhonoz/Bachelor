@@ -6,10 +6,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
-
-import java.util.ArrayList;
 
 /**
  * Created by Eier on 13.04.2018.
@@ -50,8 +47,6 @@ public class OpponentHand {
     public void removeCard(int posistion){
         handLayout.removeViewAt(posistion);
         length --;
-        if(length != 0)
-            fixLast();
     }
 
 
@@ -79,7 +74,7 @@ public class OpponentHand {
             params.setMargins(0, 0, -150, 0);
 
         }else if(length != 0){
-            fixLast();
+            fixNotLast();
         }
 
         view.setLayoutParams(params);
@@ -96,7 +91,7 @@ public class OpponentHand {
 
     }
 
-    private void fixLast(){
+    private void fixNotLast(){
         LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         params2.weight = 1;

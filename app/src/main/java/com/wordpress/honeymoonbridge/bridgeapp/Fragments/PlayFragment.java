@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.GameState;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.CardViewAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.OpponentHand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
@@ -89,10 +90,12 @@ public class PlayFragment extends Fragment {
         opponentHand = new OpponentHand((LinearLayout) view.findViewById(R.id.opponentHand), getContext(), 13);
         northPlayedCard = new CardViewAdapter((ImageView) view.findViewById(R.id.OpponentPlayedCard), getContext());
         southPlayedCard = new CardViewAdapter((ImageView) view.findViewById(R.id.YourPlayedCard), getContext());
-        if (contract != null) {
-            ((TextView) view.findViewById(R.id.contractView)).setText(contract.toString());
-            ((TextView) view.findViewById(R.id.contractView)).setTextColor(Color.BLACK);
-        }
+        if (contract != null)
+            ((TextView) view.findViewById(R.id.contractView)).setText(contract.toStringWithPlayer());
+        ((TextView)view.findViewById(R.id.northTrickView)).setText("N: 0");
+        ((TextView)view.findViewById(R.id.southTrickView)).setText("S: 0");
+
+
 
         // Inflate the layout for this fragment
         return view;
@@ -114,6 +117,11 @@ public class PlayFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mCallback = null;
+    }
+
+    public void updateTricks(GameState gm){
+        ((TextView)getView().findViewById(R.id.northTrickView)).setText("N: " + gm.getNorthTricks());
+        ((TextView)getView().findViewById(R.id.southTrickView)).setText("S: " + gm.getSouthTricks());
     }
 
 
