@@ -67,7 +67,7 @@ public class OpponentHand {
 
         ImageView view = new ImageView(mContext);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams.MATCH_PARENT);
         params.weight = 1;
         if(!last) {
 
@@ -85,7 +85,7 @@ public class OpponentHand {
 
 
         view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                R.drawable.backside), 400, true));
+                R.drawable.backside), ImageHelper.scaleDownImageSize, true));
 
         handLayout.addView(view);
 
@@ -93,7 +93,7 @@ public class OpponentHand {
 
     private void fixNotLast(){
         LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(0,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams.MATCH_PARENT);
         params2.weight = 1;
         params2.setMargins(0, 0, -150, 0);
 

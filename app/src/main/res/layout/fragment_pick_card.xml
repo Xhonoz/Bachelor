@@ -79,7 +79,7 @@
                 android:id="@+id/firstCard"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:src="@drawable/clubs_5"
                 android:layout_gravity="center"
                 />
@@ -88,7 +88,7 @@
                 android:id="@+id/secondCard"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:src="@drawable/backside"
                 android:layout_gravity="center"
                 />

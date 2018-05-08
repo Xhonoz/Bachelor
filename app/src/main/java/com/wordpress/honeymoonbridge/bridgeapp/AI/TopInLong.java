@@ -247,6 +247,9 @@ public class TopInLong implements AIPlayer {
     @Override
     public Bid bid(GameState state) {
         Hand hand = state.getNorthHand();
+
+        if(state.getBiddingHistory().getLastSouthBid() instanceof Contract && ((Contract)state.getBiddingHistory().getLastSouthBid()).getTricks() == 7)
+            return new Double(Player.SOUTH);
         int hcp = hand.hcp();
         if (hcp >= 10 && hcp <= 13) {
             if (hand.isBalancedHand()) {

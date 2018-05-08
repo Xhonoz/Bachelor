@@ -10,6 +10,8 @@ import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 public class ImageHelper {
 
+    public static int scaleDownImageSize = 300;
+
     public static Bitmap scaleDown(Bitmap realImage, float maxImageSize,
                                    boolean filter) {
         float ratio = Math.min(
@@ -23,7 +25,7 @@ public class ImageHelper {
         return newBitmap;
     }
 
-    public static int[] drawables = {
+    public static int[] cards = {
             R.drawable.clubs_2,
             R.drawable.clubs_3,
             R.drawable.clubs_4,
@@ -76,6 +78,63 @@ public class ImageHelper {
             R.drawable.queen_of_spades2,
             R.drawable.king_of_spades2,
             R.drawable.ace_of_spades2,
+
+
+    };
+
+    public static int[] cardsMarked = {
+            R.drawable.clubs_2_marked,
+            R.drawable.clubs_3_marked,
+            R.drawable.clubs_4_marked,
+            R.drawable.clubs_5_marked,
+            R.drawable.clubs_6_marked,
+            R.drawable.clubs_7_marked,
+            R.drawable.clubs_8_marked,
+            R.drawable.clubs_9_marked,
+            R.drawable.clubs_10_marked,
+            R.drawable.jack_of_clubs2_marked,
+            R.drawable.queen_of_clubs2_marked,
+            R.drawable.king_of_clubs2_marked,
+            R.drawable.ace_of_clubs_marked,
+            R.drawable.diamonds_2_marked,
+            R.drawable.diamonds_3_marked,
+            R.drawable.diamonds_4_marked,
+            R.drawable.diamonds_5_marked,
+            R.drawable.diamonds_6_marked,
+            R.drawable.diamonds_7_marked,
+            R.drawable.diamonds_8_marked,
+            R.drawable.diamonds_9_marked,
+            R.drawable.diamonds_10_marked,
+            R.drawable.jack_of_diamonds2_marked,
+            R.drawable.queen_of_diamonds2_marked,
+            R.drawable.king_of_diamonds2_marked,
+            R.drawable.ace_of_diamonds_marked,
+            R.drawable.hearts_2_marked,
+            R.drawable.hearts_3_marked,
+            R.drawable.hearts_4_marked,
+            R.drawable.hearts_5_marked,
+            R.drawable.hearts_6_marked,
+            R.drawable.hearts_7_marked,
+            R.drawable.hearts_8_marked,
+            R.drawable.hearts_9_marked,
+            R.drawable.hearts_10_marked,
+            R.drawable.jack_of_hearts2_marked,
+            R.drawable.queen_of_hearts2_marked,
+            R.drawable.king_of_hearts2_marked,
+            R.drawable.ace_of_hearts_marked,
+            R.drawable.spades_2_marked,
+            R.drawable.spades_3_marked,
+            R.drawable.spades_4_marked,
+            R.drawable.spades_5_marked,
+            R.drawable.spades_6_marked,
+            R.drawable.spades_7_marked,
+            R.drawable.spades_8_marked,
+            R.drawable.spades_9_marked,
+            R.drawable.spades_10_marked,
+            R.drawable.jack_of_spades2_marked,
+            R.drawable.queen_of_spades2_marked,
+            R.drawable.king_of_spades2_marked,
+            R.drawable.ace_of_spades2_marked,
 
 
     };

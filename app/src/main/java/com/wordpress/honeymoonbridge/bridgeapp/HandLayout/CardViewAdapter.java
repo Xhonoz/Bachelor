@@ -2,8 +2,6 @@ package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.support.v4.content.res.ResourcesCompat;
 import android.widget.ImageView;
 
@@ -32,19 +30,33 @@ public class CardViewAdapter {
             int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
 
             imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                    ImageHelper.drawables[index]), 400, true));
+                    ImageHelper.cards[index]), ImageHelper.scaleDownImageSize, true));
+
+//            imageView.setId(index);
 
         }else
-            imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                    R.drawable.backside), 400, true));
+            imageView.setImageBitmap(null);
+    }
+
+    public void setBackside(){
+        imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
+                R.drawable.backside), ImageHelper.scaleDownImageSize, true));
     }
 
     public void addHighlight(){
-        imageView.setColorFilter(ResourcesCompat.getColor(mContext.getResources(), R.color.highligth, null));
+        int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
+
+        imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
+                ImageHelper.cardsMarked[index]), ImageHelper.scaleDownImageSize, true));
     }
 
-    public void removeHighlight(){
-        imageView.setColorFilter(null);
+    public void removeHighlight() {
+        if (card != null){
+            int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
+
+        imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
+                ImageHelper.cards[index]), ImageHelper.scaleDownImageSize, true));
+    }
     }
 
     public Card getCard() {

@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
@@ -134,7 +133,7 @@ public class HandAdapter implements View.OnClickListener{
             view.setId(index);
             view.setOnClickListener(this);
             view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                    ImageHelper.drawables[index]), 400, true));
+                    ImageHelper.cards[index]), ImageHelper.scaleDownImageSize, true));
 
             handLayout.addView(view);
 
@@ -167,7 +166,7 @@ public class HandAdapter implements View.OnClickListener{
             view.setId(indexCard);
             view.setOnClickListener(this);
             view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                    ImageHelper.drawables[indexCard]), 400, true));
+                    ImageHelper.cards[indexCard]), ImageHelper.scaleDownImageSize, true));
 
             handLayout.addView(view, index);
 

@@ -126,7 +126,7 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
             Card top = game.peakTopCard();
             if (top != null)
                 firstCardView.setCard(game.peakTopCard());
-            secondCardView.setCard(null);
+            secondCardView.setBackside();
         }
     }
 

@@ -378,6 +378,16 @@ public class Game {
     // 1 = succsessfull
     // 2 = Can't Double
     // 3 = Not your turn
+    public int UIDoubleOrRedouble() {
+
+       if(gamestate.getBiddingHistory().getLastNorthBid() instanceof Double)
+           return UIReDouble();
+       return  UIDouble();
+    }
+
+    // 1 = succsessfull
+    // 2 = Can't Double
+    // 3 = Not your turn
     public int UIDouble() {
 
         if (!gamestate.isSouthTurn())

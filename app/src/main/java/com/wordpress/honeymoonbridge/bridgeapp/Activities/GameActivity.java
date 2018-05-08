@@ -212,7 +212,7 @@ public class GameActivity extends AppCompatActivity
     //TODO: Fix Redoubles
     @Override
     public void Double() {
-        int resultCode = game.UIDouble();
+        int resultCode = game.UIDoubleOrRedouble();
 
         if (resultCode == 1) {
 

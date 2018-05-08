@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 
@@ -18,6 +20,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.BiddingHistory;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Contract;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Double;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 /**
@@ -120,6 +123,14 @@ public class BiddingFragment extends Fragment implements View.OnClickListener {
     }
 
     public void updateRecyclerViews(){
+
+        if(game.getGameState().getBiddingHistory() != null && game.getGameState().getBiddingHistory().getLastNorthBid() instanceof Double) {
+            Button doubleButton = ((Button) getView().findViewById(R.id.double_button));
+            doubleButton.setBackgroundResource(R.drawable.blue_button);
+            doubleButton.setText("XX");
+
+        }
+
 
         northAdapter = new BiddingHistoryAdapter(game.getGameState().getBiddingHistory().getNorth());
         southAdapter = new BiddingHistoryAdapter(game.getGameState().getBiddingHistory().getSouth());
