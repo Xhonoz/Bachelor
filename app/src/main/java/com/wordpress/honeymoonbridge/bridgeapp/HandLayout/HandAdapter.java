@@ -2,14 +2,23 @@ package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
+import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 import java.util.ArrayList;
 
@@ -17,7 +26,7 @@ import java.util.ArrayList;
  * Created by Eier on 10.04.2018.
  */
 
-public class HandAdapter implements View.OnClickListener{
+public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
     Hand hand;
 
@@ -29,10 +38,176 @@ public class HandAdapter implements View.OnClickListener{
 
     Callback mCallback;
 
+    String TAG = "HandAdapter";
+
+    View highligthedView = null;
+
     private final int MARGIN_RIGHT = -200;
+
+    private final int HIGHLIGHT_MARGIN = -100;
+
+    private int animationSpeed = 200;
+
+
+    private ArrayList<Rect> cardHitBoxes;    // Variable rect to hold the bounds of the view
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                Log.i("HandAdapter", "OnTouch: DOWN, VIEW: " + view.toString());
+                changeHighlightedView(view);
+                cardHitBoxes = new ArrayList<>();
+                for(int i = 0; i < handLayout.getChildCount(); i++) {
+                    View v = handLayout.getChildAt(i);
+                    Rect rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+                    cardHitBoxes.add(rect);
+
+                }
+
+
+                break;
+
+
+            case MotionEvent.ACTION_MOVE:
+                boolean outsideOfHand = true;
+                for(int i = 0; i < cardHitBoxes.size(); i++) {
+                    Rect rect = cardHitBoxes.get(i);
+                    View v = handLayout.getChildAt(i);
+                    if (rect.contains(view.getLeft() + (int) motionEvent.getX(), view.getTop() + (int) motionEvent.getY())) {
+                        // User moved outside bounds
+                        changeHighlightedView(v);
+                        outsideOfHand = false;
+                    }
+                }
+                if(outsideOfHand)
+                    changeHighlightedView(null);
+                break;
+
+            case MotionEvent.ACTION_UP:
+                Log.i(TAG, "onTouch: ActionUpRegistrered");
+                if(highligthedView != null) {
+                    Card card = new Card(highligthedView.getId());
+                    changeHighlightedView(null);
+                    mCallback.clickedCard(card);
+
+
+                }
+                break;
+
+
+        }
+        return false;
+    }
+
+    public void startPlayCardAnimation(final Card card, final ImageView newImg, boolean highlighted){
+        Log.i(TAG, "Animation, on Card: " +  card);
+        final ImageView oldImg = handLayout.findViewById(card.getIndex());
+        int oW = oldImg.getWidth();
+        int oH = oldImg.getHeight();
+        if(highlighted)
+            oH += HIGHLIGHT_MARGIN;
+        int nW = newImg.getWidth();
+        int nH = newImg.getHeight();
+
+
+        double imageRatio  = ((double)oldImg.getWidth())/oH;
+//        if(highligthedView != null && highligthedView.equals(oldImg))
+//             imageRatio += HIGHLIGHT_MARGIN;
+
+        double imageViewRatio  = ((double)newImg.getWidth())/newImg.getHeight();
+
+        float drawX;
+        double drawWidth;
+        float drawY;
+
+
+        drawY = newImg.getY();
+        drawWidth = (imageRatio/imageViewRatio) * newImg.getWidth();
+        drawX = (int)(newImg.getWidth() - drawWidth)/2;
+
+        float scalingFactor = (float)drawWidth/oldImg.getWidth();
+
+
+
+        int[] coordinatesOld = new int[2];
+        int[] coordinatesNew = new int[2];
+        oldImg.getLocationOnScreen(coordinatesOld);
+        newImg.getLocationOnScreen(coordinatesNew);
+
+
+        AnimationSet set = new AnimationSet(false);
+
+        Animation animation1 = new TranslateAnimation(0, -(oldImg.getX() - drawX)/scalingFactor, HIGHLIGHT_MARGIN/2, -( coordinatesOld[1] - ((highlighted) ? HIGHLIGHT_MARGIN : 0) - coordinatesNew[1])/scalingFactor);
+        animation1.setDuration(animationSpeed);
+        Animation animation2 = new ScaleAnimation(1f,scalingFactor,1f,scalingFactor, Animation.ABSOLUTE,0f,Animation.ABSOLUTE,0f);
+        animation2.setDuration(animationSpeed);
+        set.addAnimation(animation1);
+        set.addAnimation(animation2);
+        oldImg.startAnimation(set);
+
+        set.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                removeCard(card);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mCallback.finishedPlayAnimation(card);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+    }
+
+    private void changeHighlightedView(View view){
+        if(highligthedView == null || !highligthedView.equals(view)){
+            if(highligthedView != null) {
+
+                ((ImageView)highligthedView).setColorFilter(null);
+
+                LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams)((ImageView) highligthedView).getLayoutParams();
+                newParams.topMargin = 0;
+                highligthedView.setLayoutParams(newParams);
+            }
+            highligthedView = view;
+            if(highligthedView != null) {
+                int highlightColor = mContext.getResources().getColor(R.color.highlight);
+                ((ImageView) highligthedView).setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY);
+                LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams)((ImageView) highligthedView).getLayoutParams();
+                newParams.topMargin = HIGHLIGHT_MARGIN;
+                highligthedView.setLayoutParams(newParams);
+
+            }
+        }
+    }
+
+    private void changeImage(ImageView v, int cardIndex, boolean marked){
+        if(marked)
+            v.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
+                    ImageHelper.cardsMarked[cardIndex]), ImageHelper.scaleDownImageSize, true));
+        else
+            v.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
+                    ImageHelper.cards[cardIndex]), ImageHelper.scaleDownImageSize, true));
+    }
+
+
 
     public interface Callback{
         void clickedCard(Card card);
+        void finishedPlayAnimation(Card card);
     }
 
 
@@ -83,14 +258,14 @@ public class HandAdapter implements View.OnClickListener{
 
     public void removeCard(Card card) {
 
-      int cardIndex = card.getIndex();
-      hand.removeCard(card);
-      View child = handLayout.findViewById(cardIndex);
-      if(handLayout.getChildCount() > 1 && handLayout.getChildAt(handLayout.getChildCount() - 1).equals(child)) {
-          handLayout.removeView(child);
-          fixLast();
-      }else
-          handLayout.removeView(child);
+        int cardIndex = card.getIndex();
+        hand.removeCard(card);
+        View child = handLayout.findViewById(cardIndex);
+        if(handLayout.getChildCount() > 1 && handLayout.getChildAt(handLayout.getChildCount() - 1).equals(child)) {
+            handLayout.removeView(child);
+            fixLast();
+        }else
+            handLayout.removeView(child);
 
 
 
@@ -116,6 +291,7 @@ public class HandAdapter implements View.OnClickListener{
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
                     LinearLayout.LayoutParams.MATCH_PARENT);
             params.weight = 1;
+            params.gravity = Gravity.BOTTOM;
             if (!last) {
 
                 params.setMargins(0, 0, MARGIN_RIGHT, 0);
@@ -132,8 +308,9 @@ public class HandAdapter implements View.OnClickListener{
 
             view.setId(index);
             view.setOnClickListener(this);
-            view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                    ImageHelper.cards[index]), ImageHelper.scaleDownImageSize, true));
+            view.setOnTouchListener(this);
+            changeImage(view, index, false);
+
 
             handLayout.addView(view);
 
@@ -151,6 +328,7 @@ public class HandAdapter implements View.OnClickListener{
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
                     LinearLayout.LayoutParams.MATCH_PARENT);
             params.weight = 1;
+            params.gravity = Gravity.BOTTOM;
             if (!last) {
 
                 params.setMargins(0, 0, MARGIN_RIGHT, 0);
@@ -165,8 +343,8 @@ public class HandAdapter implements View.OnClickListener{
             int indexCard = card.getIndex();
             view.setId(indexCard);
             view.setOnClickListener(this);
-            view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                    ImageHelper.cards[indexCard]), ImageHelper.scaleDownImageSize, true));
+            view.setOnTouchListener(this);
+            changeImage(view, indexCard, false);
 
             handLayout.addView(view, index);
 
@@ -178,6 +356,7 @@ public class HandAdapter implements View.OnClickListener{
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.MATCH_PARENT);
         params.weight = 1;
+        params.gravity = Gravity.BOTTOM;
         params.setMargins(0, 0, MARGIN_RIGHT, 0);
 
         handLayout.getChildAt(handLayout.getChildCount() - 1).setLayoutParams(params);
@@ -189,6 +368,7 @@ public class HandAdapter implements View.OnClickListener{
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.MATCH_PARENT);
         params.weight = 1;
+        params.gravity = Gravity.BOTTOM;
         params.setMargins(0, 0, 0, 0);
 
         handLayout.getChildAt(handLayout.getChildCount() -1 ).setLayoutParams(params);
@@ -198,10 +378,9 @@ public class HandAdapter implements View.OnClickListener{
     @Override
     public void onClick(View view) {
 
-        if(mCallback != null) {
-            int index = view.getId();
-            Card card = new Card(index);
-            mCallback.clickedCard(card);
-        }
     }
+
+
+
 }
+

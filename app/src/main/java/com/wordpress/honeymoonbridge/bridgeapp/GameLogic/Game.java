@@ -147,6 +147,10 @@ public class Game {
     }
 
     public boolean isLegal(Player player, Card card) {
+        if(!gamestate.isSouthTurn() && player == Player.SOUTH)
+            return false;
+        if(gamestate.isSouthTurn() && player == Player.NORTH)
+            return false;
         Trick trick = null;
         Hand hand;
         if (player.equals(Player.NORTH)) {

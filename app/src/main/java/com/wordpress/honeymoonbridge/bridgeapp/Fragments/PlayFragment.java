@@ -25,7 +25,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.R;
  * to handle interaction events.
  * create an instance of this fragment.
  */
-public class PlayFragment extends Fragment {
+public class PlayFragment extends Fragment implements OpponentHand.Callback {
 
     private CardViewAdapter northPlayedCard;
     private CardViewAdapter southPlayedCard;
@@ -43,14 +43,25 @@ public class PlayFragment extends Fragment {
         southPlayedCard.setCard(card);
     }
 
+    public void playCardFromOpponent(Card card){
+        opponentHand.startPlayAnimation(card, northPlayedCard.getImageView());
+    }
+
     public void removeCardFromNorthHand() {
         opponentHand.removeCard(0);
+    }
+
+    @Override
+    public void finishedPlayAnimation(Card card) {
+        setNorthPlayedCard(card);
+        mCallback.finishOpponentPlayCardAnimation(card);
     }
 
 
     public interface Callback {
         // TODO: Update argument type and name
-
+        void finishOpponentPlayCardAnimation(Card card);
+        void readyToStart();
 
     }
 
@@ -88,6 +99,7 @@ public class PlayFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_play, container, false);
 
         opponentHand = new OpponentHand((LinearLayout) view.findViewById(R.id.opponentHand), getContext(), 13);
+        opponentHand.setmCallback(this);
         northPlayedCard = new CardViewAdapter((ImageView) view.findViewById(R.id.OpponentPlayedCard), getContext());
         southPlayedCard = new CardViewAdapter((ImageView) view.findViewById(R.id.YourPlayedCard), getContext());
         if (contract != null)
@@ -96,11 +108,14 @@ public class PlayFragment extends Fragment {
         ((TextView)view.findViewById(R.id.southTrickView)).setText("S: 0");
 
 
-
         // Inflate the layout for this fragment
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -124,5 +139,19 @@ public class PlayFragment extends Fragment {
         ((TextView)getView().findViewById(R.id.southTrickView)).setText("S: " + gm.getSouthTricks());
     }
 
+    public CardViewAdapter getNorthPlayedCard() {
+        return northPlayedCard;
+    }
 
+    public CardViewAdapter getSouthPlayedCard() {
+        return southPlayedCard;
+    }
+
+    public OpponentHand getOpponentHand() {
+        return opponentHand;
+    }
+
+    public Callback getmCallback() {
+        return mCallback;
+    }
 }

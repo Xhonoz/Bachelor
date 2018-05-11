@@ -51,6 +51,8 @@ public class GameActivity extends AppCompatActivity
 
     private Card picked;
 
+    boolean waiting = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,8 +147,7 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void AiPlayedCard(Card card, boolean first) {
-        mPlayFragment.setNorthPlayedCard(card);
-        mPlayFragment.removeCardFromNorthHand();
+        mPlayFragment.playCardFromOpponent(card);
         if(first)
             mPlayFragment.setSouthPlayedCard(null);
 
@@ -176,6 +177,8 @@ public class GameActivity extends AppCompatActivity
             switchToFragment(mPlayFragment);
 
     }
+
+
 
 
     @Override
@@ -252,23 +255,48 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void onClickedCard(Card card) {
-        if(game.getGameState().getPhase() == Phase.PLAYING) {
-            boolean shoudlBeLegal = game.isLegal(Player.NORTH, card);
-            if (game.UIPlayCard(card)) {
-                mPlayingHandFragment.removeFromHand(card);
-                mPlayFragment.setSouthPlayedCard(card);
-            }
-            if (shoudlBeLegal && !game.getGameState().getTricks().isEmpty() && game.getGameState().getTricks().get(game.getGameState().getTricks().size() - 1).SecondCard == null)
-                mPlayFragment.setNorthPlayedCard(null);
+        if(!waiting) {
+            if (game.getGameState().getPhase() == Phase.PLAYING) {
+                boolean shoudlBeLegal = game.isLegal(Player.SOUTH, card);
+                if (game.UIPlayCard(card)) {
+                    waiting = true;
+                    mPlayingHandFragment.playCardFromHand(card, mPlayFragment.getSouthPlayedCard().getImageView());
+                }
+                if (shoudlBeLegal && !game.getGameState().getTricks().isEmpty() && game.getGameState().getTricks().get(game.getGameState().getTricks().size() - 1).SecondCard == null) {
+                    mPlayFragment.setNorthPlayedCard(null);
+                    mPlayFragment.setSouthPlayedCard(null);
+                }
 
+            }
         }
+    }
+
+    @Override
+    public void onFinishPlayingCard(Card card) {
+//        if(mPlayFragment.getNorthPlayedCard() != null)
+//            waiting = false;
+        mPlayFragment.setSouthPlayedCard(card);
+        if(mPlayFragment.getNorthPlayedCard().getCard() == null)
+            game.northTakeTurn();
     }
 
     public void onClickScreen(View view) {
         if(game.getGameState().getPhase() == Phase.PICKING)
             addCardToHand();
-        if(game.getGameState().getPhase() == Phase.PLAYING)
-            game.northTakeTurn();
+        if(game.getGameState().getPhase() == Phase.PLAYING){
+            if(game.getGameState().getTricks().isEmpty())
+                game.northTakeTurn();
+            if(mPlayFragment.getNorthPlayedCard().getCard() != null && mPlayFragment.getSouthPlayedCard().getCard() != null) {
+                waiting = false;
+                Card nC = mPlayFragment.getNorthPlayedCard().getCard();
+                Card sC = mPlayFragment.getSouthPlayedCard().getCard();
+                mPlayFragment.setNorthPlayedCard(null);
+                mPlayFragment.setSouthPlayedCard(null);
+                game.northTakeTurn();
+            }
+
+        }
+
 
     }
 
@@ -285,5 +313,15 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void finishOpponentPlayCardAnimation(Card card) {
+
+    }
+
+    @Override
+    public void readyToStart() {
+        game.northTakeTurn();
     }
 }

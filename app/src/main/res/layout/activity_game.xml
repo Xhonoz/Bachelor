@@ -11,23 +11,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#038103"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="12"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:id="@+id/fragment_container"></FrameLayout>
 
 
             <Space
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:clipChildren="false"
+                android:clipToPadding="false"/>
 
             <!--Your Hand-->
             <FrameLayout
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:id="@+id/handFragmentContainer"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

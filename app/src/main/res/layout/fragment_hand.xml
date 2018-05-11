@@ -2,7 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.wordpress.honeymoonbridge.bridgeapp.Fragments.HandFragment">
+    tools:context="com.wordpress.honeymoonbridge.bridgeapp.Fragments.HandFragment"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <!--Your Hand-->
     <LinearLayout
@@ -10,6 +12,8 @@
         android:id="@+id/HandLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         >
 
     </LinearLayout>

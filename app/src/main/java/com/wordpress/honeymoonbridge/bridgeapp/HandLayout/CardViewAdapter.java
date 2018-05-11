@@ -2,6 +2,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.support.v4.content.res.ResourcesCompat;
 import android.widget.ImageView;
 
@@ -23,6 +24,10 @@ public class CardViewAdapter {
         mContext = context;
     }
 
+    public ImageView getImageView() {
+        return imageView;
+    }
+
     public void setCard(Card card) {
         if(card != null) {
             this.card = card;
@@ -34,8 +39,10 @@ public class CardViewAdapter {
 
 //            imageView.setId(index);
 
-        }else
+        }else {
+            this.card = null;
             imageView.setImageBitmap(null);
+        }
     }
 
     public void setBackside(){
@@ -44,19 +51,13 @@ public class CardViewAdapter {
     }
 
     public void addHighlight(){
-        int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
-
-        imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                ImageHelper.cardsMarked[index]), ImageHelper.scaleDownImageSize, true));
+        int highlightColor = mContext.getResources().getColor(R.color.highlight);
+        imageView.setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY);
     }
 
     public void removeHighlight() {
-        if (card != null){
-            int index = card.getSuit().ordinal() * 13 + card.getCardValue() - 2;
+        imageView.setColorFilter(null);
 
-        imageView.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                ImageHelper.cards[index]), ImageHelper.scaleDownImageSize, true));
-    }
     }
 
     public Card getCard() {

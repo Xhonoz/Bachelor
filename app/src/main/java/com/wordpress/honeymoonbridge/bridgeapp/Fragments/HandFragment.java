@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
@@ -54,8 +55,8 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
 
     }
 
-    public void removeFromHand(Card card){
-        handAdapter.removeCard(card);
+    public void playCardFromHand(Card card, ImageView view){
+        handAdapter.startPlayCardAnimation(card, view, true);
     }
 
 
@@ -84,6 +85,11 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
         mCallback.onClickedCard(card);
     }
 
+    @Override
+    public void finishedPlayAnimation(Card card) {
+        mCallback.onFinishPlayingCard(card);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -97,5 +103,6 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
     public interface Callback {
         // TODO: Update argument type and name
         void onClickedCard(Card card);
+        void onFinishPlayingCard(Card card);
     }
 }
