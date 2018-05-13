@@ -52,7 +52,9 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
 
     public void addToHand(Card card){
         handAdapter.addToHand(card);
-
+    }
+    public ImageView addEmptyImageview(Card card){
+       return handAdapter.addEmptyImageView(card);
     }
 
     public void playCardFromHand(Card card, ImageView view){

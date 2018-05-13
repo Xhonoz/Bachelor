@@ -2,15 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.wordpress.honeymoonbridge.bridgeapp.Fragments.PickCardFragment">
+    tools:context="com.wordpress.honeymoonbridge.bridgeapp.Fragments.PickCardFragment"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <!-- TODO: Update blank fragment layout -->
     <!--board-->
     <LinearLayout
-        android:clipChildren="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
         <!--opponentHand-->
         <LinearLayout
             android:orientation="horizontal"
@@ -70,6 +73,8 @@
             android:layout_weight="1"/>
 
         <LinearLayout
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:id="@+id/firstSecondLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"

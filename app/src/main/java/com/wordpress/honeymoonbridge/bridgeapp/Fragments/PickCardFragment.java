@@ -7,12 +7,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.CardViewAdapter;
+import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.ImageHelper;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.OpponentHand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
@@ -27,6 +32,7 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     private CardViewAdapter secondCardView;
 
     private boolean showingCards = false;
+    private int animationSpeed = 1000;
 
 
     public void setGame(Game game) {
@@ -122,6 +128,76 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
             showingCards = true;
             showCardPicked(first);
 
+
+        }
+    }
+
+    public void startPickingCardAnimation(final Card card, final ImageView newImg){
+        ImageView oldImg = null;
+        if(firstCardView.getCard().equals(card))
+            oldImg = firstCardView.getImageView();
+        if(secondCardView.getCard().equals(card))
+            oldImg = secondCardView.getImageView();
+        if(oldImg != null) {
+
+            int oW = oldImg.getWidth();
+            int oH = oldImg.getHeight();
+            int nW = newImg.getWidth() + 400;
+            int nH = newImg.getHeight() + 400;
+
+
+            double imageRatio = ((double) oW) / oH;
+//        if(highligthedView != null && highligthedView.equals(oldImg))
+//             imageRatio += HIGHLIGHT_MARGIN;
+
+            double imageViewRatio = ((double) nW) / nW;
+
+            float drawX;
+            double drawWidth;
+            float drawY;
+
+
+            drawY = newImg.getY();
+            drawWidth = (imageRatio / imageViewRatio) * nW;
+            drawX = (int) (nW - drawWidth) / 2;
+
+            float scalingFactor = (float) drawWidth / oW;
+
+
+            int[] coordinatesOld = new int[2];
+            int[] coordinatesNew = new int[2];
+            oldImg.getLocationOnScreen(coordinatesOld);
+            newImg.getLocationOnScreen(coordinatesNew);
+
+
+            AnimationSet set = new AnimationSet(false);
+
+            Animation animation1 = new TranslateAnimation(0, -(oldImg.getX() - drawX) / scalingFactor, 0, -(coordinatesOld[1] - coordinatesNew[1]) / scalingFactor);
+            animation1.setDuration(animationSpeed);
+            Animation animation2 = new ScaleAnimation(1f, scalingFactor, 1f, scalingFactor, Animation.ABSOLUTE, 0f, Animation.ABSOLUTE, 0f);
+            animation2.setDuration(animationSpeed);
+            set.addAnimation(animation1);
+            set.addAnimation(animation2);
+            oldImg.startAnimation(set);
+
+            set.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    newImg.setImageResource(ImageHelper.cards[card.getIndex()]);
+//                    TODO: fix, do this in a callback in gameActiivity
+                    newCardsUI();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
 
         }
     }

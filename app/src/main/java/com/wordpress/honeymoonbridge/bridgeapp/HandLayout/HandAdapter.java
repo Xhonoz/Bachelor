@@ -250,7 +250,13 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
     public void addToHand(Card card) {
         //TODO: make Async Task or other multiThread suport
         hand.addCard(card);
-        addImageViewToLayout(card, hand.getNewIndex(card, trump));
+        addImageViewToLayout(card, hand.getNewIndex(card, trump), false);
+    }
+
+    public ImageView addEmptyImageView(Card card) {
+        //TODO: make Async Task or other multiThread suport
+        hand.addCard(card);
+        return addImageViewToLayout(card, hand.getNewIndex(card, trump), true);
     }
 
     public void removeCard(Card card) {
@@ -314,10 +320,9 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         }
     }
 
-    private void addImageViewToLayout(Card card, int index) {
+    private ImageView addImageViewToLayout(Card card, int index, boolean empty) {
         boolean last = index == hand.getSize() - 1;
 
-        if (card != null) {
             Log.i("HandAdapter", "addImageViewToLayout with index: " + index);
 
 
@@ -341,11 +346,11 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
             view.setId(indexCard);
             view.setOnClickListener(this);
             view.setOnTouchListener(this);
-            changeImage(view, indexCard);
+            if(!empty)
+                changeImage(view, indexCard);
 
             handLayout.addView(view, index);
-
-        }
+        return view;
     }
 
     private void fixNotLast() {

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -337,12 +338,14 @@ public class GameActivity extends AppCompatActivity
     public void addCardToHand(){
         if(game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn() && picked != null) {
             game.UIPickCard(picked.equals(game.peakTopCard()));
-            mPickCardFragment.newCardsUI();
             mFullHandFragment.addToHand(picked);
-            mPlayingHandFragment.addToHand(picked);
+
+            ImageView newimg = mPlayingHandFragment.addEmptyImageview(picked);
+            mPickCardFragment.startPickingCardAnimation(picked, newimg);
             picked = null;
         }
     }
+
 
     @Override
     public void onFragmentInteraction(Uri uri) {
