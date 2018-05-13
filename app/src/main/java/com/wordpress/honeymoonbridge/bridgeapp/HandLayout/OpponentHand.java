@@ -2,6 +2,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.telecom.Call;
 import android.util.Log;
 import android.view.animation.Animation;
@@ -50,14 +51,22 @@ public class OpponentHand {
     public void SetUpLayout(int length){
         handLayout.removeAllViews();
         for(int i = 0; i < length; i++){
-            addImageViewToLayout((i == length-1));
+            addImageViewToLayout((i == length-1), -1);
         }
 //        addImageViewToLayout(hand.get(0));
     }
 
     public void addToHand(){
         //Hugs å legge til margin på forrige kort
-        addImageViewToLayout( true);
+        addImageViewToLayout( true, -1);
+    }
+
+    public void addToHand(boolean first){
+        //Hugs å legge til margin på forrige kort
+        if(first)
+            addImageViewToLayout( true, R.color.firstColor);
+        else
+            addImageViewToLayout(true, R.color.secondColor);
     }
 
     public void removeCard(int posistion){
@@ -74,7 +83,7 @@ public class OpponentHand {
 //    android:src="@drawable/clubs_2"
 //    android:layout_marginRight="-50dp"/>
 
-    private void addImageViewToLayout(boolean last) {
+    private void addImageViewToLayout(boolean last, int ColorId) {
 
 
         Log.i("HandAdapter", "addImageViewToLayout");
@@ -102,6 +111,12 @@ public class OpponentHand {
 
         view.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
                 R.drawable.backside), ImageHelper.scaleDownImageSize, true));
+
+        if(ColorId != -1){
+            int highlightColor = mContext.getResources().getColor(ColorId);
+             view.setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY);
+        }
+
 
         handLayout.addView(view);
 

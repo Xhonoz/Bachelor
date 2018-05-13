@@ -51,7 +51,11 @@ public class GameActivity extends AppCompatActivity
 
     private Card picked;
 
+//    Booleans
     boolean waiting = false;
+    boolean donePicking = false;
+    boolean doneBidding = false;
+    boolean donePlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +140,7 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void AiPickedCard(boolean first) {
-        mPickCardFragment.addToOpponentHand();
+        mPickCardFragment.addToOpponentHand(first);
 
     }
 
@@ -161,15 +165,16 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void finishPicking() {
         Log.i("GameActivity", "finishPicking");
+        mPickCardFragment.removeBothCards();
 //        TODO: check if bidding is enabled
-        switchToFragment(mBiddingFragment);
+        donePicking = true;
 //        TODO: CHeck prefferences
 
     }
 
     @Override
     public void finishBidding() {
-
+        doneBidding = true;
     }
     @Override
     public void startPlaying() {
@@ -184,8 +189,12 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void finishPlaying() {
         Log.i("GameActivity: ", "" + game.getGameState().getInitialSouthHand().getSize());
-        switchHandFragment(mFullHandFragment);
-        switchToFragment(mResultFragment);
+        donePlaying = true;
+//        if both pass
+        if(!doneBidding) {
+            endPlaying();
+        }
+
 
     }
 
@@ -242,16 +251,30 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void pickCard(boolean first) {
+        if(donePicking)
+            startBidding();
+        else {
             picked = game.getCardFromDeck(first);
             if (picked != null) {
                 mPickCardFragment.showCardPickedUI(first);
             }
+        }
+    }
+
+    private void startBidding(){
+        switchToFragment(mBiddingFragment);
+    }
+
+    private void endPlaying(){
+        switchToFragment(mResultFragment);
+        switchHandFragment(mFullHandFragment);
     }
 
     @Override
     public void confirm() {
         addCardToHand();
     }
+
 
     @Override
     public void onClickedCard(Card card) {
@@ -281,8 +304,19 @@ public class GameActivity extends AppCompatActivity
     }
 
     public void onClickScreen(View view) {
-        if(game.getGameState().getPhase() == Phase.PICKING)
-            addCardToHand();
+        if(donePlaying){
+            endPlaying();
+        }else if(doneBidding){
+//            TODO do stuff
+        }
+        else if(donePicking){
+            startBidding();
+        }
+
+        if(game.getGameState().getPhase() == Phase.PICKING) {
+                addCardToHand();
+
+        }
         if(game.getGameState().getPhase() == Phase.PLAYING){
             if(game.getGameState().getTricks().isEmpty())
                 game.northTakeTurn();

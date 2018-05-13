@@ -42,12 +42,20 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    public void addToOpponentHand( boolean first) {
+        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout)getView().findViewById(R.id.opponentHand)).getChildCount());
+
+        opponentHand.addToHand(first);
+
+        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout)getView().findViewById(R.id.opponentHand)).getChildCount());
+
+    }
+
 
     public interface Callback {
         // called when the user presses the send button to submit a message
         void pickCard(boolean first);
         void confirm();
-
     }
 
     private Callback mCallback = null;
@@ -128,6 +136,12 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
                 firstCardView.setCard(game.peakTopCard());
             secondCardView.setBackside();
         }
+    }
+
+    public void removeBothCards(){
+        showingCards = false;
+        firstCardView.setCard(null);
+        secondCardView.setCard(null);
     }
 
     private void showCardPicked(boolean first) {

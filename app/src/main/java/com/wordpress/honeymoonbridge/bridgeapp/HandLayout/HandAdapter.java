@@ -44,7 +44,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
     private final int MARGIN_RIGHT = -200;
 
-    private final int HIGHLIGHT_MARGIN = -100;
+    private final int HIGHLIGHT_MARGIN = -50;
 
     private int animationSpeed = 200;
 
@@ -105,8 +105,6 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         final ImageView oldImg = handLayout.findViewById(card.getIndex());
         int oW = oldImg.getWidth();
         int oH = oldImg.getHeight();
-        if(highlighted)
-            oH += HIGHLIGHT_MARGIN;
         int nW = newImg.getWidth();
         int nH = newImg.getHeight();
 
@@ -179,6 +177,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
                 ((ImageView)highligthedView).setColorFilter(null);
 
                 LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams)((ImageView) highligthedView).getLayoutParams();
+                newParams.bottomMargin = 0;
                 newParams.topMargin = 0;
                 highligthedView.setLayoutParams(newParams);
             }
@@ -187,22 +186,20 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
                 int highlightColor = mContext.getResources().getColor(R.color.highlight);
                 ((ImageView) highligthedView).setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY);
                 LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams)((ImageView) highligthedView).getLayoutParams();
+                newParams.bottomMargin = -HIGHLIGHT_MARGIN;
                 newParams.topMargin = HIGHLIGHT_MARGIN;
                 highligthedView.setLayoutParams(newParams);
+
+                int newWidth = highligthedView.getWidth();
 
             }
         }
     }
 
-    private void changeImage(ImageView v, int cardIndex, boolean marked){
-        if(marked)
-            v.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                    ImageHelper.cardsMarked[cardIndex]), ImageHelper.scaleDownImageSize, true));
-        else
-            v.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
-                    ImageHelper.cards[cardIndex]), ImageHelper.scaleDownImageSize, true));
+    private void changeImage(ImageView v, int cardIndex) {
+        v.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(mContext.getResources(),
+                ImageHelper.cards[cardIndex]), ImageHelper.scaleDownImageSize, true));
     }
-
 
 
     public interface Callback{
@@ -309,7 +306,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
             view.setId(index);
             view.setOnClickListener(this);
             view.setOnTouchListener(this);
-            changeImage(view, index, false);
+            changeImage(view, index);
 
 
             handLayout.addView(view);
@@ -344,7 +341,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
             view.setId(indexCard);
             view.setOnClickListener(this);
             view.setOnTouchListener(this);
-            changeImage(view, indexCard, false);
+            changeImage(view, indexCard);
 
             handLayout.addView(view, index);
 

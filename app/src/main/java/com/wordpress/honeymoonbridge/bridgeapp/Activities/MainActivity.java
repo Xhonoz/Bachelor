@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 public class MainActivity extends AppCompatActivity {
