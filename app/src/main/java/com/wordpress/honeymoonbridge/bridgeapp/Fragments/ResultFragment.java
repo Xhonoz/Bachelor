@@ -44,8 +44,9 @@ public class ResultFragment extends Fragment implements View.OnClickListener {
             tricksTaken = game.getGameState().getSouthTricks();
 
         ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.contract) + " " + game.getGameState().getContract().toStringWithPlayerAndWithTricks(tricksTaken) );
-        ((TextView)view.findViewById(R.id.trickScore)).setText("" + game.getGameState().getContract().Points(game.getGameState().getContract().getTricks()));
-        ((TextView)view.findViewById(R.id.bonus)).setText("" + game.getGameState().getContract().Bonus(game.getGameState().getContract().getTricks()));
+        ((TextView)view.findViewById(R.id.trickScore)).setText("" + game.getGameState().getContract().contractTrickscore(tricksTaken));
+        ((TextView)view.findViewById(R.id.overUnder)).setText("" + game.getGameState().getContract().contractOverUnder(tricksTaken));
+        ((TextView)view.findViewById(R.id.bonus)).setText("" + game.getGameState().getContract().contractBonus(tricksTaken));
         ((TextView)view.findViewById(R.id.totalPoints)).setText("" + (game.getGameState().getContract().Points(tricksTaken) ));
 
 

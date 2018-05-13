@@ -97,17 +97,15 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="contract">Contract</string>
-    <string name="chooseDifficulty">Choose difficulty</string>
     <string name="difficulty">Difficulty</string>
-    <string name="chooseAI">Choose AI</string>
     <string name="AI">AI</string>
     <string name="sound">Sound</string>
     <string name="animation">Animation</string>
     <string name="onOff">on/off</string>
-    <string name="chooseBackgroundcolor">Choose backgroundcolor</string>
-    <string name="backgroundcolor">Backgroundcolor</string>
+    <string name="backgroundcolor">Background color</string>
     <string name="gameMode">Game mode</string>
-    <string name="chooseGameMode">Choose game mode</string>
+    <string name="standarGameMode">1</string>
+    <string name="easy">easy</string>
 
 
 </resources>

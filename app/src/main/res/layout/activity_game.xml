@@ -7,10 +7,11 @@
     tools:context="com.wordpress.honeymoonbridge.bridgeapp.Activities.GameActivity">
     <!--OuterLayout-->
     <LinearLayout
+        android:id="@+id/background"
         android:onClick="onClickScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#038103"
+        android:background="@color/green"
         android:orientation="vertical"
         android:clipChildren="false"
         android:clipToPadding="false">

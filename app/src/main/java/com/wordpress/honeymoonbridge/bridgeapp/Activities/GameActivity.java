@@ -1,8 +1,10 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -130,6 +132,41 @@ public class GameActivity extends AppCompatActivity
         super.onStart();
         game.startPickingPhase();
         mPickCardFragment.newCardsUI();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String color =  prefs.getString("backgroundcolor", "green");
+        LinearLayout l = findViewById(R.id.background);
+        Log.i("COLOR", color);
+        switch (color){
+            case "yellow":
+                l.setBackgroundColor(getResources().getColor(R.color.yellow));
+
+                break;
+
+            case "green":
+                l.setBackgroundColor(getResources().getColor(R.color.green));
+                break;
+
+            case "blue":
+                l.setBackgroundColor(getResources().getColor(R.color.blue));
+                break;
+
+            case "red":
+                l.setBackgroundColor(getResources().getColor(R.color.red));
+                break;
+
+            case "white":
+                l.setBackgroundColor(getResources().getColor(R.color.white));
+                break;
+
+            case "pink":
+                l.setBackgroundColor(getResources().getColor(R.color.pink));
+                break;
+        }
     }
 
     // Switch UI to the given fragment

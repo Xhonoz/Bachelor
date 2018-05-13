@@ -7,11 +7,11 @@
         <item>medium</item>
         <item>hard</item>
     </string-array>
-    
+
     <string-array name="listValues">
-        <item>easy is selected</item>
-        <item>medium is selected</item>
-        <item>hard is selected</item>
+        <item>easy</item>
+        <item>medium</item>
+        <item>hard</item>
     </string-array>
 
     <string-array name="backgroundcolor_list">
@@ -24,12 +24,12 @@
     </string-array>
 
     <string-array name="backgroundcolor_listValues">
-        <item>Yellow is selected</item>
-        <item>Green is selected</item>
-        <item>Blue is selected</item>
-        <item>red is selected</item>
-        <item>white is selected</item>
-        <item>pink is selected</item>
+        <item>yellow</item>
+        <item>green</item>
+        <item>blue</item>
+        <item>red</item>
+        <item>white</item>
+        <item>pink</item>
     </string-array>
 
     <string-array name="gameMode_list">
@@ -46,16 +46,16 @@
     </string-array>
 
     <string-array name="gameMode_listValues">
-        <item>1 is selected</item>
-        <item>2 is selected</item>
-        <item>3 is selected</item>
-        <item>4 is selected</item>
-        <item>5 is selected</item>
-        <item>6 is selected</item>
-        <item>7 is selected</item>
-        <item>8 is selected</item>
-        <item>9 is selected</item>
-        <item>10 is selected</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
     </string-array>
 
     <string-array name="nets_list">
@@ -66,10 +66,10 @@
     </string-array>
 
     <string-array name="nets_listValues">
-        <item>Double Dummy</item>
-        <item>Evolution</item>
-        <item>Difficult</item>
-        <item>Easy</item>
+        <item>double dummy</item>
+        <item>evolution</item>
+        <item>difficult</item>
+        <item>easy</item>
     </string-array>
 
 

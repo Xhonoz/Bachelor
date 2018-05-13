@@ -87,7 +87,7 @@ public class Contract extends Bid {
         return points;
     }
 
-    public int Bonus(int result)
+    private int Bonus(int result)
     {
         int bonus = 0;
 
@@ -120,6 +120,62 @@ public class Contract extends Bid {
 
         return bonus;
     }
+
+    public int contractTrickscore(int result){
+        int trickScore = 0;
+
+        // Contract made
+        if (result >= tricks + TrickOffset)
+        {
+            trickScore += FirstTrickPoints();
+            trickScore += (tricks - 1) * SubsequentTricksPoints();
+        }
+
+        return trickScore;
+
+    }
+
+    public int contractOverUnder(int result){
+        int overUnder = 0;
+        int overtricks = result - tricks - TrickOffset;
+        if(overtricks > 0){
+            if (reDoubled)
+                overUnder += overtricks * 200;
+            else if (doubled)
+                overUnder += overtricks * 100;
+            else
+                overUnder += overtricks * SubsequentTricksPoints();
+        }
+        if(overtricks < 0){
+            overUnder = PenaltyPoints(result);
+            }
+
+return overUnder;
+    }
+
+public int contractBonus(int result){
+        int bonus = 0;
+        if(result - tricks - TrickOffset >= 0  ) {
+            if (IsGame())
+                bonus += 300;
+            else
+                bonus += 50;
+
+            // Slam or grand slam
+            if (IsGrandSlam()) {
+                bonus += 1000;
+            } else if (IsSlam())
+                bonus += 500;
+
+            // Doubled or redoubled
+            if (reDoubled)
+                bonus += 100;
+            else if (doubled)
+                bonus += 50;
+        }
+    return bonus;
+}
+
 
 
     private int FirstTrickPoints()

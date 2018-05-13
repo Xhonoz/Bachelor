@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Settings"
+        android:key="settingpref">
+    <ListPreference
+        android:entries="@array/listOptions"
+        android:entryValues="@array/listValues"
+        android:key="difficulty_pref"
+        android:summary="@string/easy"
+        android:title="@string/difficulty" />
+
+    <ListPreference
+        android:entries="@array/nets_list"
+        android:entryValues="@array/nets_listValues"
+        android:key="net_pref"
+        android:summary="@string/easy"
+        android:title="@string/AI" />
+
+    <CheckBoxPreference
+        android:key="sound"
+        android:summary="@string/onOff"
+        android:title="@string/sound"/>
+
+    <CheckBoxPreference
+        android:key="animation"
+        android:summary="@string/onOff"
+        android:title="@string/animation"/>
+
+        <ListPreference
+            android:entries="@array/backgroundcolor_list"
+            android:key="backgroundcolor"
+            android:entryValues="@array/backgroundcolor_listValues"
+            android:summary="green"
+            android:title="@string/backgroundcolor" />
+
+        <ListPreference
+            android:entries="@array/gameMode_list"
+            android:key="gameMode"
+            android:entryValues="@array/gameMode_listValues"
+            android:summary="@string/standarGameMode"
+            android:title="@string/gameMode" />
+
+    </PreferenceCategory>
+</PreferenceScreen>
