@@ -85,6 +85,7 @@
                 android:id="@+id/firstCard"
                 android:layout_width="match_parent"
                 android:layout_weight="4"
+                android:translationZ="-100dp"
                 android:layout_height="match_parent"
                 android:src="@drawable/clubs_5"
                 android:layout_gravity="center"

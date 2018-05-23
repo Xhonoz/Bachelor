@@ -22,7 +22,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.R;
 public class HandFragment extends Fragment implements HandAdapter.Callback {
 
 
-
+    private String TAG = "Handadapter";
 
     private Callback mCallback = null;
 
@@ -52,6 +52,10 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
 
     public void addToHand(Card card){
         handAdapter.addToHand(card);
+        for (int i = 0; i < handAdapter.getHandLayout().getChildCount(); i++) {
+            View v = handAdapter.getHandLayout().getChildAt(i);
+            Log.i(TAG, "handLayout[" + i + "] width: " + v.getWidth() );
+        }
     }
     public ImageView addEmptyImageview(Card card){
        return handAdapter.addEmptyImageView(card);
@@ -59,6 +63,7 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
 
     public void playCardFromHand(Card card, ImageView view){
         handAdapter.startPlayCardAnimation(card, view, true);
+
     }
 
 

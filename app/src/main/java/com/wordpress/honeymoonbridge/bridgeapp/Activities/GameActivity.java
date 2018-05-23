@@ -59,6 +59,7 @@ public class GameActivity extends AppCompatActivity
     boolean donePicking = false;
     boolean doneBidding = false;
     boolean donePlaying = false;
+    private ImageView emptyImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +204,6 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void finishPicking() {
         Log.i("GameActivity", "finishPicking");
-        mPickCardFragment.removeBothCards();
 //        TODO: check if bidding is enabled
         donePicking = true;
 //        TODO: CHeck prefferences
@@ -289,14 +289,15 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void pickCard(boolean first) {
-        if(donePicking)
-            startBidding();
-        else {
+            if(donePicking)
+                startBidding();
+
             picked = game.getCardFromDeck(first);
             if (picked != null) {
+                emptyImageView = mPlayingHandFragment.addEmptyImageview(picked);
                 mPickCardFragment.showCardPickedUI(first);
             }
-        }
+
     }
 
     private void startBidding(){
@@ -311,6 +312,15 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void confirm() {
         addCardToHand();
+    }
+
+    @Override
+    public void finishPickCardAnimation(Card card) {
+        if(donePicking)
+            mPickCardFragment.removeBothCards();
+        else
+            mPickCardFragment.newCardsUI();
+
     }
 
 
@@ -377,8 +387,8 @@ public class GameActivity extends AppCompatActivity
             game.UIPickCard(picked.equals(game.peakTopCard()));
             mFullHandFragment.addToHand(picked);
 
-            ImageView newimg = mPlayingHandFragment.addEmptyImageview(picked);
-            mPickCardFragment.startPickingCardAnimation(picked, newimg);
+//            ImageView newimg = mPlayingHandFragment.addEmptyImageview(picked);
+            mPickCardFragment.startPickingCardAnimation(picked, emptyImageView);
             picked = null;
         }
     }

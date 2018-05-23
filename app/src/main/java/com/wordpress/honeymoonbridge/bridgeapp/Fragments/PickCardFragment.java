@@ -1,6 +1,8 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Fragments;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -32,7 +34,7 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     private CardViewAdapter secondCardView;
 
     private boolean showingCards = false;
-    private int animationSpeed = 1000;
+    private int animationSpeed = 500;
 
 
     public void setGame(Game game) {
@@ -62,6 +64,7 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
         // called when the user presses the send button to submit a message
         void pickCard(boolean first);
         void confirm();
+        void finishPickCardAnimation(Card card);
     }
 
     private Callback mCallback = null;
@@ -133,24 +136,25 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     }
 
     public void startPickingCardAnimation(final Card card, final ImageView newImg){
+        ImageView img = newImg;
         ImageView oldImg = null;
-        if(firstCardView.getCard().equals(card))
+        if(firstCardView.getCard() != null && firstCardView.getCard().equals(card))
             oldImg = firstCardView.getImageView();
-        if(secondCardView.getCard().equals(card))
+        if(secondCardView.getCard() != null && secondCardView.getCard().equals(card))
             oldImg = secondCardView.getImageView();
         if(oldImg != null) {
 
             int oW = oldImg.getWidth();
             int oH = oldImg.getHeight();
-            int nW = newImg.getWidth() + 400;
-            int nH = newImg.getHeight() + 400;
+            int nW = newImg.getWidth();
+            int nH = newImg.getHeight();
 
 
-            double imageRatio = ((double) oW) / oH;
+            double imageRatio = ((double) oW / oH);
 //        if(highligthedView != null && highligthedView.equals(oldImg))
 //             imageRatio += HIGHLIGHT_MARGIN;
 
-            double imageViewRatio = ((double) nW) / nW;
+            double imageViewRatio = ((double) nW) / nH;
 
             float drawX;
             double drawWidth;
@@ -158,8 +162,8 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
 
 
             drawY = newImg.getY();
-            drawWidth = (imageRatio / imageViewRatio) * nW;
-            drawX = (int) (nW - drawWidth) / 2;
+            drawWidth = (imageRatio/imageViewRatio) * newImg.getWidth();
+            drawX = (int)(newImg.getWidth() - drawWidth)/2;
 
             float scalingFactor = (float) drawWidth / oW;
 
@@ -170,15 +174,24 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
             newImg.getLocationOnScreen(coordinatesNew);
 
 
-            AnimationSet set = new AnimationSet(false);
+             AnimationSet set = new AnimationSet(false);
 
-            Animation animation1 = new TranslateAnimation(0, -(oldImg.getX() - drawX) / scalingFactor, 0, -(coordinatesOld[1] - coordinatesNew[1]) / scalingFactor);
+
+            float toXDelta = -((coordinatesOld[0] - coordinatesNew[0])-drawX)  / scalingFactor;
+            float toYDelta = -(coordinatesOld[1] - coordinatesNew[1]) / scalingFactor ;
+
+            Animation animation1 = new TranslateAnimation(0, toXDelta, 0, toYDelta);
+            animation1.setZAdjustment(100);
             animation1.setDuration(animationSpeed);
             Animation animation2 = new ScaleAnimation(1f, scalingFactor, 1f, scalingFactor, Animation.ABSOLUTE, 0f, Animation.ABSOLUTE, 0f);
             animation2.setDuration(animationSpeed);
             set.addAnimation(animation1);
             set.addAnimation(animation2);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+               oldImg.setElevation(100);
+            }
             oldImg.startAnimation(set);
+
 
             set.setAnimationListener(new Animation.AnimationListener() {
                 @Override
@@ -188,9 +201,11 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    newImg.setImageResource(ImageHelper.cards[card.getIndex()]);
+                    newImg.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(getActivity().getResources(),
+                            ImageHelper.cards[card.getIndex()]), ImageHelper.scaleDownImageSize, true));
 //                    TODO: fix, do this in a callback in gameActiivity
-                    newCardsUI();
+                    mCallback.finishPickCardAnimation(card);
+//                    newCardsUI();
                 }
 
                 @Override

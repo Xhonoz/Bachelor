@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -346,7 +347,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
             view.setId(indexCard);
             view.setOnClickListener(this);
             view.setOnTouchListener(this);
-            if(!empty)
+        if(!empty)
                 changeImage(view, indexCard);
 
             handLayout.addView(view, index);
