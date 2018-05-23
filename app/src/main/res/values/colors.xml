@@ -15,4 +15,14 @@
 
     <color name="firstColor">#00ff00</color>
     <color name="secondColor">#ff0000</color>
+
+    <array name="backgroundcolor_list">
+        <item>@color/yellow</item>
+        <item>@color/green</item>
+        <item>@color/blue</item>
+        <item>@color/red</item>
+        <item>@color/white</item>
+        <item>@color/pink</item>
+    </array>
+
 </resources>

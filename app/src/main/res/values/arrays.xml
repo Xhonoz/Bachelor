@@ -14,15 +14,6 @@
         <item>hard</item>
     </string-array>
 
-    <string-array name="backgroundcolor_list">
-        <item>yellow</item>
-        <item>green</item>
-        <item>blue</item>
-        <item>red</item>
-        <item>white</item>
-        <item>pink</item>
-    </string-array>
-
     <string-array name="backgroundcolor_listValues">
         <item>yellow</item>
         <item>green</item>

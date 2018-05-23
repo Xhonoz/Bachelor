@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">BridgeApp</string>
     <string name="title_activity_settings">Settings</string>
 
@@ -106,6 +106,11 @@
     <string name="gameMode">Game mode</string>
     <string name="standarGameMode">1</string>
     <string name="easy">easy</string>
+    <string name="color_picker_default_title">Velg Farge</string>
+    <string name="color_swatch_description">Color<xliff:g example="14" id="color_index">%1$d</xliff:g></string>
+    <string name="color_swatch_description_selected">Color <xliff:g example="14" id="color_index">%1$d</xliff:g> selected</string>
+
+
 
 
 </resources>

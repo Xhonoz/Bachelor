@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
         android:title="Settings"
         android:key="settingpref">
@@ -32,7 +34,22 @@
             android:key="backgroundcolor"
             android:entryValues="@array/backgroundcolor_listValues"
             android:summary="green"
-            android:title="@string/backgroundcolor" />
+            android:title="@string/backgroundcolor"
+            />
+
+        <com.wordpress.honeymoonbridge.bridgeapp.ColorPicker.ColorPreference
+            android:key="background_color"
+            android:title="Color"
+            android:summary="color"
+            tools:dialogTitle="@string/color_picker_default_title"
+            tools:colors="@array/rainbow"
+            tools:columns="5"
+            tools:material="true"
+            tools:backwardsOrder="true"
+            tools:strokeWidth="0"
+            tools:strokeColor="@android:color/black"
+            android:defaultValue="@color/green"/>
+
 
         <ListPreference
             android:entries="@array/gameMode_list"
