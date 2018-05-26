@@ -453,9 +453,10 @@ public class Game {
         mCallback.AiBid(bid);
         if (bid instanceof Pass) {
             if (biddingIsOver()) {
+                startPlayingPhase();
                 mCallback.finishBidding();
 //                TODO: Check if just wanto bid and not play
-                startPlayingPhase();
+
             } else {
                 gamestate.setSouthTurn(true);
             }
