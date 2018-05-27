@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.games.AchievementsClient;
+import com.wordpress.honeymoonbridge.bridgeapp.AI.TopInLong;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.BiddingFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.HandFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PickCardFragment;
@@ -22,12 +24,10 @@ import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PlayFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.ResultFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
-import com.wordpress.honeymoonbridge.bridgeapp.AI.TopInLong;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
-import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
+import com.wordpress.honeymoonbridge.bridgeapp.GooglePlayGames.GooglePlayCLients;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
-import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 public class GameActivity extends AppCompatActivity
@@ -36,8 +36,7 @@ public class GameActivity extends AppCompatActivity
         PlayFragment.Callback,
         HandFragment.Callback,
         Game.Callback,
-        ResultFragment.OnFragmentInteractionListener
-{
+        ResultFragment.OnFragmentInteractionListener {
 
     //    Fragments
     private BiddingFragment mBiddingFragment;
@@ -51,10 +50,9 @@ public class GameActivity extends AppCompatActivity
     private Game game;
 
 
-
     private Card picked;
 
-//    Booleans
+    //    Booleans
     boolean waiting = false;
     boolean donePicking = false;
     boolean doneBidding = false;
@@ -80,7 +78,6 @@ public class GameActivity extends AppCompatActivity
 
         mPlayingHandFragment = new HandFragment();
 
-
         game = new Game(false, new TopInLong());
         game.getGameState().getStack().shuffleCardStack();
         game.setCallback(this);
@@ -97,19 +94,15 @@ public class GameActivity extends AppCompatActivity
         switchHandFragment(mPlayingHandFragment);
 
 
-
-
-
-
     }
 
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.settings_menu, menu);
         return true;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.item1:
                 return true;
 
@@ -136,13 +129,13 @@ public class GameActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String color =  prefs.getString("backgroundcolor", "green");
+        String color = prefs.getString("backgroundcolor", "green");
         LinearLayout l = findViewById(R.id.background);
         Log.i("COLOR", color);
-        switch (color){
+        switch (color) {
             case "yellow":
                 l.setBackgroundColor(getResources().getColor(R.color.yellow));
 
@@ -191,7 +184,7 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void AiPlayedCard(Card card, boolean first) {
         mPlayFragment.playCardFromOpponent(card);
-        if(first)
+        if (first)
             mPlayFragment.setSouthPlayedCard(null);
 
     }
@@ -214,22 +207,23 @@ public class GameActivity extends AppCompatActivity
     public void finishBidding() {
         doneBidding = true;
     }
+
     @Override
     public void startPlaying() {
-            mPlayFragment.setContract(game.getGameState().getContract());
-            switchToFragment(mPlayFragment);
+        mPlayFragment.setContract(game.getGameState().getContract());
+        switchToFragment(mPlayFragment);
 
     }
-
-
 
 
     @Override
     public void finishPlaying() {
         Log.i("GameActivity: ", "" + game.getGameState().getInitialSouthHand().getSize());
+        if(GooglePlayCLients.achievementsClient != null)
+        GooglePlayCLients.achievementsClient.unlock(getString(R.string.achievement_playAGame));
         donePlaying = true;
 //        if both pass
-        if(!doneBidding) {
+        if (!doneBidding) {
             endPlaying();
         }
 
@@ -289,22 +283,22 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void pickCard(boolean first) {
-            if(donePicking)
-                startBidding();
+        if (donePicking)
+            startBidding();
 
-            picked = game.getCardFromDeck(first);
-            if (picked != null) {
-                emptyImageView = mPlayingHandFragment.addEmptyImageview(picked);
-                mPickCardFragment.showCardPickedUI(first);
-            }
+        picked = game.getCardFromDeck(first);
+        if (picked != null) {
+            emptyImageView = mPlayingHandFragment.addEmptyImageview(picked);
+            mPickCardFragment.showCardPickedUI(first);
+        }
 
     }
 
-    private void startBidding(){
+    private void startBidding() {
         switchToFragment(mBiddingFragment);
     }
 
-    private void endPlaying(){
+    private void endPlaying() {
         switchToFragment(mResultFragment);
         switchHandFragment(mFullHandFragment);
     }
@@ -316,7 +310,7 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void finishPickCardAnimation(Card card) {
-        if(donePicking)
+        if (donePicking)
             mPickCardFragment.removeBothCards();
         else
             mPickCardFragment.newCardsUI();
@@ -326,7 +320,7 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void onClickedCard(Card card) {
-        if(!waiting) {
+        if (!waiting) {
             if (game.getGameState().getPhase() == Phase.PLAYING) {
                 boolean shoudlBeLegal = game.isLegal(Player.SOUTH, card);
                 if (game.UIPlayCard(card)) {
@@ -347,28 +341,27 @@ public class GameActivity extends AppCompatActivity
 //        if(mPlayFragment.getNorthPlayedCard() != null)
 //            waiting = false;
         mPlayFragment.setSouthPlayedCard(card);
-        if(mPlayFragment.getNorthPlayedCard().getCard() == null)
+        if (mPlayFragment.getNorthPlayedCard().getCard() == null)
             game.northTakeTurn();
     }
 
     public void onClickScreen(View view) {
-        if(donePlaying){
+        if (donePlaying) {
             endPlaying();
-        }else if(doneBidding){
+        } else if (doneBidding) {
 //            TODO do stuff
-        }
-        else if(donePicking){
+        } else if (donePicking) {
             startBidding();
         }
 
-        if(game.getGameState().getPhase() == Phase.PICKING) {
-                addCardToHand();
+        if (game.getGameState().getPhase() == Phase.PICKING) {
+            addCardToHand();
 
         }
-        if(game.getGameState().getPhase() == Phase.PLAYING){
-            if(game.getGameState().getTricks().isEmpty())
+        if (game.getGameState().getPhase() == Phase.PLAYING) {
+            if (game.getGameState().getTricks().isEmpty())
                 game.northTakeTurn();
-            if(mPlayFragment.getNorthPlayedCard().getCard() != null && mPlayFragment.getSouthPlayedCard().getCard() != null) {
+            if (mPlayFragment.getNorthPlayedCard().getCard() != null && mPlayFragment.getSouthPlayedCard().getCard() != null) {
                 waiting = false;
                 Card nC = mPlayFragment.getNorthPlayedCard().getCard();
                 Card sC = mPlayFragment.getSouthPlayedCard().getCard();
@@ -382,8 +375,8 @@ public class GameActivity extends AppCompatActivity
 
     }
 
-    public void addCardToHand(){
-        if(game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn() && picked != null) {
+    public void addCardToHand() {
+        if (game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn() && picked != null) {
             game.UIPickCard(picked.equals(game.peakTopCard()));
             mFullHandFragment.addToHand(picked);
 

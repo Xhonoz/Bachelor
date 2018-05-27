@@ -109,8 +109,12 @@
     <string name="color_picker_default_title">Velg Farge</string>
     <string name="color_swatch_description">Color<xliff:g example="14" id="color_index">%1$d</xliff:g></string>
     <string name="color_swatch_description_selected">Color <xliff:g example="14" id="color_index">%1$d</xliff:g> selected</string>
-
-
+    <string name="status_exception_error">%1$s (status %2$d). %3$s.</string>
+    <string name="signin_other_error">There was an issue with sign in.  Please try again later.</string>
+    <string name="players_exception">There was an issue communicating with players.</string>
+    <string name="achievements_exception">There was an issue communicating with achievements.</string>
+    <string name="signin">Sign in</string>
+    <string name="signout">Sign Out</string>
 
 
 </resources>
