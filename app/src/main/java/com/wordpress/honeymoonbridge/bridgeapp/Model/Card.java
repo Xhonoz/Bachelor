@@ -6,23 +6,23 @@ import android.support.annotation.NonNull;
  * Created by Carmen on 12.04.2018.
  */
 
-public class Card implements Comparable<Card>{
+public class Card implements Comparable<Card> {
 
     private Suit suit;
     private int cardValue;
 
-    public Card(Suit suit, int cardValue){
+    public Card(Suit suit, int cardValue) {
         this.suit = suit;
         this.cardValue = cardValue;
     }
 
-    public Card(int index){
-        suit = Suit.values()[index/13];
-        cardValue = index%13 + 2;
+    public Card(int index) {
+        suit = Suit.values()[index / 13];
+        cardValue = index % 13 + 2;
 
     }
 
-    public int getIndex(){
+    public int getIndex() {
         return suit.ordinal() * 13 + cardValue - 2;
     }
 
@@ -35,8 +35,7 @@ public class Card implements Comparable<Card>{
     }
 
 
-
-    public boolean equals(Card card){
+    public boolean equals(Card card) {
         if (card == null) return false;
         if (card == this) return true;
         return (this.suit == card.getSuit()) && (this.cardValue == card.getCardValue());
@@ -58,9 +57,9 @@ public class Card implements Comparable<Card>{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String str = "";
-        switch(suit){
+        switch (suit) {
 
             case Clubs:
                 str = "♣";
@@ -80,6 +79,41 @@ public class Card implements Comparable<Card>{
 
         }
         str += cardValue;
+        return str;
+    }
+
+    public String toTTSString() {
+        String str ="";
+        if (this.cardValue < 11)
+            str = this.cardValue + " of ";
+        else {
+            if (this.cardValue == 11)
+                str = "jack of ";
+            if (this.cardValue == 12)
+                str = "queen of ";
+            if (this.cardValue == 13)
+                str = "king of ";
+
+        }
+        switch (suit) {
+
+            case Clubs:
+                str += "clubs";
+                break;
+            case Diamonds:
+                str += "diamonds";
+                break;
+
+
+            case Hearts:
+                str = "hearts";
+                break;
+
+            case Spades:
+                str = "spades";
+                break;
+
+        }
         return str;
     }
 }

@@ -93,17 +93,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         // Trigger the listener immediately with the preference's
         // current value.
-        if(preference.getKey().equals("backgroundcolor")){
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                    PreferenceManager
-                            .getDefaultSharedPreferences(preference.getContext())
-                            .getInt(preference.getKey(), 0));
-        }else {
+//        if(preference.getKey().equals("backgroundcolor")){
+//            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
+//                    PreferenceManager
+//                            .getDefaultSharedPreferences(preference.getContext())
+//                            .getInt(preference.getKey(), 0));
+//        }else {
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                     PreferenceManager
                             .getDefaultSharedPreferences(preference.getContext())
                             .getString(preference.getKey(), ""));
-        }
+//        }
     }
 
     @Override
@@ -176,7 +176,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("settingpref"));
             bindPreferenceSummaryToValue(findPreference("difficulty_pref"));
             bindPreferenceSummaryToValue(findPreference("net_pref"));
-            bindPreferenceSummaryToValue(findPreference("background_color"));
+            bindPreferenceSummaryToValue(findPreference("backgroundcolor"));
             bindPreferenceSummaryToValue(findPreference("gameMode"));
 
 

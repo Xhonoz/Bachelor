@@ -38,17 +38,24 @@ public class ResultFragment extends Fragment implements View.OnClickListener {
 
         View view = inflater.inflate(R.layout.fragment_result, container, false);
         int tricksTaken = 0;
-        if(game.getGameState().getContract().getPlayer() == Player.NORTH)
-            tricksTaken = game.getGameState().getNorthTricks();
-        else
-            tricksTaken = game.getGameState().getSouthTricks();
+        if(game.getGameState().getContract() != null) {
+            if (game.getGameState().getContract().getPlayer() == Player.NORTH)
+                tricksTaken = game.getGameState().getNorthTricks();
+            else if (game.getGameState().getContract().getPlayer() == Player.SOUTH)
+                tricksTaken = game.getGameState().getSouthTricks();
 
-        ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.contract) + " " + game.getGameState().getContract().toStringWithPlayerAndWithTricks(tricksTaken) );
-        ((TextView)view.findViewById(R.id.trickScore)).setText("" + game.getGameState().getContract().contractTrickscore(tricksTaken));
-        ((TextView)view.findViewById(R.id.overUnder)).setText("" + game.getGameState().getContract().contractOverUnder(tricksTaken));
-        ((TextView)view.findViewById(R.id.bonus)).setText("" + game.getGameState().getContract().contractBonus(tricksTaken));
-        ((TextView)view.findViewById(R.id.totalPoints)).setText("" + (game.getGameState().getContract().Points(tricksTaken) ));
-
+            ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.contract) + " " + game.getGameState().getContract().toStringWithPlayerAndWithTricks(tricksTaken));
+            ((TextView) view.findViewById(R.id.trickScore)).setText("" + game.getGameState().getContract().contractTrickscore(tricksTaken));
+            ((TextView) view.findViewById(R.id.overUnder)).setText("" + game.getGameState().getContract().contractOverUnder(tricksTaken));
+            ((TextView) view.findViewById(R.id.bonus)).setText("" + game.getGameState().getContract().contractBonus(tricksTaken));
+            ((TextView) view.findViewById(R.id.totalPoints)).setText("" + (game.getGameState().getContract().Points(tricksTaken)));
+        }else{
+            ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.passed_out));
+            ((TextView) view.findViewById(R.id.trickScore)).setText("0");
+            ((TextView) view.findViewById(R.id.overUnder)).setText("0");
+            ((TextView) view.findViewById(R.id.bonus)).setText("0");
+            ((TextView) view.findViewById(R.id.totalPoints)).setText("0");
+        }
 
         final int[] clickableIds = {
 
