@@ -62,6 +62,18 @@
         <item>difficult</item>
         <item>easy</item>
     </string-array>
+    
+    <string-array name="animation_speed">
+        <item>slow</item>
+        <item>normal</item>
+        <item>fast</item>
+    </string-array>
+    
+    <string-array name="anmation_speedValues">
+        <item>slow</item>
+        <item>normal</item>
+        <item>fast</item>
+    </string-array>
 
 
 </resources>

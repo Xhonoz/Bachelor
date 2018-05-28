@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -30,15 +31,18 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.GlobalInformation;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
+import java.util.Locale;
+
 public class GameActivity extends AppCompatActivity
         implements PickCardFragment.Callback,
         BiddingFragment.Callback,
         PlayFragment.Callback,
         HandFragment.Callback,
         Game.Callback,
-        ResultFragment.OnFragmentInteractionListener {
+        ResultFragment.OnFragmentInteractionListener, TextToSpeech.OnInitListener {
 
     //    Fragments
+    private TextToSpeech mTTS;
     private BiddingFragment mBiddingFragment;
     private PickCardFragment mPickCardFragment;
     private PlayFragment mPlayFragment;
@@ -94,7 +98,32 @@ public class GameActivity extends AppCompatActivity
         switchToFragment(mPickCardFragment);
         switchHandFragment(mPlayingHandFragment);
 
+        Intent checkIntent = new Intent();
+        checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        startActivityForResult(checkIntent,1);
 
+    }
+
+    protected void onActivityResult(
+            int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                // success, create the TTS instance
+                mTTS = new TextToSpeech(this,  this);
+            } else {
+                // missing data, install it
+                Intent installIntent = new Intent();
+                installIntent.setAction(
+                        TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                startActivity(installIntent);
+            }
+        }
+    }
+
+
+    @Override
+    public void onInit(int status) {
+        mTTS.setLanguage(Locale.US);
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -187,7 +216,10 @@ public class GameActivity extends AppCompatActivity
         mPlayFragment.playCardFromOpponent(card);
         if (first)
             mPlayFragment.setSouthPlayedCard(null);
-
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean on = prefs.getBoolean("readCards", true);
+        if(on)
+mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
     }
 
     @Override
@@ -403,4 +435,6 @@ public class GameActivity extends AppCompatActivity
     public void readyToStart() {
         game.northTakeTurn();
     }
+
+
 }

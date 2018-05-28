@@ -19,15 +19,15 @@
         android:summary="@string/easy"
         android:title="@string/AI" />
 
-    <CheckBoxPreference
+    <SwitchPreference
         android:key="sound"
         android:summary="@string/onOff"
         android:title="@string/sound"/>
 
-    <CheckBoxPreference
-        android:key="animation"
+    <SwitchPreference
+        android:key="readCards"
         android:summary="@string/onOff"
-        android:title="@string/animation"/>
+        android:title="@string/readText"/>
 
         <ListPreference
             android:entries="@array/backgroundcolor_list"
@@ -37,26 +37,19 @@
             android:title="@string/backgroundcolor"
             />
 
-        <!--<com.wordpress.honeymoonbridge.bridgeapp.ColorPicker.ColorPreference-->
-            <!--android:key="background_color"-->
-            <!--android:title="Color"-->
-            <!--android:summary="color"-->
-            <!--tools:dialogTitle="@string/color_picker_default_title"-->
-            <!--tools:colors="@array/rainbow"-->
-            <!--tools:columns="5"-->
-            <!--tools:material="true"-->
-            <!--tools:backwardsOrder="true"-->
-            <!--tools:strokeWidth="0"-->
-            <!--tools:strokeColor="@android:color/black"-->
-            <!--android:defaultValue="@color/green"/>-->
-
-
         <ListPreference
             android:entries="@array/gameMode_list"
             android:key="gameMode"
             android:entryValues="@array/gameMode_listValues"
             android:summary="@string/standarGameMode"
             android:title="@string/gameMode" />
+
+        <ListPreference
+            android:entries="@array/animation_speed"
+            android:key="animationSpeed"
+            android:entryValues="@array/anmation_speedValues"
+            android:title="Animation speed"
+            />
 
 
 

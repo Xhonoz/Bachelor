@@ -15,6 +15,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -91,14 +92,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
-        // Trigger the listener immediately with the preference's
-        // current value.
-//        if(preference.getKey().equals("backgroundcolor")){
-//            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-//                    PreferenceManager
-//                            .getDefaultSharedPreferences(preference.getContext())
-//                            .getInt(preference.getKey(), 0));
-//        }else {
+        if (preference instanceof SwitchPreference) {
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(
+                    preference,
+                    PreferenceManager.getDefaultSharedPreferences(
+                            preference.getContext()).getBoolean(preference.getKey(),false));
+
+        }else
             sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
                     PreferenceManager
                             .getDefaultSharedPreferences(preference.getContext())
@@ -178,6 +178,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("net_pref"));
             bindPreferenceSummaryToValue(findPreference("backgroundcolor"));
             bindPreferenceSummaryToValue(findPreference("gameMode"));
+            bindPreferenceSummaryToValue(findPreference("readCards"));
+            bindPreferenceSummaryToValue(findPreference("animationSpeed"));
 
 
 

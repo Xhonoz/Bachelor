@@ -93,6 +93,8 @@ public class Card implements Comparable<Card> {
                 str = "queen of ";
             if (this.cardValue == 13)
                 str = "king of ";
+            if(this.cardValue == 14)
+                str = "ace of ";
 
         }
         switch (suit) {
@@ -106,11 +108,11 @@ public class Card implements Comparable<Card> {
 
 
             case Hearts:
-                str = "hearts";
+                str += "hearts";
                 break;
 
             case Spades:
-                str = "spades";
+                str += "spades";
                 break;
 
         }
