@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.games.AchievementsClient;
 import com.wordpress.honeymoonbridge.bridgeapp.AI.TopInLong;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.BiddingFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.HandFragment;
@@ -28,6 +27,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
 import com.wordpress.honeymoonbridge.bridgeapp.GooglePlayGames.GooglePlayCLients;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.GlobalInformation;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 public class GameActivity extends AppCompatActivity
@@ -78,7 +78,8 @@ public class GameActivity extends AppCompatActivity
 
         mPlayingHandFragment = new HandFragment();
 
-        game = new Game(false, new TopInLong());
+        game = new Game(GlobalInformation.southStarts, new TopInLong());
+        GlobalInformation.southStarts = !GlobalInformation.southStarts;
         game.getGameState().getStack().shuffleCardStack();
         game.setCallback(this);
 
@@ -285,10 +286,9 @@ public class GameActivity extends AppCompatActivity
     public void pickCard(boolean first) {
         if (donePicking)
             startBidding();
-
+        else
         picked = game.getCardFromDeck(first);
         if (picked != null) {
-            emptyImageView = mPlayingHandFragment.addEmptyImageview(picked);
             mPickCardFragment.showCardPickedUI(first);
         }
 
@@ -306,15 +306,6 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void confirm() {
         addCardToHand();
-    }
-
-    @Override
-    public void finishPickCardAnimation(Card card) {
-        if (donePicking)
-            mPickCardFragment.removeBothCards();
-        else
-            mPickCardFragment.newCardsUI();
-
     }
 
 
@@ -343,6 +334,15 @@ public class GameActivity extends AppCompatActivity
         mPlayFragment.setSouthPlayedCard(card);
         if (mPlayFragment.getNorthPlayedCard().getCard() == null)
             game.northTakeTurn();
+    }
+
+    @Override
+    public void onFinishPickingCard(Card card) {
+        if (donePicking)
+            mPickCardFragment.removeBothCards();
+        else
+            mPickCardFragment.newCardsUI();
+
     }
 
     public void onClickScreen(View view) {
@@ -377,11 +377,13 @@ public class GameActivity extends AppCompatActivity
 
     public void addCardToHand() {
         if (game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn() && picked != null) {
-            game.UIPickCard(picked.equals(game.peakTopCard()));
+            boolean first = picked.equals(game.peakTopCard());
+            game.UIPickCard(first);
+            mPickCardFragment.removeCard(first);
             mFullHandFragment.addToHand(picked);
-
+            View fromView = (first ? mPickCardFragment.getFirstCardView().getImageView() : mPickCardFragment.getSecondCardView().getImageView());
 //            ImageView newimg = mPlayingHandFragment.addEmptyImageview(picked);
-            mPickCardFragment.startPickingCardAnimation(picked, emptyImageView);
+                mPlayingHandFragment.addToHand(picked, fromView);
             picked = null;
         }
     }

@@ -38,16 +38,8 @@
             <Space
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.2"/>
+                android:layout_weight="1.2"/>
 
-            <Button
-                android:id="@+id/trump"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="♥"
-                android:background="@drawable/roundedbutton"
-                />
 
             <ImageView
                 android:id="@+id/CardHeap"

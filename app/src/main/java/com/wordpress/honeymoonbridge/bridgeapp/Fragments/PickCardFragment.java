@@ -59,12 +59,19 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    public void removeCard(boolean first) {
+        if(first)
+            firstCardView.setCard(null);
+        else
+            secondCardView.setCard(null);
+
+    }
+
 
     public interface Callback {
         // called when the user presses the send button to submit a message
         void pickCard(boolean first);
         void confirm();
-        void finishPickCardAnimation(Card card);
     }
 
     private Callback mCallback = null;
@@ -135,87 +142,6 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void startPickingCardAnimation(final Card card, final ImageView newImg){
-        ImageView img = newImg;
-        ImageView oldImg = null;
-        if(firstCardView.getCard() != null && firstCardView.getCard().equals(card))
-            oldImg = firstCardView.getImageView();
-        if(secondCardView.getCard() != null && secondCardView.getCard().equals(card))
-            oldImg = secondCardView.getImageView();
-        if(oldImg != null) {
-
-            int oW = oldImg.getWidth();
-            int oH = oldImg.getHeight();
-            int nW = newImg.getWidth();
-            int nH = newImg.getHeight();
-
-
-            double imageRatio = ((double) oW / oH);
-//        if(highligthedView != null && highligthedView.equals(oldImg))
-//             imageRatio += HIGHLIGHT_MARGIN;
-
-            double imageViewRatio = ((double) nW) / nH;
-
-            float drawX;
-            double drawWidth;
-            float drawY;
-
-
-            drawY = newImg.getY();
-            drawWidth = (imageRatio/imageViewRatio) * newImg.getWidth();
-            drawX = (int)(newImg.getWidth() - drawWidth)/2;
-
-            float scalingFactor = (float) drawWidth / oW;
-
-
-            int[] coordinatesOld = new int[2];
-            int[] coordinatesNew = new int[2];
-            oldImg.getLocationOnScreen(coordinatesOld);
-            newImg.getLocationOnScreen(coordinatesNew);
-
-
-             AnimationSet set = new AnimationSet(false);
-
-
-            float toXDelta = -((coordinatesOld[0] - coordinatesNew[0])-drawX)  / scalingFactor;
-            float toYDelta = -(coordinatesOld[1] - coordinatesNew[1]) / scalingFactor ;
-
-            Animation animation1 = new TranslateAnimation(0, toXDelta, 0, toYDelta);
-            animation1.setZAdjustment(100);
-            animation1.setDuration(animationSpeed);
-            Animation animation2 = new ScaleAnimation(1f, scalingFactor, 1f, scalingFactor, Animation.ABSOLUTE, 0f, Animation.ABSOLUTE, 0f);
-            animation2.setDuration(animationSpeed);
-            set.addAnimation(animation1);
-            set.addAnimation(animation2);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-               oldImg.setElevation(100);
-            }
-            oldImg.startAnimation(set);
-
-
-            set.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    newImg.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(getActivity().getResources(),
-                            ImageHelper.cards[card.getIndex()]), ImageHelper.scaleDownImageSize, true));
-//                    TODO: fix, do this in a callback in gameActiivity
-                    mCallback.finishPickCardAnimation(card);
-//                    newCardsUI();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-        }
-    }
 
     public void newCardsUI() {
         if (game.getGameState().getPhase() == Phase.PICKING) {
@@ -244,6 +170,13 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    public CardViewAdapter getFirstCardView() {
+        return firstCardView;
+    }
+
+    public CardViewAdapter getSecondCardView() {
+        return secondCardView;
+    }
 
     @Override
     public void onClick(View view) {

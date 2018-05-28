@@ -116,6 +116,8 @@
     <string name="signin">Sign in</string>
     <string name="signout">Sign Out</string>
     <string name="passed_out">Passed out</string>
+    <string name="settings" >Settings</string>
+    <string name="achievments">Achievments</string>
 
 
 </resources>

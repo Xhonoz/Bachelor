@@ -4,11 +4,11 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
@@ -47,7 +47,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
     private final int HIGHLIGHT_MARGIN = -50;
 
-    private int animationSpeed = 200;
+    private int animationSpeed = 5000;
 
 
     private ArrayList<Rect> cardHitBoxes;    // Variable rect to hold the bounds of the view
@@ -137,7 +137,12 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
         AnimationSet set = new AnimationSet(false);
 
-        Animation animation1 = new TranslateAnimation(0, -(oldImg.getX() - drawX)/scalingFactor, HIGHLIGHT_MARGIN/2, -( coordinatesOld[1] - ((highlighted) ? HIGHLIGHT_MARGIN : 0) - coordinatesNew[1])/scalingFactor);
+        float fromXDelta = 0;
+        float toXDelta = -(oldImg.getX() - drawX)/scalingFactor;
+        float fromYDelta =  - HIGHLIGHT_MARGIN;
+        float toYDelta = -( coordinatesOld[1] - ((highlighted) ? HIGHLIGHT_MARGIN : 0) - coordinatesNew[1])/scalingFactor;
+
+        Animation animation1 = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
         animation1.setDuration(animationSpeed);
         Animation animation2 = new ScaleAnimation(1f,scalingFactor,1f,scalingFactor, Animation.ABSOLUTE,0f,Animation.ABSOLUTE,0f);
         animation2.setDuration(animationSpeed);
@@ -206,6 +211,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
     public interface Callback{
         void clickedCard(Card card);
         void finishedPlayAnimation(Card card);
+        void finishEnteringAnimation(Card card);
     }
 
 
@@ -252,6 +258,84 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         //TODO: make Async Task or other multiThread suport
         hand.addCard(card);
         addImageViewToLayout(card, hand.getNewIndex(card, trump), false);
+    }
+
+    public void addToHand(final Card card, final View fromView) {
+        //TODO: make Async Task or other multiThread suport
+        hand.addCard(card);
+        final View view = addImageViewToLayout(card, hand.getNewIndex(card, trump), false);
+        predrawAction(view, new Runnable() {
+            @Override
+            public void run() {
+                startAnimationAddToHandAnimation(fromView, card);
+            }
+        });
+    }
+
+    private void startAnimationAddToHandAnimation(View fromView, final Card card) {
+        final ImageView oldImg = (ImageView)fromView;
+        final ImageView newImg = handLayout.findViewById(card.getIndex());
+        int oW = oldImg.getWidth();
+        int oH = oldImg.getHeight();
+        int nW = newImg.getWidth();
+        int nH = newImg.getHeight();
+
+
+        double oldRatio = ((double) oW / oH);
+
+
+        double newRatio = ((double) nW) / nH;
+
+        float drawX;
+        double drawWidth;
+
+        drawWidth = (oldRatio/newRatio) * nW;
+        drawX = (int)(nW - drawWidth)/2;
+
+        float scalingFactor = (float)(oW/drawWidth);
+
+
+
+        int[] coordinatesOld = new int[2];
+        int[] coordinatesNew = new int[2];
+        oldImg.getLocationOnScreen(coordinatesOld);
+        newImg.getLocationOnScreen(coordinatesNew);
+
+        float blav = oldImg.getX();
+
+
+        AnimationSet set = new AnimationSet(false);
+
+        float fromXDelta = ((coordinatesOld[0] - coordinatesNew[0]))/scalingFactor - drawX;
+        float toXDelta = 0;
+        float fromYDelta = (coordinatesOld[1] - coordinatesNew[1])/scalingFactor;
+        float toYDelta = 0;
+
+        Animation animation1 = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
+        animation1.setDuration(100);
+        Animation animation2 = new ScaleAnimation(scalingFactor,1f,scalingFactor,1f, Animation.ABSOLUTE,0f,Animation.ABSOLUTE,0f);
+        animation2.setDuration(100);
+        set.addAnimation(animation1);
+        set.addAnimation(animation2);
+        newImg.startAnimation(set);
+
+        set.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mCallback.finishEnteringAnimation(card);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
     }
 
     public ImageView addEmptyImageView(Card card) {
@@ -382,6 +466,21 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
     public void onClick(View view) {
 
     }
+
+    public static void predrawAction(final View view, final Runnable runnable) {
+        final ViewTreeObserver.OnPreDrawListener preDrawListener = new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                view.getViewTreeObserver().removeOnPreDrawListener(this);
+                runnable.run();
+                return true;
+            }
+        };
+        view.getViewTreeObserver().addOnPreDrawListener(preDrawListener);
+    }
+
+
+
 
 
 

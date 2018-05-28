@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean signedIn;
 
     private PlayersClient mPlayersClient;
+    private Menu mOptionsMenu;
 
 
     @Override
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.settings_menu, menu);
+        mOptionsMenu = menu;
         return true;
     }
 
@@ -91,6 +93,14 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.item3:
                 onShowAchievmentPressed();
+                return true;
+
+            case R.id.item4:
+                if(!signedIn)
+                    startSignInIntent();
+                else
+                    signOut();
+
                 return true;
 
             default:
@@ -213,12 +223,10 @@ public class MainActivity extends AppCompatActivity {
         GooglePlayCLients.achievementsClient = Games.getAchievementsClient(this, googleSignInAccount);
 
 
-
-
         mPlayersClient = Games.getPlayersClient(this, googleSignInAccount);
 
-
-        ((Button) findViewById(R.id.SignInOut)).setText(R.string.signout);
+        if (mOptionsMenu != null)
+            mOptionsMenu.getItem(3).setTitle(R.string.signout);
 
         // Set the greeting appropriately on main menu
         mPlayersClient.getCurrentPlayer()
@@ -234,12 +242,14 @@ public class MainActivity extends AppCompatActivity {
                             displayName = "???";
                         }
 
+
 //                        ((TextView)findViewById(R.id.greetingView)).setText("Hello, " + displayName);
                     }
                 });
 
         signedIn = true;
     }
+
 
     public void onShowAchievmentPressed() {
         GooglePlayCLients.achievementsClient.getAchievementsIntent()
@@ -261,9 +271,8 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onDisconnected()");
 
         mPlayersClient = null;
-
-        ((Button) findViewById(R.id.SignInOut)).setText(R.string.signin);
-
+        if (mOptionsMenu != null)
+            mOptionsMenu.getItem(3).setTitle(R.string.signin);
 //        ((TextView)findViewById(R.id.greetingView)).setText("Not signed in");
         signedIn = false;
     }

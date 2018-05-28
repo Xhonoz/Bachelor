@@ -66,6 +66,8 @@ public class BiddingHistory {
     }
 
     public Bid getLastSouthBid(){
+        if(South.isEmpty())
+            return null;
         return South.get(getSouth().size() - 1);
     }
 

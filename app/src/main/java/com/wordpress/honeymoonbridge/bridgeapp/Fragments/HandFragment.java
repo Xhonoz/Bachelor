@@ -1,7 +1,6 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,7 +14,6 @@ import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.OpponentHand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
-import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 
@@ -31,7 +29,7 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
 
     private LinearLayout ll;
 
-    public void setUpHandAdapter(Context context){
+    public void setUpHandAdapter(Context context) {
         ll = new LinearLayout(context);
         ll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         handAdapter = new HandAdapter(new Hand(), ll, context);
@@ -45,27 +43,23 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
 
         Log.i("HandFragment", "onCreateView is called");
         View view = inflater.inflate(R.layout.fragment_hand, container, false);
-        ((LinearLayout)view.findViewById(R.id.HandLinearLayout)).addView(ll);
+        ((LinearLayout) view.findViewById(R.id.HandLinearLayout)).addView(ll);
 
         return view;
     }
 
-    public void addToHand(Card card){
+    public void addToHand(Card card) {
         handAdapter.addToHand(card);
-        for (int i = 0; i < handAdapter.getHandLayout().getChildCount(); i++) {
-            View v = handAdapter.getHandLayout().getChildAt(i);
-            Log.i(TAG, "handLayout[" + i + "] width: " + v.getWidth() );
-        }
-    }
-    public ImageView addEmptyImageview(Card card){
-       return handAdapter.addEmptyImageView(card);
     }
 
-    public void playCardFromHand(Card card, ImageView view){
+    public ImageView addEmptyImageview(Card card) {
+        return handAdapter.addEmptyImageView(card);
+    }
+
+    public void playCardFromHand(Card card, ImageView view) {
         handAdapter.startPlayCardAnimation(card, view, true);
 
     }
-
 
 
     @Override
@@ -97,6 +91,18 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
         mCallback.onFinishPlayingCard(card);
     }
 
+    @Override
+    public void finishEnteringAnimation(Card card) {
+        mCallback.onFinishPickingCard(card);
+    }
+
+    public void addToHand(Card card, View fromView) {
+        if (fromView == null)
+            addToHand(card);
+        else
+            handAdapter.addToHand(card, fromView);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -110,6 +116,9 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
     public interface Callback {
         // TODO: Update argument type and name
         void onClickedCard(Card card);
+
         void onFinishPlayingCard(Card card);
+
+        void onFinishPickingCard(Card card);
     }
 }

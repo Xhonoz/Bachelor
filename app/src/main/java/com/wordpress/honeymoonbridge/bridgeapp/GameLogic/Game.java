@@ -205,6 +205,8 @@ public class Game {
 
     public boolean Play(Card card, Player player) {
 
+        Hand hand = gamestate.getSouthHand();
+
         Log.i("GAME", "Player: " + player + "  Card: " + card + "  southTurn: " + gamestate.isSouthTurn());
         if (card == null)
             return false;
@@ -355,8 +357,9 @@ public class Game {
 
         } else {
             //TODO:Husk å endre hvis spilleren har huket av i settings at bidding ikke skal være med da går vi rett til spille fasen
-            mCallback.finishPicking();
             startBiddingPhase();
+            mCallback.finishPicking();
+
         }
     }
 
@@ -383,7 +386,8 @@ public class Game {
     // 2 = Can't Double
     // 3 = Not your turn
     public int UIDoubleOrRedouble() {
-
+        if(gamestate.getBiddingHistory().isNorthEmpty())
+            return 2;
        if(gamestate.getBiddingHistory().getLastNorthBid() instanceof Double)
            return UIReDouble();
        return  UIDouble();
