@@ -47,7 +47,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
     private final int HIGHLIGHT_MARGIN = -50;
 
-    private int animationSpeed = 5000;
+    private int animationSpeed = 400;
 
 
     private ArrayList<Rect> cardHitBoxes;    // Variable rect to hold the bounds of the view
@@ -139,7 +139,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
         float fromXDelta = 0;
         float toXDelta = -(oldImg.getX() - drawX)/scalingFactor;
-        float fromYDelta =  - HIGHLIGHT_MARGIN;
+        float fromYDelta =  HIGHLIGHT_MARGIN;
         float toYDelta = -( coordinatesOld[1] - ((highlighted) ? HIGHLIGHT_MARGIN : 0) - coordinatesNew[1])/scalingFactor;
 
         Animation animation1 = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
@@ -312,9 +312,9 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         float toYDelta = 0;
 
         Animation animation1 = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
-        animation1.setDuration(100);
+        animation1.setDuration(animationSpeed);
         Animation animation2 = new ScaleAnimation(scalingFactor,1f,scalingFactor,1f, Animation.ABSOLUTE,0f,Animation.ABSOLUTE,0f);
-        animation2.setDuration(100);
+        animation2.setDuration(animationSpeed);
         set.addAnimation(animation1);
         set.addAnimation(animation2);
         newImg.startAnimation(set);
