@@ -161,6 +161,7 @@ public class GameActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String color = prefs.getString("backgroundcolor", "green");
         LinearLayout l = findViewById(R.id.background);
@@ -217,7 +218,8 @@ public class GameActivity extends AppCompatActivity
         if (first)
             mPlayFragment.setSouthPlayedCard(null);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean on = prefs.getBoolean("readCards", true);
+       boolean on = prefs.getBoolean("readCards", true);
+
         if(on)
 mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
     }
