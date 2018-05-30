@@ -91,6 +91,10 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
         mCallback.onFinishPlayingCard(card);
     }
 
+    public HandAdapter getHandAdapter() {
+        return handAdapter;
+    }
+
     @Override
     public void finishEnteringAnimation(Card card) {
         mCallback.onFinishPickingCard(card);

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -25,7 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.wordpress.honeymoonbridge.bridgeapp.GooglePlayGames.GooglePlayCLients;
+import com.wordpress.honeymoonbridge.bridgeapp.GooglePlayGames.GooglePlayServices;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,18 +35,8 @@ public class MainActivity extends AppCompatActivity {
     Spinner chooseNet;
 
 
-    // request codes we use when invoking an external activity
-    private static final int RC_SIGN_IN = 9001;
-    private static final int RC_UNUSED = 5001;
-    // tag for debug logging
-    private static final String TAG = "GooglePlayServiceTest";
-    // Client used to sign in with Google APIs
-    private GoogleSignInClient mGoogleSignInClient;
-    // Client variables
-    private boolean signedIn;
-
-    private PlayersClient mPlayersClient;
     private Menu mOptionsMenu;
+    private String TAG = "MainActivity";
 
 
     @Override
@@ -68,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
         chooseNet.setAdapter(adapter);
 
         // Create the client used to sign in to Google services.
-        signedIn = false;
-        mGoogleSignInClient = GoogleSignIn.getClient(this,
+        GooglePlayServices.signedIn = false;
+        GooglePlayServices.mGoogleSignInClient = GoogleSignIn.getClient(this,
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).build());
 
 
@@ -96,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.item4:
-                if(!signedIn)
+                if(!GooglePlayServices.signedIn)
                     startSignInIntent();
                 else
                     signOut();
@@ -116,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     private void signInSilently() {
         Log.d(TAG, "signInSilently()");
 
-        mGoogleSignInClient.silentSignIn().addOnCompleteListener(this,
+        GooglePlayServices.mGoogleSignInClient.silentSignIn().addOnCompleteListener(this,
                 new OnCompleteListener<GoogleSignInAccount>() {
                     @Override
                     public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
@@ -132,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startSignInIntent() {
-        startActivityForResult(mGoogleSignInClient.getSignInIntent(), RC_SIGN_IN);
+        startActivityForResult(GooglePlayServices.mGoogleSignInClient.getSignInIntent(), GooglePlayServices.RC_SIGN_IN);
     }
 
     @Override
@@ -153,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        mGoogleSignInClient.signOut().addOnCompleteListener(this,
+        GooglePlayServices.mGoogleSignInClient.signOut().addOnCompleteListener(this,
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -192,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == GooglePlayServices.RC_SIGN_IN) {
             Task<GoogleSignInAccount> task =
                     GoogleSignIn.getSignedInAccountFromIntent(data);
 
@@ -220,16 +211,16 @@ public class MainActivity extends AppCompatActivity {
     private void onConnected(GoogleSignInAccount googleSignInAccount) {
         Log.d(TAG, "onConnected(): connected to Google APIs");
 
-        GooglePlayCLients.achievementsClient = Games.getAchievementsClient(this, googleSignInAccount);
+        GooglePlayServices.achievementsClient = Games.getAchievementsClient(this, googleSignInAccount);
 
 
-        mPlayersClient = Games.getPlayersClient(this, googleSignInAccount);
+        GooglePlayServices.mPlayersClient = Games.getPlayersClient(this, googleSignInAccount);
 
         if (mOptionsMenu != null)
             mOptionsMenu.getItem(3).setTitle(R.string.signout);
 
         // Set the greeting appropriately on main menu
-        mPlayersClient.getCurrentPlayer()
+        GooglePlayServices.mPlayersClient.getCurrentPlayer()
                 .addOnCompleteListener(new OnCompleteListener<Player>() {
                     @Override
                     public void onComplete(@NonNull Task<Player> task) {
@@ -247,16 +238,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        signedIn = true;
+        GooglePlayServices.signedIn = true;
     }
 
 
     public void onShowAchievmentPressed() {
-        GooglePlayCLients.achievementsClient.getAchievementsIntent()
+        if(GooglePlayServices.signedIn)
+        GooglePlayServices.achievementsClient.getAchievementsIntent()
                 .addOnSuccessListener(new OnSuccessListener<Intent>() {
                     @Override
                     public void onSuccess(Intent intent) {
-                        startActivityForResult(intent, RC_UNUSED);
+                        startActivityForResult(intent, GooglePlayServices.RC_UNUSED);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -265,21 +257,23 @@ public class MainActivity extends AppCompatActivity {
                         handleException(e, getString(R.string.achievements_exception));
                     }
                 });
+        else
+            Toast.makeText(getApplicationContext(), "You have to sign in to see achievments", Toast.LENGTH_SHORT).show();
     }
 
     private void onDisconnected() {
         Log.d(TAG, "onDisconnected()");
 
-        mPlayersClient = null;
+        GooglePlayServices.mPlayersClient = null;
         if (mOptionsMenu != null)
             mOptionsMenu.getItem(3).setTitle(R.string.signin);
 //        ((TextView)findViewById(R.id.greetingView)).setText("Not signed in");
-        signedIn = false;
+        GooglePlayServices.signedIn = false;
     }
 
 
     public void onSignInOutButtonClicked(View view) {
-        if (signedIn)
+        if (GooglePlayServices.signedIn)
             signOut();
         else
             startSignInIntent();

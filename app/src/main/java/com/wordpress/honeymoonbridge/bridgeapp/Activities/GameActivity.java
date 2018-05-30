@@ -1,11 +1,13 @@
 package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +18,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.wordpress.honeymoonbridge.bridgeapp.AI.TopInLong;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.BiddingFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.HandFragment;
@@ -25,7 +35,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.Fragments.ResultFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
-import com.wordpress.honeymoonbridge.bridgeapp.GooglePlayGames.GooglePlayCLients;
+import com.wordpress.honeymoonbridge.bridgeapp.GooglePlayGames.GooglePlayServices;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.GlobalInformation;
@@ -50,6 +60,8 @@ public class GameActivity extends AppCompatActivity
     private HandFragment mFullHandFragment;
     private HandFragment mPlayingHandFragment;
 
+    private Menu mOptionsMenu;
+
     //    game
     private Game game;
 
@@ -62,6 +74,7 @@ public class GameActivity extends AppCompatActivity
     boolean doneBidding = false;
     boolean donePlaying = false;
     private ImageView emptyImageView;
+    private String TAG = "GameActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +117,26 @@ public class GameActivity extends AppCompatActivity
 
     }
 
+
+
+    private void signInSilently() {
+        Log.d(TAG, "signInSilently()");
+
+        GooglePlayServices.mGoogleSignInClient.silentSignIn().addOnCompleteListener(this,
+                new OnCompleteListener<GoogleSignInAccount>() {
+                    @Override
+                    public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "signInSilently(): success");
+                            onConnected(task.getResult());
+                        } else {
+                            Log.d(TAG, "signInSilently(): failure", task.getException());
+                            onDisconnected();
+                        }
+                    }
+                });
+    }
+
     protected void onActivityResult(
             int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
@@ -118,6 +151,27 @@ public class GameActivity extends AppCompatActivity
                 startActivity(installIntent);
             }
         }
+        if (requestCode == GooglePlayServices.RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task =
+                    GoogleSignIn.getSignedInAccountFromIntent(data);
+
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                onConnected(account);
+            } catch (ApiException apiException) {
+                String message = apiException.getMessage();
+                if (message == null || message.isEmpty()) {
+                    message = getString(R.string.signin_other_error);
+                }
+
+                onDisconnected();
+
+                new AlertDialog.Builder(this)
+                        .setMessage(message)
+                        .setNeutralButton(android.R.string.ok, null)
+                        .show();
+            }
+        }
     }
 
 
@@ -128,6 +182,8 @@ public class GameActivity extends AppCompatActivity
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.settings_menu, menu);
+        mOptionsMenu = menu;
+
         return true;
     }
 
@@ -142,14 +198,124 @@ public class GameActivity extends AppCompatActivity
                 return true;
 
             case R.id.item3:
-                Toast toast2 = Toast.makeText(this, "Help clicked", Toast.LENGTH_SHORT);
-                toast2.show();
+                onShowAchievmentPressed();
+                return true;
+
+            case R.id.item4:
+                if(!GooglePlayServices.signedIn)
+                    startSignInIntent();
+                else
+                    signOut();
+
                 return true;
 
             default:
                 return true;
         }
     }
+
+    public void onShowAchievmentPressed() {
+        if(GooglePlayServices.signedIn)
+            GooglePlayServices.achievementsClient.getAchievementsIntent()
+                    .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                        @Override
+                        public void onSuccess(Intent intent) {
+                            startActivityForResult(intent, GooglePlayServices.RC_UNUSED);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            handleException(e, getString(R.string.achievements_exception));
+                        }
+                    });
+        else
+            Toast.makeText(getApplicationContext(), "You have to sign in to see achievments", Toast.LENGTH_SHORT).show();
+    }
+
+    private void handleException(Exception e, String details) {
+        int status = 0;
+
+        if (e instanceof ApiException) {
+            ApiException apiException = (ApiException) e;
+            status = apiException.getStatusCode();
+        }
+
+        String message = getString(R.string.status_exception_error, details, status, e);
+
+        new AlertDialog.Builder(GameActivity.this)
+                .setMessage(message)
+                .setNeutralButton(android.R.string.ok, null)
+                .show();
+    }
+
+    private void startSignInIntent() {
+        startActivityForResult(GooglePlayServices.mGoogleSignInClient.getSignInIntent(), GooglePlayServices.RC_SIGN_IN);
+    }
+
+    private void signOut() {
+        Log.d(TAG, "signOut()");
+
+        if (!GooglePlayServices.signedIn) {
+            Log.w(TAG, "signOut() called, but was not signed in!");
+            return;
+        }
+
+        GooglePlayServices.mGoogleSignInClient.signOut().addOnCompleteListener(this,
+                new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        boolean successful = task.isSuccessful();
+                        Log.d(TAG, "signOut(): " + (successful ? "success" : "failed"));
+
+                        onDisconnected();
+                    }
+                });
+    }
+
+    private void onDisconnected() {
+        Log.d(TAG, "onDisconnected()");
+
+        GooglePlayServices.mPlayersClient = null;
+        if (mOptionsMenu != null)
+            mOptionsMenu.getItem(3).setTitle(R.string.signin);
+//        ((TextView)findViewById(R.id.greetingView)).setText("Not signed in");
+        GooglePlayServices.signedIn = false;
+    }
+
+    private void onConnected(GoogleSignInAccount googleSignInAccount) {
+        Log.d(TAG, "onConnected(): connected to Google APIs");
+
+        GooglePlayServices.achievementsClient = Games.getAchievementsClient(this, googleSignInAccount);
+
+
+        GooglePlayServices.mPlayersClient = Games.getPlayersClient(this, googleSignInAccount);
+
+        if (mOptionsMenu != null)
+            mOptionsMenu.getItem(3).setTitle(R.string.signout);
+
+        // Set the greeting appropriately on main menu
+        GooglePlayServices.mPlayersClient.getCurrentPlayer()
+                .addOnCompleteListener(new OnCompleteListener<com.google.android.gms.games.Player>() {
+                    @Override
+                    public void onComplete(@NonNull Task<com.google.android.gms.games.Player> task) {
+                        String displayName;
+                        if (task.isSuccessful()) {
+                            displayName = task.getResult().getDisplayName();
+                        } else {
+                            Exception e = task.getException();
+                            handleException(e, getString(R.string.players_exception));
+                            displayName = "???";
+                        }
+
+
+//                        ((TextView)findViewById(R.id.greetingView)).setText("Hello, " + displayName);
+                    }
+                });
+
+        GooglePlayServices.signedIn = true;
+    }
+
 
     @Override
     protected void onStart() {
@@ -161,6 +327,8 @@ public class GameActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+
+        signInSilently();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String color = prefs.getString("backgroundcolor", "green");
         LinearLayout l = findViewById(R.id.background);
@@ -191,6 +359,8 @@ public class GameActivity extends AppCompatActivity
                 l.setBackgroundColor(getResources().getColor(R.color.pink));
                 break;
         }
+
+
     }
 
     // Switch UI to the given fragment
@@ -252,8 +422,8 @@ mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
     @Override
     public void finishPlaying() {
         Log.i("GameActivity: ", "" + game.getGameState().getInitialSouthHand().getSize());
-        if(GooglePlayCLients.achievementsClient != null)
-        GooglePlayCLients.achievementsClient.unlock(getString(R.string.achievement_playAGame));
+        if(GooglePlayServices.achievementsClient != null)
+        GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_playAGame));
         donePlaying = true;
 //        if both pass
         if (!doneBidding) {

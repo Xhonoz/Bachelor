@@ -2,6 +2,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
@@ -49,54 +51,83 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
     private int animationSpeed = 400;
 
+    private Suit playableSuit;
+
+    private boolean cardsAreSelectable = true;
+
+    public void setPlayableSuit(Suit playableSuit) {
+        this.playableSuit = playableSuit;
+        for(int i = 0; i < handLayout.getChildCount(); i++){
+            View current = handLayout.getChildAt(i);
+            if(new Card(current.getId()).getSuit() != playableSuit)
+                greyOut(current);
+            else
+                removeGretOut(current);
+        }
+
+    }
+
+    private void removeGretOut(View current) {
+        ((ImageView) highligthedView).setColorFilter(null);
+    }
+
+    private void greyOut(View current) {
+        ((ImageView) highligthedView).setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+    }
+
+    public void setCardsAreSelectable(boolean cardsAreSelectable) {
+        this.cardsAreSelectable = cardsAreSelectable;
+    }
 
     private ArrayList<Rect> cardHitBoxes;    // Variable rect to hold the bounds of the view
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        switch (motionEvent.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                Log.i("HandAdapter", "OnTouch: DOWN, VIEW: " + view.toString());
-                changeHighlightedView(view);
-                cardHitBoxes = new ArrayList<>();
-                for(int i = 0; i < handLayout.getChildCount(); i++) {
-                    View v = handLayout.getChildAt(i);
-                    Rect rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-                    cardHitBoxes.add(rect);
+        if(cardsAreSelectable) {
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    Log.i("HandAdapter", "OnTouch: DOWN, VIEW: " + view.toString());
+                    changeHighlightedView(view);
+                    cardHitBoxes = new ArrayList<>();
+                    for (int i = 0; i < handLayout.getChildCount(); i++) {
+                        View v = handLayout.getChildAt(i);
+                        Rect rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+                        cardHitBoxes.add(rect);
 
-                }
-
-
-                break;
-
-
-            case MotionEvent.ACTION_MOVE:
-                boolean outsideOfHand = true;
-                for(int i = 0; i < cardHitBoxes.size(); i++) {
-                    Rect rect = cardHitBoxes.get(i);
-                    View v = handLayout.getChildAt(i);
-                    if (rect.contains(view.getLeft() + (int) motionEvent.getX(), view.getTop() + (int) motionEvent.getY())) {
-                        // User moved outside bounds
-                        changeHighlightedView(v);
-                        outsideOfHand = false;
                     }
-                }
-                if(outsideOfHand)
-                    changeHighlightedView(null);
-                break;
-
-            case MotionEvent.ACTION_UP:
-                Log.i(TAG, "onTouch: ActionUpRegistrered");
-                if(highligthedView != null) {
-                    Card card = new Card(highligthedView.getId());
-                    changeHighlightedView(null);
-                    mCallback.clickedCard(card);
 
 
-                }
-                break;
+                    break;
 
 
+                case MotionEvent.ACTION_MOVE:
+                    boolean outsideOfHand = true;
+                    for (int i = 0; i < cardHitBoxes.size(); i++) {
+                        Rect rect = cardHitBoxes.get(i);
+                        View v = handLayout.getChildAt(i);
+                        if (rect.contains(view.getLeft() + (int) motionEvent.getX(), view.getTop() + (int) motionEvent.getY())) {
+                            // User moved outside bounds
+                            changeHighlightedView(v);
+                            outsideOfHand = false;
+                        }
+                    }
+                    if (outsideOfHand)
+                        changeHighlightedView(null);
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                    Log.i(TAG, "onTouch: ActionUpRegistrered");
+                    if (highligthedView != null) {
+                        Card card = new Card(highligthedView.getId());
+                        changeHighlightedView(null);
+                        mCallback.clickedCard(card);
+
+
+                    }
+                    break;
+
+
+            }
         }
         return false;
     }
@@ -146,6 +177,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         animation1.setDuration(animationSpeed);
         Animation animation2 = new ScaleAnimation(1f,scalingFactor,1f,scalingFactor, Animation.ABSOLUTE,0f,Animation.ABSOLUTE,0f);
         animation2.setDuration(animationSpeed);
+        animation1.setFillAfter(true);
         set.addAnimation(animation1);
         set.addAnimation(animation2);
         oldImg.startAnimation(set);
