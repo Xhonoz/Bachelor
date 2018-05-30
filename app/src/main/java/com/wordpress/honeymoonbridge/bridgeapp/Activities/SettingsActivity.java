@@ -61,7 +61,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                                 ? listPreference.getEntries()[index]
                                 : null);
 
-            }  else {
+            } else if (preference instanceof SwitchPreference) {
+                    // For a boolean value, set the default value "true"
+                    preference.setDefaultValue((stringValue.contains("t")));
+            } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);

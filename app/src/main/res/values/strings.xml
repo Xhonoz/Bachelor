@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">BridgeApp</string>
+    <string name="app_name">Honeymoon Bridge</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->

@@ -20,11 +20,6 @@
         android:title="@string/AI" />
 
     <SwitchPreference
-        android:key="sound"
-        android:summary="@string/onOff"
-        android:title="@string/sound"/>
-
-    <SwitchPreference
         android:key="readCards"
         android:summary="@string/onOff"
         android:title="@string/readText"/>

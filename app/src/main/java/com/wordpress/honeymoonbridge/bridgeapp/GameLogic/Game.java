@@ -13,8 +13,8 @@ import com.wordpress.honeymoonbridge.bridgeapp.Model.Pass;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.ReDouble;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
-
 import java.util.ArrayList;
+
 
 /**
  * Created by Eier on 09.04.2018.
@@ -203,6 +203,7 @@ public class Game {
 
     }
 
+
     public boolean Play(Card card, Player player) {
 
         Hand hand = gamestate.getSouthHand();
@@ -253,6 +254,7 @@ public class Game {
             if(gamestate.getNorthHand().getSize() == 0 && gamestate.getSouthHand().getSize() == 0)
                 finishGame();
             return true;
+
         }
         return false;
     }
@@ -283,6 +285,7 @@ public class Game {
             if (!gamestate.isSouthTurn())
                 AITakesTurnPlaying();
     }
+    
 
 
     public Card UIPickCard(boolean first) {

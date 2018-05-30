@@ -3,6 +3,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Trump;
+
 import com.wordpress.honeymoonbridge.bridgeapp.AI.MockAI;
 
 import org.junit.Before;
@@ -79,9 +80,9 @@ assertEquals(0, gamestate.getNorth26Cards().size());
         assertTrue(gamestate.getStack().size()==48);
     }
 
-    @Test
-    public void CompareCardsTest(){
-        System.out.println(game.compareCards(trump, trick));
-    }
+//    @Test
+//    public void CompareCardsTest(){
+//        System.out.println(game.compareCards(trump, trick));
+//    }
 
 }
