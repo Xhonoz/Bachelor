@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -17,6 +18,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.wordpress.honeymoonbridge.bridgeapp.Model.AnimationSpeed;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
@@ -49,11 +51,10 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
     private final int HIGHLIGHT_MARGIN = -50;
 
-    private int animationSpeed = 400;
 
     private Suit playableSuit;
 
-    private boolean cardsAreSelectable = true;
+    private boolean cardsAreSelectable = false;
 
     public void setPlayableSuit(Suit playableSuit) {
         this.playableSuit = playableSuit;
@@ -174,9 +175,9 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         float toYDelta = -( coordinatesOld[1] - ((highlighted) ? HIGHLIGHT_MARGIN : 0) - coordinatesNew[1])/scalingFactor;
 
         Animation animation1 = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
-        animation1.setDuration(animationSpeed);
+        animation1.setDuration(AnimationSpeed.getPlay_ms());
         Animation animation2 = new ScaleAnimation(1f,scalingFactor,1f,scalingFactor, Animation.ABSOLUTE,0f,Animation.ABSOLUTE,0f);
-        animation2.setDuration(animationSpeed);
+        animation2.setDuration(AnimationSpeed.getPlay_ms());
         animation1.setFillAfter(true);
         set.addAnimation(animation1);
         set.addAnimation(animation2);
@@ -251,6 +252,9 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         mCallback = null;
         trump = Trump.NoTrump;
         this.hand = hand.clone();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            handLayout.setZ(-100f);
+        }
         this.handLayout = handLayout;
         mContext = context;
         SetUpLayout();
@@ -344,9 +348,9 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         float toYDelta = 0;
 
         Animation animation1 = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
-        animation1.setDuration(animationSpeed);
+        animation1.setDuration(AnimationSpeed.getDraw_ms());
         Animation animation2 = new ScaleAnimation(scalingFactor,1f,scalingFactor,1f, Animation.ABSOLUTE,0f,Animation.ABSOLUTE,0f);
-        animation2.setDuration(animationSpeed);
+        animation2.setDuration(AnimationSpeed.getDraw_ms());
         set.addAnimation(animation1);
         set.addAnimation(animation2);
         newImg.startAnimation(set);

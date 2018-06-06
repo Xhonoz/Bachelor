@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.GameState;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
+import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.OpponentHand;
 import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.TrickAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
@@ -50,6 +51,8 @@ public class PlayFragment extends Fragment implements OpponentHand.Callback, Tri
 
     }
 
+
+
     @Override
     public void playAnimationStart(Player player, Card card) {
         if(player == Player.SOUTH)
@@ -62,6 +65,11 @@ public class PlayFragment extends Fragment implements OpponentHand.Callback, Tri
             mCallback.finishSouthPlayingAnimation(card);
         else
             mCallback.finishNorthPlayCardAnimation(card);
+    }
+
+    @Override
+    public void removeCardFromNorth() {
+        opponentHand.removeCard(0);
     }
 
     public void wonTrick(Player player) {
@@ -167,9 +175,7 @@ public class PlayFragment extends Fragment implements OpponentHand.Callback, Tri
 
     //TrickAdapter methods:
 
-    public void clearTrickAdapter(){
-        trickAdapter.clearCards();
-    }
+
 
     public boolean trickInProgress(){
         return trickAdapter.isInProgress();
@@ -183,9 +189,10 @@ public class PlayFragment extends Fragment implements OpponentHand.Callback, Tri
         return trickAdapter.isNotStarted();
     }
 
-    public void northPlayCard(Card card, View fromView){
-        opponentHand.removeCard(0);
-        trickAdapter.addCard(Player.NORTH, card, fromView);
+    public boolean northPlayCard(Card card, View fromView){
+        return trickAdapter.addCard(Player.NORTH, card, fromView);
+//        opponentHand.removeCard(0);
+
     }
 
     public void southPlayCard(Card card, View fromView){

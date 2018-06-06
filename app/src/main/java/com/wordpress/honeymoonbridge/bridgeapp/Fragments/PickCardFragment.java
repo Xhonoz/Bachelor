@@ -22,6 +22,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
 import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.CardViewAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.ImageHelper;
 import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.OpponentHand;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.AnimationSpeed;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
@@ -35,7 +36,6 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     private CardViewAdapter secondCardView;
 
     private boolean showingCards = false;
-    private int animationSpeed = 500;
     private boolean waiting = false;
 
 
@@ -96,7 +96,7 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
         secondCardView = new CardViewAdapter((ImageView) view.findViewById(R.id.secondCard), getContext());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            view.findViewById(R.id.discardLayout).setZ(10f);
+            view.findViewById(R.id.discardLayout).setZ(100f);
         }
 
 
@@ -204,9 +204,9 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
         float toYDelta = 0;
 
         Animation animation1 = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
-        animation1.setDuration(animationSpeed);
+        animation1.setDuration(AnimationSpeed.getDiscard_ms());
         Animation animation2 = new ScaleAnimation(scalingFactor, 1f, scalingFactor, 1f, Animation.ABSOLUTE, 0f, Animation.ABSOLUTE, 0f);
-        animation2.setDuration(animationSpeed);
+        animation2.setDuration(AnimationSpeed.getDiscard_ms());
         set.addAnimation(animation1);
         set.addAnimation(animation2);
         newImg.startAnimation(set);

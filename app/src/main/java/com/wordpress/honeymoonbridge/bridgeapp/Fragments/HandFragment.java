@@ -36,6 +36,10 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
         handAdapter.setCallback(this);
     }
 
+    public void setCardsArePlayable(boolean playable){
+        handAdapter.setCardsAreSelectable(playable);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

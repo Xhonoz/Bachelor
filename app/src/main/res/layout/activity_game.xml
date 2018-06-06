@@ -23,7 +23,17 @@
             android:layout_weight="12"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:id="@+id/fragment_container"></FrameLayout>
+            android:id="@+id/fragment_container">
+
+            <ImageView
+                android:id="@+id/tapView"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="100dp"
+                android:layout_gravity="center"
+                android:src="@drawable/tap"
+                android:visibility="gone"/>
+        </FrameLayout>
 
 
             <Space

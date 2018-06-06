@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
@@ -36,9 +37,11 @@ import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
 import com.wordpress.honeymoonbridge.bridgeapp.GooglePlayGames.GooglePlayServices;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.AnimationSpeed;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Bid;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.GlobalInformation;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Speed;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 import java.util.Locale;
@@ -73,6 +76,8 @@ public class GameActivity extends AppCompatActivity
     boolean donePlaying = false;
     private ImageView emptyImageView;
     private String TAG = "GameActivity";
+
+    private Player lastWinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +118,11 @@ public class GameActivity extends AppCompatActivity
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkIntent, 1);
 
+
+
     }
+
+
 
 
     private void signInSilently() {
@@ -324,7 +333,7 @@ public class GameActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-
+        AnimationSpeed.setSpeed(Speed.SLOW);
         signInSilently();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -359,6 +368,8 @@ public class GameActivity extends AppCompatActivity
         }
 
 
+
+
     }
 
     // Switch UI to the given fragment
@@ -381,10 +392,10 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void AiPlayedCard(Card card, boolean first) {
-        if (mPlayFragment.trickFinished())
-            mPlayFragment.clearTrickAdapter();
-        mPlayFragment.northPlayCard(card, mPlayFragment.getOpponentHand().getLastView());
 
+        boolean playedNow = mPlayFragment.northPlayCard(card, mPlayFragment.getOpponentHand().getLastView());
+        if(mPlayFragment.trickFinished() && playedNow)
+            turnOnTapIcon();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean on = prefs.getBoolean("readCards", true);
 
@@ -395,16 +406,26 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void wonTrick(Player player) {
         mPlayFragment.updateTricks(game.getGameState());
-//        mPlayFragment.wonTrick(player);
+        lastWinner = player;
     }
 
     @Override
     public void finishPicking() {
+
         Log.i("GameActivity", "finishPicking");
 //        TODO: check if bidding is enabled
         donePicking = true;
 //        TODO: CHeck prefferences
+        turnOnTapIcon();
 
+    }
+
+    private void turnOffTapIcon(){
+        ((ImageView)findViewById(R.id.tapView)).setVisibility(View.GONE);
+    }
+
+    private void turnOnTapIcon(){
+        ((ImageView)findViewById(R.id.tapView)).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -414,6 +435,7 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void startPlaying() {
+        mPlayingHandFragment.setCardsArePlayable(true);
         mPlayFragment.setContract(game.getGameState().getContract());
         switchToFragment(mPlayFragment);
 
@@ -422,6 +444,7 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void finishPlaying() {
+        mPlayingHandFragment.setCardsArePlayable(false);
         Log.i("GameActivity: ", "" + game.getGameState().getInitialSouthHand().getSize());
         if (GooglePlayServices.achievementsClient != null)
             GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_playAGame));
@@ -487,8 +510,10 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void pickCard(boolean first) {
-        if (donePicking)
+        if (donePicking) {
+            turnOffTapIcon();
             startBidding();
+        }
         else {
             if (game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn()) {
 
@@ -516,6 +541,9 @@ public class GameActivity extends AppCompatActivity
     }
 
     private void startBidding() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            findViewById(R.id.fragment_container).setZ(10f);
+        }
         switchToFragment(mBiddingFragment);
     }
 
@@ -531,10 +559,11 @@ public class GameActivity extends AppCompatActivity
             if (game.getGameState().getPhase() == Phase.PLAYING) {
                 if (game.UIPlayCard(card)) {
                     if (mPlayFragment.trickFinished())
-                        mPlayFragment.clearTrickAdapter();
+                        mPlayFragment.wonTrick(lastWinner);
                     waiting = true;
                     mPlayFragment.southPlayCard(card, mPlayingHandFragment.getHandAdapter().getHandLayout().findViewById(card.getIndex()));
-//                    mPlayingHandFragment.playCardFromHand(card, mPlayFragment.getSouthPlayedCard().getImageView());
+                    if(mPlayFragment.trickFinished())
+                        turnOnTapIcon();
                 }
 
 
@@ -557,6 +586,7 @@ public class GameActivity extends AppCompatActivity
     }
 
     public void onClickScreen(View view) {
+        turnOffTapIcon();
         if (donePlaying) {
             endPlaying();
         } else if (doneBidding) {
@@ -573,7 +603,7 @@ public class GameActivity extends AppCompatActivity
                 game.northTakeTurn();
             if (mPlayFragment.trickFinished()) {
                 waiting = false;
-                mPlayFragment.clearTrickAdapter();
+                mPlayFragment.wonTrick(lastWinner);
                 game.northTakeTurn();
             }
 
