@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * Created by Eier on 10.04.2018.
  */
 
-public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
+public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
 
     Hand hand;
 
@@ -52,15 +52,15 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
     private final int HIGHLIGHT_MARGIN = -50;
 
 
-    private Suit playableSuit;
+    private Suit playableSuit = null;
 
     private boolean cardsAreSelectable = false;
 
     public void setPlayableSuit(Suit playableSuit) {
         this.playableSuit = playableSuit;
-        for(int i = 0; i < handLayout.getChildCount(); i++){
+        for (int i = 0; i < handLayout.getChildCount(); i++) {
             View current = handLayout.getChildAt(i);
-            if(new Card(current.getId()).getSuit() != playableSuit)
+            if (playableSuit != null && new Card(current.getId()).getSuit() != playableSuit)
                 greyOut(current);
             else
                 removeGretOut(current);
@@ -69,11 +69,13 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
     }
 
     private void removeGretOut(View current) {
-        ((ImageView) highligthedView).setColorFilter(null);
+        if (current != null)
+            ((ImageView) current).setColorFilter(null);
     }
 
     private void greyOut(View current) {
-        ((ImageView) highligthedView).setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+        if (current != null)
+            ((ImageView) current).setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
     }
 
     public void setCardsAreSelectable(boolean cardsAreSelectable) {
@@ -84,7 +86,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        if(cardsAreSelectable) {
+        if (cardsAreSelectable) {
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     Log.i("HandAdapter", "OnTouch: DOWN, VIEW: " + view.toString());
@@ -133,8 +135,8 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         return false;
     }
 
-    public void startPlayCardAnimation(final Card card, final ImageView newImg, boolean highlighted){
-        Log.i(TAG, "Animation, on Card: " +  card);
+    public void startPlayCardAnimation(final Card card, final ImageView newImg, boolean highlighted) {
+        Log.i(TAG, "Animation, on Card: " + card);
         final ImageView oldImg = handLayout.findViewById(card.getIndex());
         int oW = oldImg.getWidth();
         int oH = oldImg.getHeight();
@@ -142,11 +144,11 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         int nH = newImg.getHeight();
 
 
-        double imageRatio  = ((double)oldImg.getWidth())/oH;
+        double imageRatio = ((double) oldImg.getWidth()) / oH;
 //        if(highligthedView != null && highligthedView.equals(oldImg))
 //             imageRatio += HIGHLIGHT_MARGIN;
 
-        double imageViewRatio  = ((double)newImg.getWidth())/newImg.getHeight();
+        double imageViewRatio = ((double) newImg.getWidth()) / newImg.getHeight();
 
         float drawX;
         double drawWidth;
@@ -154,11 +156,10 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
 
         drawY = newImg.getY();
-        drawWidth = (imageRatio/imageViewRatio) * newImg.getWidth();
-        drawX = (int)(newImg.getWidth() - drawWidth)/2;
+        drawWidth = (imageRatio / imageViewRatio) * newImg.getWidth();
+        drawX = (int) (newImg.getWidth() - drawWidth) / 2;
 
-        float scalingFactor = (float)drawWidth/oldImg.getWidth();
-
+        float scalingFactor = (float) drawWidth / oldImg.getWidth();
 
 
         int[] coordinatesOld = new int[2];
@@ -170,13 +171,13 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         AnimationSet set = new AnimationSet(false);
 
         float fromXDelta = 0;
-        float toXDelta = -(oldImg.getX() - drawX)/scalingFactor;
-        float fromYDelta =  HIGHLIGHT_MARGIN;
-        float toYDelta = -( coordinatesOld[1] - ((highlighted) ? HIGHLIGHT_MARGIN : 0) - coordinatesNew[1])/scalingFactor;
+        float toXDelta = -(oldImg.getX() - drawX) / scalingFactor;
+        float fromYDelta = HIGHLIGHT_MARGIN;
+        float toYDelta = -(coordinatesOld[1] - ((highlighted) ? HIGHLIGHT_MARGIN : 0) - coordinatesNew[1]) / scalingFactor;
 
         Animation animation1 = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
         animation1.setDuration(AnimationSpeed.getPlay_ms());
-        Animation animation2 = new ScaleAnimation(1f,scalingFactor,1f,scalingFactor, Animation.ABSOLUTE,0f,Animation.ABSOLUTE,0f);
+        Animation animation2 = new ScaleAnimation(1f, scalingFactor, 1f, scalingFactor, Animation.ABSOLUTE, 0f, Animation.ABSOLUTE, 0f);
         animation2.setDuration(AnimationSpeed.getPlay_ms());
         animation1.setFillAfter(true);
         set.addAnimation(animation1);
@@ -201,37 +202,35 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         });
 
 
-
-
-
-
-
-
     }
 
-    private void changeHighlightedView(View view){
-        if(highligthedView == null || !highligthedView.equals(view)){
-            if(highligthedView != null) {
+    private void changeHighlightedView(View view) {
 
-                ((ImageView)highligthedView).setColorFilter(null);
+        if (highligthedView == null || !highligthedView.equals(view)) {
+            if (highligthedView != null) {
 
-                LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams)((ImageView) highligthedView).getLayoutParams();
+                ((ImageView) highligthedView).setColorFilter(null);
+
+                LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams) ((ImageView) highligthedView).getLayoutParams();
                 newParams.bottomMargin = 0;
                 newParams.topMargin = 0;
                 highligthedView.setLayoutParams(newParams);
             }
-            highligthedView = view;
-            if(highligthedView != null) {
-                int highlightColor = mContext.getResources().getColor(R.color.highlight);
-                ((ImageView) highligthedView).setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY);
-                LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams)((ImageView) highligthedView).getLayoutParams();
-                newParams.bottomMargin = -HIGHLIGHT_MARGIN;
-                newParams.topMargin = HIGHLIGHT_MARGIN;
-                highligthedView.setLayoutParams(newParams);
+            if (playableSuit == null || (view != null && new Card(view.getId()).getSuit() == playableSuit)) {
+                highligthedView = view;
+                if (highligthedView != null) {
+                    int highlightColor = mContext.getResources().getColor(R.color.highlight);
+                    ((ImageView) highligthedView).setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY);
+                    LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams) ((ImageView) highligthedView).getLayoutParams();
+                    newParams.bottomMargin = -HIGHLIGHT_MARGIN;
+                    newParams.topMargin = HIGHLIGHT_MARGIN;
+                    highligthedView.setLayoutParams(newParams);
 
-                int newWidth = highligthedView.getWidth();
+                    int newWidth = highligthedView.getWidth();
 
-            }
+                }
+            } else
+                highligthedView = null;
         }
     }
 
@@ -241,9 +240,11 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
     }
 
 
-    public interface Callback{
+    public interface Callback {
         void clickedCard(Card card);
+
         void finishedPlayAnimation(Card card);
+
         void finishEnteringAnimation(Card card);
     }
 
@@ -309,7 +310,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
     }
 
     private void startAnimationAddToHandAnimation(View fromView, final Card card) {
-        final ImageView oldImg = (ImageView)fromView;
+        final ImageView oldImg = (ImageView) fromView;
         final ImageView newImg = handLayout.findViewById(card.getIndex());
         int oW = oldImg.getWidth();
         int oH = oldImg.getHeight();
@@ -325,11 +326,10 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         float drawX;
         double drawWidth;
 
-        drawWidth = (oldRatio/newRatio) * nW;
-        drawX = (int)(nW - drawWidth)/2;
+        drawWidth = (oldRatio / newRatio) * nW;
+        drawX = (int) (nW - drawWidth) / 2;
 
-        float scalingFactor = (float)(oW/drawWidth);
-
+        float scalingFactor = (float) (oW / drawWidth);
 
 
         int[] coordinatesOld = new int[2];
@@ -342,14 +342,14 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
         AnimationSet set = new AnimationSet(false);
 
-        float fromXDelta = ((coordinatesOld[0] - coordinatesNew[0]))/scalingFactor - drawX;
+        float fromXDelta = ((coordinatesOld[0] - coordinatesNew[0])) / scalingFactor - drawX;
         float toXDelta = 0;
-        float fromYDelta = (coordinatesOld[1] - coordinatesNew[1])/scalingFactor;
+        float fromYDelta = (coordinatesOld[1] - coordinatesNew[1]) / scalingFactor;
         float toYDelta = 0;
 
         Animation animation1 = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
         animation1.setDuration(AnimationSpeed.getDraw_ms());
-        Animation animation2 = new ScaleAnimation(scalingFactor,1f,scalingFactor,1f, Animation.ABSOLUTE,0f,Animation.ABSOLUTE,0f);
+        Animation animation2 = new ScaleAnimation(scalingFactor, 1f, scalingFactor, 1f, Animation.ABSOLUTE, 0f, Animation.ABSOLUTE, 0f);
         animation2.setDuration(AnimationSpeed.getDraw_ms());
         set.addAnimation(animation1);
         set.addAnimation(animation2);
@@ -385,12 +385,11 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         int cardIndex = card.getIndex();
         hand.removeCard(card);
         View child = handLayout.findViewById(cardIndex);
-        if(handLayout.getChildCount() > 1 && handLayout.getChildAt(handLayout.getChildCount() - 1).equals(child)) {
+        if (handLayout.getChildCount() > 1 && handLayout.getChildAt(handLayout.getChildCount() - 1).equals(child)) {
             handLayout.removeView(child);
             fixLast();
-        }else
+        } else
             handLayout.removeView(child);
-
 
 
     }
@@ -445,33 +444,33 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
         boolean last = index == hand.getSize() - 1;
 
-            Log.i("HandAdapter", "addImageViewToLayout with index: " + index);
+        Log.i("HandAdapter", "addImageViewToLayout with index: " + index);
 
 
-            ImageView view = new ImageView(mContext);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
-                    LinearLayout.LayoutParams.MATCH_PARENT);
-            params.weight = 1;
-            params.gravity = Gravity.BOTTOM;
-            if (!last) {
+        ImageView view = new ImageView(mContext);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        params.weight = 1;
+        params.gravity = Gravity.BOTTOM;
+        if (!last) {
 
-                params.setMargins(0, 0, MARGIN_RIGHT, 0);
+            params.setMargins(0, 0, MARGIN_RIGHT, 0);
 
-            } else if (hand.getSize() != 1) {
-                fixNotLast();
-            }
+        } else if (hand.getSize() != 1) {
+            fixNotLast();
+        }
 
 
-            view.setLayoutParams(params);
+        view.setLayoutParams(params);
 
-            int indexCard = card.getIndex();
-            view.setId(indexCard);
-            view.setOnClickListener(this);
-            view.setOnTouchListener(this);
-        if(!empty)
-                changeImage(view, indexCard);
+        int indexCard = card.getIndex();
+        view.setId(indexCard);
+        view.setOnClickListener(this);
+        view.setOnTouchListener(this);
+        if (!empty)
+            changeImage(view, indexCard);
 
-            handLayout.addView(view, index);
+        handLayout.addView(view, index);
         return view;
     }
 
@@ -487,7 +486,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
 
     }
 
-    private void fixLast(){
+    private void fixLast() {
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.MATCH_PARENT);
@@ -495,7 +494,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         params.gravity = Gravity.BOTTOM;
         params.setMargins(0, 0, 0, 0);
 
-        handLayout.getChildAt(handLayout.getChildCount() -1 ).setLayoutParams(params);
+        handLayout.getChildAt(handLayout.getChildCount() - 1).setLayoutParams(params);
     }
 
 
@@ -515,10 +514,6 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
         };
         view.getViewTreeObserver().addOnPreDrawListener(preDrawListener);
     }
-
-
-
-
 
 
 }

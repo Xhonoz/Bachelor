@@ -333,7 +333,7 @@ public class GameActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        AnimationSpeed.setSpeed(Speed.SLOW);
+        AnimationSpeed.setSpeed(Speed.FAST);
         signInSilently();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -396,6 +396,8 @@ public class GameActivity extends AppCompatActivity
         boolean playedNow = mPlayFragment.northPlayCard(card, mPlayFragment.getOpponentHand().getLastView());
         if(mPlayFragment.trickFinished() && playedNow)
             turnOnTapIcon();
+        else if(!game.getGameState().getSouthHand().getCardsOfSuit(card.getSuit()).isEmpty())
+            mPlayingHandFragment.setPlayableSuit(card.getSuit());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean on = prefs.getBoolean("readCards", true);
 
@@ -405,6 +407,7 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void wonTrick(Player player) {
+        mPlayingHandFragment.setPlayableSuit(null);
         mPlayFragment.updateTricks(game.getGameState());
         lastWinner = player;
     }

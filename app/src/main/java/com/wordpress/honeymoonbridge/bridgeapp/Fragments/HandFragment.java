@@ -14,6 +14,7 @@ import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.HandAdapter;
 import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.OpponentHand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Suit;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 
@@ -34,6 +35,10 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
         ll.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         handAdapter = new HandAdapter(new Hand(), ll, context);
         handAdapter.setCallback(this);
+    }
+
+    public void setPlayableSuit(Suit suit){
+        handAdapter.setPlayableSuit(suit);
     }
 
     public void setCardsArePlayable(boolean playable){
