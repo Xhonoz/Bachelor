@@ -120,5 +120,6 @@
     <string name="achievments">Achievments</string>
 <string name="normal">normal</string>
     <string name="readText">Sound</string>
+    <string name="discarded">Discarded</string>
 
 </resources>

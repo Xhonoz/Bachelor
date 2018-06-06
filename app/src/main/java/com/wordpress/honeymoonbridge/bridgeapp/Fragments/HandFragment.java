@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.HandAdapter;
-import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.OpponentHand;
+import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.HandAdapter;
+import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.OpponentHand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Hand;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
@@ -105,6 +105,11 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
             addToHand(card);
         else
             handAdapter.addToHand(card, fromView);
+    }
+
+    public void removeCard(Card card){
+        handAdapter.removeCard(card);
+
     }
 
     /**

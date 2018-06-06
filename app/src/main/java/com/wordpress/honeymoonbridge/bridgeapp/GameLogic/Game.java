@@ -25,6 +25,8 @@ public class Game {
     private com.wordpress.honeymoonbridge.bridgeapp.AI.AIPlayer AI;
     private AIPlayer AIPlayer;
 
+
+
     public interface Callback {
         // called when the user presses the send button to submit a message
         void AiPickedCard(boolean first);
@@ -269,6 +271,26 @@ public class Game {
 
         }
         return false;
+    }
+
+    public Card getPreviousDiscard(Player player) {
+        if(player == Player.SOUTH) {
+            if(!gamestate.getSouth26Cards().isEmpty() && !gamestate.getSouthChoseFirst().isEmpty()) {
+                int index = gamestate.getSouth26Cards().size() - 1;
+                if (!gamestate.getSouthChoseFirst().get(gamestate.getSouthChoseFirst().size() - 1))
+                    index--;
+                return gamestate.getSouth26Cards().get(index);
+            }
+        }if(player == Player.NORTH) {
+            if (!gamestate.getNorth26Cards().isEmpty() && !gamestate.getNorthChoseFirst().isEmpty()) {
+                int index = gamestate.getNorth26Cards().size() - 1;
+                if (!gamestate.getNorthChoseFirst().get(gamestate.getNorthChoseFirst().size() - 1))
+                    index--;
+                return gamestate.getNorth26Cards().get(index);
+
+            }
+        }
+        return null;
     }
 
     private void AITakesTurnPlaying() {

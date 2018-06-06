@@ -1,4 +1,4 @@
-package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
+package com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -438,6 +438,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener{
     }
 
     private ImageView addImageViewToLayout(Card card, int index, boolean empty) {
+
         boolean last = index == hand.getSize() - 1;
 
             Log.i("HandAdapter", "addImageViewToLayout with index: " + index);

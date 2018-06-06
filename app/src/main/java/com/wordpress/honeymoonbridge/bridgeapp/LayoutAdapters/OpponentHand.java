@@ -1,10 +1,10 @@
-package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
+package com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
-import android.telecom.Call;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
@@ -33,6 +33,10 @@ public class OpponentHand {
     private int animationSpeed = 200;
 
     private Callback mCallback;
+
+    public View getLastView() {
+        return handLayout.getChildAt(length - 1);
+    }
 
     public interface Callback{
         void finishedPlayAnimation(Card card);

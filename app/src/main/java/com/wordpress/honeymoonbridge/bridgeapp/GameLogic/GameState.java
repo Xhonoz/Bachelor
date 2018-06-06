@@ -39,9 +39,6 @@ public class GameState {
     private Hand northHand;
     private Hand southHand;
 
-
-
-
     private CardStack stack;
 
 

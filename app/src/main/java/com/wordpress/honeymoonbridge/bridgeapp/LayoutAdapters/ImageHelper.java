@@ -1,4 +1,4 @@
-package com.wordpress.honeymoonbridge.bridgeapp.HandLayout;
+package com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters;
 
 import android.graphics.Bitmap;
 

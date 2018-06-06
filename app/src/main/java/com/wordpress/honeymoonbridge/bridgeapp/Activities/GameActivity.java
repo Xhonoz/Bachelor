@@ -66,8 +66,6 @@ public class GameActivity extends AppCompatActivity
     private Game game;
 
 
-    private Card picked;
-
     //    Booleans
     boolean waiting = false;
     boolean donePicking = false;
@@ -113,10 +111,9 @@ public class GameActivity extends AppCompatActivity
 
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(checkIntent,1);
+        startActivityForResult(checkIntent, 1);
 
     }
-
 
 
     private void signInSilently() {
@@ -142,7 +139,7 @@ public class GameActivity extends AppCompatActivity
         if (requestCode == 1) {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 // success, create the TTS instance
-                mTTS = new TextToSpeech(this,  this);
+                mTTS = new TextToSpeech(this, this);
             } else {
                 // missing data, install it
                 Intent installIntent = new Intent();
@@ -202,7 +199,7 @@ public class GameActivity extends AppCompatActivity
                 return true;
 
             case R.id.item4:
-                if(!GooglePlayServices.signedIn)
+                if (!GooglePlayServices.signedIn)
                     startSignInIntent();
                 else
                     signOut();
@@ -215,7 +212,7 @@ public class GameActivity extends AppCompatActivity
     }
 
     public void onShowAchievmentPressed() {
-        if(GooglePlayServices.signedIn)
+        if (GooglePlayServices.signedIn)
             GooglePlayServices.achievementsClient.getAchievementsIntent()
                     .addOnSuccessListener(new OnSuccessListener<Intent>() {
                         @Override
@@ -384,19 +381,21 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void AiPlayedCard(Card card, boolean first) {
-        mPlayFragment.playCardFromOpponent(card);
-        if (first)
-            mPlayFragment.setSouthPlayedCard(null);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-       boolean on = prefs.getBoolean("readCards", true);
+        if (mPlayFragment.trickFinished())
+            mPlayFragment.clearTrickAdapter();
+        mPlayFragment.northPlayCard(card, mPlayFragment.getOpponentHand().getLastView());
 
-        if(on)
-mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean on = prefs.getBoolean("readCards", true);
+
+        if (on)
+            mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
     }
 
     @Override
     public void wonTrick(Player player) {
         mPlayFragment.updateTricks(game.getGameState());
+//        mPlayFragment.wonTrick(player);
     }
 
     @Override
@@ -424,8 +423,8 @@ mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
     @Override
     public void finishPlaying() {
         Log.i("GameActivity: ", "" + game.getGameState().getInitialSouthHand().getSize());
-        if(GooglePlayServices.achievementsClient != null)
-        GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_playAGame));
+        if (GooglePlayServices.achievementsClient != null)
+            GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_playAGame));
         donePlaying = true;
 //        if both pass
         if (!doneBidding) {
@@ -490,10 +489,28 @@ mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
     public void pickCard(boolean first) {
         if (donePicking)
             startBidding();
-        else
-        picked = game.getCardFromDeck(first);
-        if (picked != null) {
-            mPickCardFragment.showCardPickedUI(first);
+        else {
+            if (game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn()) {
+
+                final Card picked = game.UIPickCard(first);
+                Card notPicked = game.getPreviousDiscard(Player.SOUTH);
+                mPickCardFragment.discard(!first, notPicked);
+
+
+                final View fromView = (first ? mPickCardFragment.getFirstCardView().getImageView() : mPickCardFragment.getSecondCardView().getImageView());
+
+
+                        mFullHandFragment.addToHand(picked);
+                        mPlayingHandFragment.addToHand(picked, fromView);
+
+
+
+                if(mPlayingHandFragment.getHandAdapter().getHandLayout().getChildCount() < 13)
+                    mPickCardFragment.newCardsUI();
+                else
+                    mPickCardFragment.removeBothCards();
+
+            }
         }
 
     }
@@ -507,25 +524,19 @@ mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
         switchHandFragment(mFullHandFragment);
     }
 
-    @Override
-    public void confirm() {
-        addCardToHand();
-    }
-
 
     @Override
     public void onClickedCard(Card card) {
         if (!waiting) {
             if (game.getGameState().getPhase() == Phase.PLAYING) {
-                boolean shoudlBeLegal = game.isLegal(Player.SOUTH, card);
                 if (game.UIPlayCard(card)) {
+                    if (mPlayFragment.trickFinished())
+                        mPlayFragment.clearTrickAdapter();
                     waiting = true;
-                    mPlayingHandFragment.playCardFromHand(card, mPlayFragment.getSouthPlayedCard().getImageView());
+                    mPlayFragment.southPlayCard(card, mPlayingHandFragment.getHandAdapter().getHandLayout().findViewById(card.getIndex()));
+//                    mPlayingHandFragment.playCardFromHand(card, mPlayFragment.getSouthPlayedCard().getImageView());
                 }
-                if (shoudlBeLegal && !game.getGameState().getTricks().isEmpty() && game.getGameState().getTricks().get(game.getGameState().getTricks().size() - 1).SecondCard == null) {
-                    mPlayFragment.setNorthPlayedCard(null);
-                    mPlayFragment.setSouthPlayedCard(null);
-                }
+
 
             }
         }
@@ -533,19 +544,15 @@ mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
 
     @Override
     public void onFinishPlayingCard(Card card) {
-//        if(mPlayFragment.getNorthPlayedCard() != null)
-//            waiting = false;
-        mPlayFragment.setSouthPlayedCard(card);
-        if (mPlayFragment.getNorthPlayedCard().getCard() == null)
-            game.northTakeTurn();
+
+
     }
 
     @Override
     public void onFinishPickingCard(Card card) {
         if (donePicking)
             mPickCardFragment.removeBothCards();
-        else
-            mPickCardFragment.newCardsUI();
+
 
     }
 
@@ -558,38 +565,21 @@ mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
             startBidding();
         }
 
-        if (game.getGameState().getPhase() == Phase.PICKING) {
-            addCardToHand();
-
-        }
+//        if (game.getGameState().getPhase() == Phase.PICKING) {
+//            addCardToHand();
+//        }
         if (game.getGameState().getPhase() == Phase.PLAYING) {
             if (game.getGameState().getTricks().isEmpty())
                 game.northTakeTurn();
-            if (mPlayFragment.getNorthPlayedCard().getCard() != null && mPlayFragment.getSouthPlayedCard().getCard() != null) {
+            if (mPlayFragment.trickFinished()) {
                 waiting = false;
-                Card nC = mPlayFragment.getNorthPlayedCard().getCard();
-                Card sC = mPlayFragment.getSouthPlayedCard().getCard();
-                mPlayFragment.setNorthPlayedCard(null);
-                mPlayFragment.setSouthPlayedCard(null);
+                mPlayFragment.clearTrickAdapter();
                 game.northTakeTurn();
             }
 
         }
 
 
-    }
-
-    public void addCardToHand() {
-        if (game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn() && picked != null) {
-            boolean first = picked.equals(game.peakTopCard());
-            game.UIPickCard(first);
-            mPickCardFragment.removeCard(first);
-            mFullHandFragment.addToHand(picked);
-            View fromView = (first ? mPickCardFragment.getFirstCardView().getImageView() : mPickCardFragment.getSecondCardView().getImageView());
-//            ImageView newimg = mPlayingHandFragment.addEmptyImageview(picked);
-                mPlayingHandFragment.addToHand(picked, fromView);
-            picked = null;
-        }
     }
 
 
@@ -599,8 +589,20 @@ mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
     }
 
     @Override
-    public void finishOpponentPlayCardAnimation(Card card) {
+    public void finishNorthPlayCardAnimation(Card card) {
 
+    }
+
+    @Override
+    public void startSouthPlayingAnimation(Card card) {
+        mPlayingHandFragment.removeCard(card);
+    }
+
+    @Override
+    public void finishSouthPlayingAnimation(Card card) {
+        waiting = false;
+        if (mPlayFragment.trickInProgress())
+            game.northTakeTurn();
     }
 
     @Override

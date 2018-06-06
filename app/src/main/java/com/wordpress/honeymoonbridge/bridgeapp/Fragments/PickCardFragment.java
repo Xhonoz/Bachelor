@@ -2,6 +2,7 @@ package com.wordpress.honeymoonbridge.bridgeapp.Fragments;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,9 +19,9 @@ import android.widget.LinearLayout;
 
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Phase;
-import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.CardViewAdapter;
-import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.ImageHelper;
-import com.wordpress.honeymoonbridge.bridgeapp.HandLayout.OpponentHand;
+import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.CardViewAdapter;
+import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.ImageHelper;
+import com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters.OpponentHand;
 import com.wordpress.honeymoonbridge.bridgeapp.Model.Card;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
@@ -35,6 +36,7 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
 
     private boolean showingCards = false;
     private int animationSpeed = 500;
+    private boolean waiting = false;
 
 
     public void setGame(Game game) {
@@ -42,25 +44,25 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     }
 
     public void addToOpponentHand() {
-        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout)getView().findViewById(R.id.opponentHand)).getChildCount());
+        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout) getView().findViewById(R.id.opponentHand)).getChildCount());
 
         opponentHand.addToHand();
 
-        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout)getView().findViewById(R.id.opponentHand)).getChildCount());
+        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout) getView().findViewById(R.id.opponentHand)).getChildCount());
 
     }
 
-    public void addToOpponentHand( boolean first) {
-        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout)getView().findViewById(R.id.opponentHand)).getChildCount());
+    public void addToOpponentHand(boolean first) {
+        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout) getView().findViewById(R.id.opponentHand)).getChildCount());
 
         opponentHand.addToHand(first);
 
-        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout)getView().findViewById(R.id.opponentHand)).getChildCount());
+        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout) getView().findViewById(R.id.opponentHand)).getChildCount());
 
     }
 
     public void removeCard(boolean first) {
-        if(first)
+        if (first)
             firstCardView.setCard(null);
         else
             secondCardView.setCard(null);
@@ -71,7 +73,6 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     public interface Callback {
         // called when the user presses the send button to submit a message
         void pickCard(boolean first);
-        void confirm();
     }
 
     private Callback mCallback = null;
@@ -93,6 +94,10 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
         opponentHand = new OpponentHand((LinearLayout) view.findViewById(R.id.opponentHand), getContext(), 0);
         firstCardView = new CardViewAdapter((ImageView) view.findViewById(R.id.firstCard), getContext());
         secondCardView = new CardViewAdapter((ImageView) view.findViewById(R.id.secondCard), getContext());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            view.findViewById(R.id.discardLayout).setZ(10f);
+        }
 
 
         final int[] clickableIds = {
@@ -133,40 +138,99 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    public void showCardPickedUI(boolean first) {
-        if (game.getGameState().getPhase() == Phase.PICKING) {
-            showingCards = true;
-            showCardPicked(first);
-
-
-        }
-    }
-
-
     public void newCardsUI() {
         if (game.getGameState().getPhase() == Phase.PICKING) {
-            showingCards = false;
-            firstCardView.removeHighlight();
-            secondCardView.removeHighlight();
             Card top = game.peakTopCard();
             if (top != null)
-                firstCardView.setCard(game.peakTopCard());
-            secondCardView.setBackside();
+                secondCardView.setBackside();
+            else
+                secondCardView.setCard(null);
+            firstCardView.setCard(top);
+
+
         }
     }
 
-    public void removeBothCards(){
+    public void removeBothCards() {
         showingCards = false;
         firstCardView.setCard(null);
         secondCardView.setCard(null);
     }
 
-    private void showCardPicked(boolean first) {
-        secondCardView.setCard(game.getCardFromDeck(false));
-        if (first)
-            firstCardView.addHighlight();
+    public void discard(boolean first, Card card) {
+        View oldImg;
+        View newImg = getView().findViewById(R.id.discards);
+        if (!first)
+            oldImg = secondCardView.getImageView();
         else
-            secondCardView.addHighlight();
+            oldImg = firstCardView.getImageView();
+        switchImage((ImageView) newImg, card);
+        int highlightColor = getContext().getResources().getColor(R.color.greyedOut);
+        ((ImageView) newImg).setColorFilter(highlightColor, PorterDuff.Mode.MULTIPLY);
+
+        int oW = oldImg.getWidth();
+        int oH = oldImg.getHeight();
+        int nW = newImg.getWidth();
+        int nH = newImg.getHeight();
+
+
+        double oldRatio = ((double) oW / oH);
+
+
+        double newRatio = ((double) nW) / nH;
+
+        float drawX;
+        double drawWidth;
+
+        drawWidth = (oldRatio / newRatio) * nW;
+        drawX = (int) (nW - drawWidth) / 2;
+
+        float scalingFactor = (float) (oW / drawWidth);
+
+
+        int[] coordinatesOld = new int[2];
+        int[] coordinatesNew = new int[2];
+        oldImg.getLocationOnScreen(coordinatesOld);
+        newImg.getLocationOnScreen(coordinatesNew);
+
+        float blav = oldImg.getX();
+
+
+        AnimationSet set = new AnimationSet(false);
+
+        float fromXDelta = ((coordinatesOld[0] - coordinatesNew[0])) / scalingFactor - drawX;
+        float toXDelta = 0;
+        float fromYDelta = (coordinatesOld[1] - coordinatesNew[1]) / scalingFactor;
+        float toYDelta = 0;
+
+        Animation animation1 = new TranslateAnimation(fromXDelta, toXDelta, fromYDelta, toYDelta);
+        animation1.setDuration(animationSpeed);
+        Animation animation2 = new ScaleAnimation(scalingFactor, 1f, scalingFactor, 1f, Animation.ABSOLUTE, 0f, Animation.ABSOLUTE, 0f);
+        animation2.setDuration(animationSpeed);
+        set.addAnimation(animation1);
+        set.addAnimation(animation2);
+        newImg.startAnimation(set);
+
+        set.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                waiting = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    private void switchImage(ImageView v, Card card) {
+        v.setImageBitmap(ImageHelper.scaleDown(BitmapFactory.decodeResource(getContext().getResources(),
+                ImageHelper.cards[card.getIndex()]), ImageHelper.scaleDownImageSize, true));
     }
 
 
@@ -183,16 +247,16 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
 
             case R.id.firstCard:
-                if (showingCards)
-                    mCallback.confirm();
-                else
+                if (!waiting) {
+                    waiting = true;
                     mCallback.pickCard(true);
+                }
                 break;
             case R.id.secondCard:
-                if (showingCards)
-                    mCallback.confirm();
-                else
+                if (!waiting) {
+                    waiting = true;
                     mCallback.pickCard(false);
+                }
                 break;
 
 
