@@ -22,11 +22,19 @@ import java.util.ArrayList;
  */
 
 public class TopInLong implements AIPlayer {
+
+
     private int longest;
     private Suit color;
 
     @Override
     public Card playCard(GameState state) {
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         Hand hand = state.getNorthHand();
         Trump trump = state.getTrump();
@@ -246,10 +254,17 @@ public class TopInLong implements AIPlayer {
 
     @Override
     public Bid bid(GameState state) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Hand hand = state.getNorthHand();
 
-        if(state.getBiddingHistory().getLastSouthBid() instanceof Contract && ((Contract)state.getBiddingHistory().getLastSouthBid()).getTricks() == 7)
+        if(state.getBiddingHistory().getLastSouthBid() instanceof Contract && ((Contract)state.getBiddingHistory().getLastSouthBid()).getTricks() == 5)
             return new Double(Player.SOUTH);
+        if(state.getBiddingHistory().getLastSouthBid() instanceof Contract && ((Contract)state.getBiddingHistory().getLastSouthBid()).getTricks() == 6)
+            return new Contract(Trump.NoTrump,7, Player.NORTH);
         int hcp = hand.hcp();
         if (hcp >= 10 && hcp <= 13) {
             if (hand.isBalancedHand()) {

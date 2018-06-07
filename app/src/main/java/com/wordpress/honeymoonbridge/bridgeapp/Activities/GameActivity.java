@@ -79,6 +79,8 @@ public class GameActivity extends AppCompatActivity
 
     private Player lastWinner;
 
+    private Bid firstNorthBid = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,10 +121,7 @@ public class GameActivity extends AppCompatActivity
         startActivityForResult(checkIntent, 1);
 
 
-
     }
-
-
 
 
     private void signInSilently() {
@@ -368,8 +367,6 @@ public class GameActivity extends AppCompatActivity
         }
 
 
-
-
     }
 
     // Switch UI to the given fragment
@@ -387,16 +384,16 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void AiBid(Bid bid) {
-
+        mBiddingFragment.updateRecyclerViews();
     }
 
     @Override
     public void AiPlayedCard(Card card, boolean first) {
 
         boolean playedNow = mPlayFragment.northPlayCard(card, mPlayFragment.getOpponentHand().getLastView());
-        if(mPlayFragment.trickFinished() && playedNow)
+        if (mPlayFragment.trickFinished() && playedNow)
             turnOnTapIcon();
-        else if(!game.getGameState().getSouthHand().getCardsOfSuit(card.getSuit()).isEmpty())
+        else if (!game.getGameState().getSouthHand().getCardsOfSuit(card.getSuit()).isEmpty())
             mPlayingHandFragment.setPlayableSuit(card.getSuit());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean on = prefs.getBoolean("readCards", true);
@@ -423,12 +420,12 @@ public class GameActivity extends AppCompatActivity
 
     }
 
-    private void turnOffTapIcon(){
-        ((ImageView)findViewById(R.id.tapView)).setVisibility(View.GONE);
+    private void turnOffTapIcon() {
+        ((ImageView) findViewById(R.id.tapView)).setVisibility(View.GONE);
     }
 
-    private void turnOnTapIcon(){
-        ((ImageView)findViewById(R.id.tapView)).setVisibility(View.VISIBLE);
+    private void turnOnTapIcon() {
+        ((ImageView) findViewById(R.id.tapView)).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -510,14 +507,19 @@ public class GameActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void recycleViewsLoaded() {
+        if (firstNorthBid != null)
+            mBiddingFragment.updateRecyclerViews();
+    }
+
 
     @Override
     public void pickCard(boolean first) {
         if (donePicking) {
             turnOffTapIcon();
             startBidding();
-        }
-        else {
+        } else {
             if (game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn()) {
 
                 final Card picked = game.UIPickCard(first);
@@ -528,12 +530,11 @@ public class GameActivity extends AppCompatActivity
                 final View fromView = (first ? mPickCardFragment.getFirstCardView().getImageView() : mPickCardFragment.getSecondCardView().getImageView());
 
 
-                        mFullHandFragment.addToHand(picked);
-                        mPlayingHandFragment.addToHand(picked, fromView);
+                mFullHandFragment.addToHand(picked);
+                mPlayingHandFragment.addToHand(picked, fromView);
 
 
-
-                if(mPlayingHandFragment.getHandAdapter().getHandLayout().getChildCount() < 13)
+                if (mPlayingHandFragment.getHandAdapter().getHandLayout().getChildCount() < 13)
                     mPickCardFragment.newCardsUI();
                 else
                     mPickCardFragment.removeBothCards();
@@ -565,7 +566,7 @@ public class GameActivity extends AppCompatActivity
                         mPlayFragment.wonTrick(lastWinner);
                     waiting = true;
                     mPlayFragment.southPlayCard(card, mPlayingHandFragment.getHandAdapter().getHandLayout().findViewById(card.getIndex()));
-                    if(mPlayFragment.trickFinished())
+                    if (mPlayFragment.trickFinished())
                         turnOnTapIcon();
                 }
 
