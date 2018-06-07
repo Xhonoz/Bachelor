@@ -55,7 +55,6 @@ public class GameState {
         this.northTricks = 0;
         this.northHand = new Hand();
         this.southHand = new Hand();
-        this.stack = new CardStack();
         phase = Phase.PICKING;
         trump = Trump.NoTrump;
         contract = null;
@@ -64,7 +63,12 @@ public class GameState {
             dealer = Player.NORTH;
         else
             dealer = Player.SOUTH;
+
+        this.stack = new CardStack();
+        this.stack.shuffleCardStack();
     }
+
+
 
     public Contract getContract() {
         return contract;

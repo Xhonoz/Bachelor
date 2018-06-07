@@ -61,6 +61,7 @@ public class Game {
 
     public Game(boolean isSouthTurn, AIPlayer aiPlayer) {
         gamestate = new GameState(isSouthTurn);
+        gamestate.getStack().shuffleCardStack();
         AI = aiPlayer;
     }
 
@@ -69,7 +70,7 @@ public class Game {
             AITakesTurnPicking();
 
     }
-
+    
     public void startBiddingPhase() {
         Log.i("GAME", "startBiddingPhase");
         gamestate.setPhase(Phase.BIDDING);
@@ -619,26 +620,26 @@ public class Game {
         }
     }
 
-    private class AIPickCard extends AsyncTask<GameState, Integer, Boolean> {
-        protected Boolean doInBackground(GameState... gameState) {
-            return AI.pickCard(gameState[0]);
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-//            setProgressPercent(progress[0]);
-        }
-
-        protected void onPostExecute(Boolean first) {
-            PickCard(Player.NORTH, first);
-            mCallback.AiPickedCard(first);
-            gamestate.setSouthTurn(true);
-            if (gamestate.getStack().isEmpty()) {
-                startBiddingPhase();
-                mCallback.finishPicking();
-
-            }
-        }
-    }
+//    private class AIPickCard extends AsyncTask<GameState, Integer, Boolean> {
+//        protected Boolean doInBackground(GameState... gameState) {
+//            return AI.pickCard(gameState[0]);
+//        }
+//
+//        protected void onProgressUpdate(Integer... progress) {
+////            setProgressPercent(progress[0]);
+//        }
+//
+//        protected void onPostExecute(Boolean first) {
+//            PickCard(Player.NORTH, first);
+//            mCallback.AiPickedCard(first);
+//            gamestate.setSouthTurn(true);
+//            if (gamestate.getStack().isEmpty()) {
+//                startBiddingPhase();
+//                mCallback.finishPicking();
+//
+//            }
+//        }
+//    }
 
 
 }
