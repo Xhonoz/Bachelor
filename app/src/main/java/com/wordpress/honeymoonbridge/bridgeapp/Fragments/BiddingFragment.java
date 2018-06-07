@@ -130,31 +130,32 @@ public class BiddingFragment extends Fragment implements View.OnClickListener {
 
     public void updateRecyclerViews(){
 
-        if(game.getGameState().getBiddingHistory() != null && game.getGameState().getBiddingHistory().getLastNorthBid() instanceof Double) {
-            Button doubleButton = ( getView().findViewById(R.id.double_button));
-            doubleButton.setBackgroundResource(R.drawable.blue_button);
-            doubleButton.setText(R.string.Redouble);
-        }
-
-        if(getView() != null && game.getGameState().getBiddingHistory() != null && !(game.getGameState().getBiddingHistory().getLastNorthBid() instanceof Double)) {
-            Button doubleButton = ( getView().findViewById(R.id.double_button));
-            if(doubleButton.getText().equals(getResources().getString(R.string.Redouble))) {
-                doubleButton.setBackgroundResource(R.drawable.red_button);
-                doubleButton.setText(R.string.Double);
+        if(getView() != null) {
+            if (game.getGameState().getBiddingHistory() != null && game.getGameState().getBiddingHistory().getLastNorthBid() instanceof Double) {
+                Button doubleButton = (getView().findViewById(R.id.double_button));
+                doubleButton.setBackgroundResource(R.drawable.blue_button);
+                doubleButton.setText(R.string.Redouble);
             }
+
+            if (game.getGameState().getBiddingHistory() != null && !(game.getGameState().getBiddingHistory().getLastNorthBid() instanceof Double)) {
+                Button doubleButton = (getView().findViewById(R.id.double_button));
+                if (doubleButton.getText().equals(getResources().getString(R.string.Redouble))) {
+                    doubleButton.setBackgroundResource(R.drawable.red_button);
+                    doubleButton.setText(R.string.Double);
+                }
+            }
+
+
+            northAdapter = new BiddingHistoryAdapter(game.getGameState().getBiddingHistory().getNorth());
+            southAdapter = new BiddingHistoryAdapter(game.getGameState().getBiddingHistory().getSouth());
+
+            northRecyclerView.setAdapter(northAdapter);
+            southRecyclerView.setAdapter(southAdapter);
+
+            northLayoutManager.scrollToPosition(game.getGameState().getBiddingHistory().getNorth().size() - 1);
+            southLayoutManager.scrollToPosition(game.getGameState().getBiddingHistory().getSouth().size() - 1);
+
         }
-
-
-        northAdapter = new BiddingHistoryAdapter(game.getGameState().getBiddingHistory().getNorth());
-        southAdapter = new BiddingHistoryAdapter(game.getGameState().getBiddingHistory().getSouth());
-
-        northRecyclerView.setAdapter(northAdapter);
-        southRecyclerView.setAdapter(southAdapter);
-
-        northLayoutManager.scrollToPosition(game.getGameState().getBiddingHistory().getNorth().size() - 1);
-        southLayoutManager.scrollToPosition(game.getGameState().getBiddingHistory().getSouth().size() - 1);
-
-
 
     }
 
