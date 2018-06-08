@@ -1,6 +1,10 @@
 package com.wordpress.honeymoonbridge.bridgeapp.LayoutAdapters;
 
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
@@ -138,4 +142,43 @@ public class ImageHelper {
 
 
     };
+
+
+    public static Rect getBitmapPositionInsideImageView(ImageView imageView) {
+
+        if (imageView == null || imageView.getDrawable() == null)
+            return new Rect(0,0,0,0);
+
+        // Get image dimensions
+        // Get image matrix values and place them in an array
+        float[] f = new float[9];
+        imageView.getImageMatrix().getValues(f);
+
+        // Extract the scale values using the constants (if aspect ratio maintained, scaleX == scaleY)
+        final float scaleX = f[Matrix.MSCALE_X];
+        final float scaleY = f[Matrix.MSCALE_Y];
+
+        // Get the drawable (could also get the bitmap behind the drawable and getWidth/getHeight)
+        final Drawable d = imageView.getDrawable();
+        final int origW = d.getIntrinsicWidth();
+        final int origH = d.getIntrinsicHeight();
+
+        // Calculate the actual dimensions
+        final int actW = Math.round(origW * scaleX);
+        final int actH = Math.round(origH * scaleY);
+
+        // Get image position
+        // We assume that the image is centered into ImageView
+        int imgViewW = imageView.getWidth();
+        int imgViewH = imageView.getHeight();
+
+        int top = (int) (imgViewH - actH)/2;
+        int left = (int) (imgViewW - actW)/2;
+
+        int leftRect = imageView.getLeft() + left;
+        int topRect = imageView.getTop() + top;
+        int rightRect = imageView.getLeft() + left + actW;
+        int bottomRect = imageView.getTop() + top + actH;
+        return new Rect(leftRect, topRect, rightRect, bottomRect);
+    }
 }

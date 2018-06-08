@@ -22,6 +22,16 @@ public class Hand {
         handHeart = new ArrayList<>();
     }
 
+    public Hand(ArrayList<Card> c26Cards) {
+        handClub = new ArrayList<Card>();
+        handSpade = new ArrayList<Card>();
+        handDiamond = new ArrayList<Card>();
+        handHeart = new ArrayList<Card>();
+        for(int i = 0; i < c26Cards.size(); i++){
+            this.addCard(c26Cards.get(i));
+        }
+    }
+
     public ArrayList<ArrayList<Card>> getSuitArrays(){
 
         ArrayList<ArrayList<Card>> a =  new ArrayList<ArrayList<Card>>();

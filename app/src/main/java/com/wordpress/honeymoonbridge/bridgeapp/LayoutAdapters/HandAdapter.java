@@ -94,10 +94,12 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
                     cardHitBoxes = new ArrayList<>();
                     for (int i = 0; i < handLayout.getChildCount(); i++) {
                         View v = handLayout.getChildAt(i);
-                        Rect rect = new Rect(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
+                        Rect rect = ImageHelper.getBitmapPositionInsideImageView((ImageView)v);
                         cardHitBoxes.add(rect);
 
                     }
+
+
 
 
                     break;
@@ -105,6 +107,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
 
                 case MotionEvent.ACTION_MOVE:
                     boolean outsideOfHand = true;
+
                     for (int i = 0; i < cardHitBoxes.size(); i++) {
                         Rect rect = cardHitBoxes.get(i);
                         View v = handLayout.getChildAt(i);
@@ -114,6 +117,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
                             outsideOfHand = false;
                         }
                     }
+
                     if (outsideOfHand)
                         changeHighlightedView(null);
                     break;
@@ -216,7 +220,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
                 newParams.topMargin = 0;
                 highligthedView.setLayoutParams(newParams);
             }
-            if (playableSuit == null || (view != null && new Card(view.getId()).getSuit() == playableSuit)) {
+            if (view != null && (playableSuit == null ||  (new Card(view.getId()).getSuit() == playableSuit))) {
                 highligthedView = view;
                 if (highligthedView != null) {
                     int highlightColor = mContext.getResources().getColor(R.color.highlight);

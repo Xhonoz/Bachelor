@@ -1,6 +1,7 @@
 package com.wordpress.honeymoonbridge.bridgeapp.GameLogic;
 
 import android.os.AsyncTask;
+import android.os.Process;
 import android.util.Log;
 
 import com.wordpress.honeymoonbridge.bridgeapp.AI.AIPlayer;
@@ -46,7 +47,9 @@ public class Game {
 
         void finishPlaying();
 
+        void startSpinner();
 
+        void stopSpinner();
     }
 
     private Callback mCallback = null;
@@ -70,9 +73,12 @@ public class Game {
             AITakesTurnPicking();
 
     }
-    
+
     public void startBiddingPhase() {
         Log.i("GAME", "startBiddingPhase");
+        Log.i("GAME", "North Hand: \n" + gamestate.getNorthHand());
+        Log.i("GAME", "North all 26 cards: \n" + new Hand(gamestate.getNorth26Cards()));
+
         gamestate.setPhase(Phase.BIDDING);
         gamestate.setSouthTurn(gamestate.getDealer() == Player.SOUTH);
         if (!gamestate.isSouthTurn())
@@ -588,13 +594,19 @@ public class Game {
         }
 
         protected void onPostExecute(Card card) {
+            mCallback.stopSpinner();
             if (Play(card, Player.NORTH))
                 mCallback.AiPlayedCard(card, gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard == null);
+        }
+
+        protected void onPreExecute(){
+            mCallback.startSpinner();
         }
     }
 
     private class AIBid extends AsyncTask<GameState, Integer, Bid> {
         protected Bid doInBackground(GameState... gameState) {
+            Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND + Process.THREAD_PRIORITY_MORE_FAVORABLE);
             return AI.bid(gameState[0]);
         }
 
@@ -602,7 +614,12 @@ public class Game {
 //            setProgressPercent(progress[0]);
         }
 
-        protected void onPostExecute(Bid bid) {
+        protected void onPreExecute(){
+            mCallback.startSpinner();
+        }
+
+        protected final void onPostExecute(Bid bid) {
+            mCallback.stopSpinner();
             gamestate.getBiddingHistory().getNorth().add(bid);
             mCallback.AiBid(bid);
             if (bid instanceof Pass) {

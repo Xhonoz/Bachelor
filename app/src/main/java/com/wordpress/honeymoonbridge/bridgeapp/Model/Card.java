@@ -118,4 +118,35 @@ public class Card implements Comparable<Card> {
         }
         return str;
     }
+
+
+    // For double dummy
+    public static int SuitFromInt(int card) {
+        return (card - 1) / 13; // eventuelt konstant for kort i hånd
+    }
+
+    // For double dummy
+    public static int RankFromInt(int card)
+    {
+        return ((card - 1) % 13) + 2; // eventuelt konstant for kort i hånd
+    }
+
+    public int SuitDD() {
+        switch (suit) {
+            case Spades:
+                return 0;
+            case Hearts:
+                return 1;
+            case Diamonds:
+                return 2;
+            case Clubs:
+                return 3;
+        }
+        return -1;
+    }
+
+    public int ToIntDD()
+    {
+        return (SuitDD() * 13) + (cardValue - 1);
+    }
 }
