@@ -56,8 +56,6 @@ public class TopInLong implements AIPlayer {
                        longest = suits.get(0).size();
 
             int longestIndex = 0;
-
-            Log.i("TopInLong", "" + suits.size());
             for (int i = 1; i < suits.size(); i++) {
                 ArrayList<Card> current = suits.get(i);
                 if (!current.isEmpty()) {

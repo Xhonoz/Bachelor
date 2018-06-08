@@ -89,7 +89,6 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
         if (cardsAreSelectable) {
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    Log.i("HandAdapter", "OnTouch: DOWN, VIEW: " + view.toString());
                     changeHighlightedView(view);
                     cardHitBoxes = new ArrayList<>();
                     for (int i = 0; i < handLayout.getChildCount(); i++) {
@@ -123,7 +122,6 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
                     break;
 
                 case MotionEvent.ACTION_UP:
-                    Log.i(TAG, "onTouch: ActionUpRegistrered");
                     if (highligthedView != null) {
                         Card card = new Card(highligthedView.getId());
                         changeHighlightedView(null);
@@ -140,7 +138,6 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
     }
 
     public void startPlayCardAnimation(final Card card, final ImageView newImg, boolean highlighted) {
-        Log.i(TAG, "Animation, on Card: " + card);
         final ImageView oldImg = handLayout.findViewById(card.getIndex());
         int oW = oldImg.getWidth();
         int oH = oldImg.getHeight();
@@ -286,10 +283,7 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
 
         handLayout.removeAllViews();
         ArrayList<Card> sortedHand = hand.getSortedHand(trump);
-        Log.i("HandAdapter", "hand size: " + sortedHand.size());
         for (int i = 0; i < sortedHand.size(); i++) {
-            Log.i("HandAdapter", "Card: " + sortedHand.get(i));
-            Log.i("HandAdapter", "hand size: " + sortedHand.size());
             addImageViewToLayout(sortedHand.get(i), (i == sortedHand.size() - 1));
         }
 //        addImageViewToLayout(hand.get(0));
@@ -410,9 +404,6 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
     private void addImageViewToLayout(Card card, boolean last) {
 
         if (card != null) {
-            Log.i("HandAdapter", "addImageViewToLayout");
-
-            Log.i("HandAdapter", "Last card: " + last);
 
             ImageView view = new ImageView(mContext);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
@@ -448,9 +439,6 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
 
         boolean last = index == hand.getSize() - 1;
 
-        Log.i("HandAdapter", "addImageViewToLayout with index: " + index);
-
-
         ImageView view = new ImageView(mContext);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.MATCH_PARENT);
@@ -479,7 +467,6 @@ public class HandAdapter implements View.OnClickListener, View.OnTouchListener {
     }
 
     private void fixNotLast() {
-        Log.i("HandAdapter", "Fix last is called");
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.MATCH_PARENT);
         params.weight = 1;

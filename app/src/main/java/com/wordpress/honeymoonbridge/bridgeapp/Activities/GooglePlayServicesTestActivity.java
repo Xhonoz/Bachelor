@@ -103,17 +103,13 @@ public class GooglePlayServicesTestActivity extends AppCompatActivity {
     }
 
     private void signInSilently() {
-        Log.d(TAG, "signInSilently()");
-
         mGoogleSignInClient.silentSignIn().addOnCompleteListener(this,
                 new OnCompleteListener<GoogleSignInAccount>() {
                     @Override
                     public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "signInSilently(): success");
                             onConnected(task.getResult());
                         } else {
-                            Log.d(TAG, "signInSilently(): failure", task.getException());
                             onDisconnected();
                         }
                     }
@@ -127,18 +123,13 @@ public class GooglePlayServicesTestActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume()");
-
         // Since the state of the signed in user can change when the activity is not active
         // it is recommended to try and sign in silently from when the app resumes.
         signInSilently();
     }
 
     private void signOut() {
-        Log.d(TAG, "signOut()");
-
         if (!isSignedIn()) {
-            Log.w(TAG, "signOut() called, but was not signed in!");
             return;
         }
 
@@ -147,8 +138,6 @@ public class GooglePlayServicesTestActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         boolean successful = task.isSuccessful();
-                        Log.d(TAG, "signOut(): " + (successful ? "success" : "failed"));
-
                         onDisconnected();
                     }
                 });
@@ -213,8 +202,6 @@ public class GooglePlayServicesTestActivity extends AppCompatActivity {
 
 
     private void onConnected(GoogleSignInAccount googleSignInAccount) {
-        Log.d(TAG, "onConnected(): connected to Google APIs");
-
         mAchievementsClient = Games.getAchievementsClient(this, googleSignInAccount);
 
 
@@ -259,8 +246,6 @@ public class GooglePlayServicesTestActivity extends AppCompatActivity {
     }
 
     private void onDisconnected() {
-        Log.d(TAG, "onDisconnected()");
-
         mPlayersClient = null;
 
         ((TextView)findViewById(R.id.greetingView)).setText("Not signed in");

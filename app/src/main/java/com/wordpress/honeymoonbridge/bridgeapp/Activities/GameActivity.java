@@ -142,17 +142,13 @@ public class GameActivity extends AppCompatActivity
 
 
     private void signInSilently() {
-        Log.d(TAG, "signInSilently()");
-
         GooglePlayServices.mGoogleSignInClient.silentSignIn().addOnCompleteListener(this,
                 new OnCompleteListener<GoogleSignInAccount>() {
                     @Override
                     public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "signInSilently(): success");
                             onConnected(task.getResult());
                         } else {
-                            Log.d(TAG, "signInSilently(): failure", task.getException());
                             onDisconnected();
                         }
                     }
@@ -289,10 +285,7 @@ public class GameActivity extends AppCompatActivity
     }
 
     private void signOut() {
-        Log.d(TAG, "signOut()");
-
         if (!GooglePlayServices.signedIn) {
-            Log.w(TAG, "signOut() called, but was not signed in!");
             return;
         }
 
@@ -301,16 +294,12 @@ public class GameActivity extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         boolean successful = task.isSuccessful();
-                        Log.d(TAG, "signOut(): " + (successful ? "success" : "failed"));
-
                         onDisconnected();
                     }
                 });
     }
 
     private void onDisconnected() {
-        Log.d(TAG, "onDisconnected()");
-
         GooglePlayServices.mPlayersClient = null;
         if (mOptionsMenu != null)
             mOptionsMenu.getItem(3).setTitle(R.string.signin);
@@ -319,8 +308,6 @@ public class GameActivity extends AppCompatActivity
     }
 
     private void onConnected(GoogleSignInAccount googleSignInAccount) {
-        Log.d(TAG, "onConnected(): connected to Google APIs");
-
         GooglePlayServices.achievementsClient = Games.getAchievementsClient(this, googleSignInAccount);
 
 
@@ -397,7 +384,6 @@ public class GameActivity extends AppCompatActivity
 
         String color = prefs.getString("backgroundcolor", "green");
         LinearLayout l = findViewById(R.id.background);
-        Log.i("COLOR", color);
         switch (color) {
             case "yellow":
                 l.setBackgroundColor(getResources().getColor(R.color.yellow));
@@ -470,9 +456,7 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void finishPicking() {
-
-        Log.i("GameActivity", "finishPicking");
-//        TODO: check if bidding is enabled
+        //        TODO: check if bidding is enabled
         donePicking = true;
 //        TODO: CHeck prefferences
         turnOnTapIcon();
@@ -510,7 +494,6 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void finishPlaying() {
         mPlayingHandFragment.setCardsArePlayable(false);
-        Log.i("GameActivity: ", "" + game.getGameState().getInitialSouthHand().getSize());
         if (GooglePlayServices.achievementsClient != null)
             GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_play_a_game));
 

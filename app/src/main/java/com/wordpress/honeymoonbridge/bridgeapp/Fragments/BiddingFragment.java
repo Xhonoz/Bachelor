@@ -95,7 +95,6 @@ public class BiddingFragment extends Fragment implements View.OnClickListener {
     }
 
     public void setUpRecyclerViews(View view){
-        Log.i("BiddingFragment", "setUpRecyclerViews was called");
         northRecyclerView = (RecyclerView) view.findViewById(R.id.NorthHistory);
         southRecyclerView = (RecyclerView) view.findViewById(R.id.SouthHistory);
 

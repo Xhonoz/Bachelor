@@ -121,8 +121,6 @@ public class Hand {
 
     public Card removeCard(Card card) {
 
-        Log.i("Hand", "Trying to remove " + card);
-
         if (card.getSuit().equals(Suit.Hearts)) {
 
             if(handHeart.remove(card))

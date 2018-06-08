@@ -44,21 +44,11 @@ public class PickCardFragment extends Fragment implements View.OnClickListener {
     }
 
     public void addToOpponentHand() {
-        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout) getView().findViewById(R.id.opponentHand)).getChildCount());
-
         opponentHand.addToHand();
-
-        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout) getView().findViewById(R.id.opponentHand)).getChildCount());
-
     }
 
     public void addToOpponentHand(boolean first) {
-        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout) getView().findViewById(R.id.opponentHand)).getChildCount());
-
         opponentHand.addToHand(first);
-
-        Log.i("PickCardFragment", "OpponentHand.childCount: " + ((LinearLayout) getView().findViewById(R.id.opponentHand)).getChildCount());
-
     }
 
     public void removeCard(boolean first) {

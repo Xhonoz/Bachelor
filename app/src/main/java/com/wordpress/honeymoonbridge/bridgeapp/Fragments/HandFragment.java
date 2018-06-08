@@ -49,8 +49,6 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        Log.i("HandFragment", "onCreateView is called");
         View view = inflater.inflate(R.layout.fragment_hand, container, false);
         ((LinearLayout) view.findViewById(R.id.HandLinearLayout)).addView(ll);
 
@@ -74,8 +72,6 @@ public class HandFragment extends Fragment implements HandAdapter.Callback {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.i("HandFragment", "onAttach is called");
-
         if (context instanceof Callback) {
             mCallback = (Callback) context;
         } else {

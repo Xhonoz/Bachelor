@@ -89,11 +89,6 @@ public class OpponentHand {
 
     private void addImageViewToLayout(boolean last, int ColorId) {
 
-
-        Log.i("HandAdapter", "addImageViewToLayout");
-
-        Log.i("HandAdapter", "Last card: " + last);
-
         ImageView view = new ImageView(mContext);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
                 LinearLayout.LayoutParams.MATCH_PARENT);
@@ -128,7 +123,6 @@ public class OpponentHand {
 
     public void startPlayAnimation(final Card card, ImageView newLocation){
 
-        Log.i(TAG, "Animation, on Card: " +  card);
         if(handLayout.getChildCount() > 0) {
             final ImageView oldImg = (ImageView)handLayout.getChildAt(handLayout.getChildCount() - 1);
             oldImg.setImageResource(ImageHelper.cards[card.getIndex()]);

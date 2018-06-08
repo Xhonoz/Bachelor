@@ -75,10 +75,6 @@ public class Game {
     }
 
     public void startBiddingPhase() {
-        Log.i("GAME", "startBiddingPhase");
-        Log.i("GAME", "North Hand: \n" + gamestate.getNorthHand());
-        Log.i("GAME", "North all 26 cards: \n" + new Hand(gamestate.getNorth26Cards()));
-
         gamestate.setPhase(Phase.BIDDING);
         gamestate.setSouthTurn(gamestate.getDealer() == Player.SOUTH);
         if (!gamestate.isSouthTurn())
@@ -88,7 +84,6 @@ public class Game {
 
     public void startPlayingPhase() {
         gamestate.lockInitialHands();
-        Log.i("GAME", "Size of initialSouthHand: " + gamestate.getInitialSouthHand().getSize());
         Contract contract = getContract();
         if (contract != null) {
             gamestate.setContract(contract);
@@ -182,7 +177,6 @@ public class Game {
             if (card.getSuit().equals(suit) || hand.getCardsOfSuit(suit).isEmpty()) {
                 return true;
             } else {
-                Log.i("GAME", "Card: " + card + " is not legal to play \nYou still have " + suit + " left, for example: " + hand.getCardsOfSuit(suit).get(0));
                 return false;
             }
 
@@ -194,8 +188,6 @@ public class Game {
 
     //        Returns true if firstCard wins
     public boolean compareCards(Trump trump, Card firstCard, Card secondCard) {
-
-        Log.i("GAME", "Comparing cards: " + firstCard + " and " + secondCard + " with trump: " + trump);
         if (trump == Trump.NoTrump) {
             if (!firstCard.getSuit().equals(secondCard.getSuit()))
                 return true;
@@ -217,15 +209,10 @@ public class Game {
     public boolean Play(Card card, Player player) {
 
         Hand hand = gamestate.getSouthHand();
-
-        Log.i("GAME", "Player: " + player + "  Card: " + card + "  southTurn: " + gamestate.isSouthTurn());
         if (card == null)
             return false;
         if (gamestate.isSouthTurn() && player.equals(Player.SOUTH) && isLegal(player, card)) {
-            Log.i("GAME", "(Before Play) SouthHand:\n" + gamestate.getSouthHand());
             gamestate.getSouthHand().removeCard(card);
-            Log.i("GAME", "(After Play) SouthHand:\n" + gamestate.getSouthHand());
-
             if (gamestate.getTricks().isEmpty() || gamestate.getTricks().get(gamestate.getTricks().size() - 1).SecondCard != null) {
                 gamestate.getTricks().add(new Trick(player, card, null));
                 gamestate.setSouthTurn(false);
@@ -271,7 +258,6 @@ public class Game {
 
 
     public boolean UIPlayCard(Card card) {
-        Log.i("GAME", "South is trying to play: " + card);
         if (Play(card, Player.SOUTH)) {
 //            TODO: new thread
             return true;
@@ -325,9 +311,6 @@ public class Game {
     }
 
     public Card PickCard(Player player, boolean first) {
-
-        Log.i("GAME", "Deck length: " + gamestate.getStack().size());
-
         Card picked = null;
         if (!gamestate.getStack().isEmpty()) {
             Card fi = popTopCard();
@@ -337,11 +320,9 @@ public class Game {
                 gamestate.getNorth26Cards().add(se);
                 gamestate.getNorthChoseFirst().add(first);
                 if (first) {
-                    Log.i("GAME", "AI Chose the first card: " + fi + " and discarded: " + se);
                     picked = fi;
                     gamestate.getNorthHand().addCard(fi);
                 } else {
-                    Log.i("GAME", "AI Chose the second card: " + se + " and discarded: " + fi);
                     picked = se;
                     gamestate.getNorthHand().addCard(se);
                 }
@@ -363,8 +344,6 @@ public class Game {
             mCallback.finishPicking();
             startBiddingPhase();
         }
-
-        Log.i("GAME", "Deck length: " + gamestate.getStack().size());
 
 
         return picked;
