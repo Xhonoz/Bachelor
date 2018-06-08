@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -27,6 +28,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.wordpress.honeymoonbridge.bridgeapp.AI.HoneymoonBridgePlayer;
 import com.wordpress.honeymoonbridge.bridgeapp.AI.TopInLong;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.BiddingFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.HandFragment;
@@ -102,7 +104,7 @@ public class GameActivity extends AppCompatActivity
 
         mPlayingHandFragment = new HandFragment();
 
-        game = new Game(GlobalInformation.southStarts, new TopInLong());
+        game = new Game(GlobalInformation.southStarts, new HoneymoonBridgePlayer(3, 22));
         GlobalInformation.southStarts = !GlobalInformation.southStarts;
         game.getGameState().getStack().shuffleCardStack();
         game.setCallback(this);
@@ -121,6 +123,10 @@ public class GameActivity extends AppCompatActivity
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkIntent, 1);
+
+        Games.getGamesClient(GameActivity.this, GoogleSignIn.getLastSignedInAccount(this)).setViewForPopups(findViewById(android.R.id.content));
+
+
 
 
     }
@@ -142,6 +148,19 @@ public class GameActivity extends AppCompatActivity
                         }
                     }
                 });
+    }
+
+    @Override
+    public void startSpinner() {
+        MenuItem item = mOptionsMenu.getItem(0);
+        item.setActionView(new ProgressBar(this));
+
+    }
+
+    @Override
+    public void stopSpinner() {
+        MenuItem item = mOptionsMenu.getItem(0);
+        item.setActionView(null);
     }
 
     protected void onActivityResult(
