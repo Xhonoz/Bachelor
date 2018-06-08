@@ -36,7 +36,7 @@ public class AnimationSpeed {
                 discard_ms = 700;
                 win_ms = 300;
                 break;
-            case MEDIUM:
+            case NORMAL:
                 play_ms = 400;
                 draw_ms = 500;
                 discard_ms = 500;

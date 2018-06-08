@@ -176,7 +176,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("settingpref"));
             bindPreferenceSummaryToValue(findPreference("difficulty_pref"));
-            bindPreferenceSummaryToValue(findPreference("net_pref"));
             bindPreferenceSummaryToValue(findPreference("backgroundcolor"));
             bindPreferenceSummaryToValue(findPreference("gameMode"));
             bindPreferenceSummaryToValue(findPreference("readCards"));

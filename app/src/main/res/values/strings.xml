@@ -129,6 +129,8 @@
         , where ace is the highest and 2 is the lowest.
         If you choose the faced-up card, the card beside it will be discarded.
         If you choose the second card, the first card will be discarded.
+        When the opponent has a green card it means that he has choosen the first card,
+        and if its red he has choosen the second card
         Press on the card you want.\n\nTips: It’s wise to choose high cards, and collect cards in the same suit
 </string>
 
@@ -146,6 +148,7 @@ contract or no trump contract (NT).\n\nFor example, if you bid 1 ♥ level it me
         Press on the card you want to play. You must play the same suit as the opponent, if you have it on your hand.\n\nTips: It’s smart to play from the longest suit, and take out the opponent’s trump (if the contract have trump).
 
     </string>
+    <string name="medium">medium</string>
 
 
 

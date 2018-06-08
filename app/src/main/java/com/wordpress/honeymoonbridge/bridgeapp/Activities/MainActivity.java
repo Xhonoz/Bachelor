@@ -2,7 +2,9 @@ package com.wordpress.honeymoonbridge.bridgeapp.Activities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -55,10 +58,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        chooseNet = findViewById(R.id.spinnerChooseNet);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.nets_list, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
-        chooseNet.setAdapter(adapter);
 
         // Create the client used to sign in to Google services.
         GooglePlayServices.signedIn = false;
@@ -138,6 +137,42 @@ public class MainActivity extends AppCompatActivity {
         // Since the state of the signed in user can change when the activity is not active
         // it is recommended to try and sign in silently from when the app resumes.
         signInSilently();
+
+        chooseNet = findViewById(R.id.spinnerChooseNet);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String difficulty = prefs.getString("difficulty_pref", "medium");
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.AIDifficultyValue, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        chooseNet.setAdapter(adapter);
+
+        if(difficulty.equals("easy")) {
+            chooseNet.setSelection(0);
+        }else if(difficulty.equals("medium")){
+            chooseNet.setSelection(1);
+        }else{
+            chooseNet.setSelection(2);
+
+        }
+
+        chooseNet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+               prefs.edit().putString("difficulty_pref", chooseNet.getSelectedItem().toString()).apply();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+//        chooseNet.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                prefs.edit().putString("difficulty_pref", chooseNet.getSelectedItem().toString()).apply();
+//            }
+//        });
+
     }
 
     private void signOut() {

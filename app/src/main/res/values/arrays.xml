@@ -2,13 +2,13 @@
 <resources>
 
 
-    <string-array name="listOptions">
+    <string-array name="AIDifficulty">
         <item>easy</item>
         <item>medium</item>
         <item>hard</item>
     </string-array>
 
-    <string-array name="listValues">
+    <string-array name="AIDifficultyValue">
         <item>easy</item>
         <item>medium</item>
         <item>hard</item>
@@ -47,20 +47,6 @@
         <item>8</item>
         <item>9</item>
         <item>10</item>
-    </string-array>
-
-    <string-array name="nets_list">
-        <item>Double Dummy</item>
-        <item>Evolution</item>
-        <item>Difficult</item>
-        <item>Easy</item>
-    </string-array>
-
-    <string-array name="nets_listValues">
-        <item>double dummy</item>
-        <item>evolution</item>
-        <item>difficult</item>
-        <item>easy</item>
     </string-array>
     
     <string-array name="animation_speed">

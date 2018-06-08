@@ -103,10 +103,20 @@ public class GameActivity extends AppCompatActivity
         mFullHandFragment = new HandFragment();
 
         mPlayingHandFragment = new HandFragment();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            game = new Game(GlobalInformation.southStarts, new HoneymoonBridgePlayer(3, 22));
-        else
-            game = new Game(GlobalInformation.southStarts, new TopInLong());
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String difficulty = prefs.getString("difficulty_pref", "medium");
+
+        if(difficulty.equals("medium")) {
+            game = new Game(GlobalInformation.southStarts, new HoneymoonBridgePlayer(2, 12));
+        }else if(difficulty.equals("hard")){
+            game = new Game(GlobalInformation.southStarts, new HoneymoonBridgePlayer(3, 25));
+
+        }else{
+            game = new Game(GlobalInformation.southStarts, new HoneymoonBridgePlayer(1, 5));
+
+        }
+
 
         GlobalInformation.southStarts = !GlobalInformation.southStarts;
         game.getGameState().getStack().shuffleCardStack();
@@ -126,8 +136,6 @@ public class GameActivity extends AppCompatActivity
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkIntent, 1);
-        if (GoogleSignIn.getLastSignedInAccount(this) != null)
-            Games.getGamesClient(GameActivity.this, GoogleSignIn.getLastSignedInAccount(this)).setViewForPopups(findViewById(android.R.id.content));
 
 
     }
@@ -369,10 +377,24 @@ public class GameActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        AnimationSpeed.setSpeed(Speed.FAST);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String as = prefs.getString("animationSpeed", "normal");
+        if(as.equals("slow")){
+            AnimationSpeed.setSpeed(Speed.SLOW);
+        }
+        if(as.equals("normal")){
+            AnimationSpeed.setSpeed(Speed.NORMAL);
+        }
+        if(as.equals("fast")){
+            AnimationSpeed.setSpeed(Speed.FAST);
+        }
+
+        if (GooglePlayServices.signedIn)
+            Games.getGamesClient(GameActivity.this, GoogleSignIn.getLastSignedInAccount(this)).setViewForPopups(findViewById(android.R.id.content));
+
         signInSilently();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         String color = prefs.getString("backgroundcolor", "green");
         LinearLayout l = findViewById(R.id.background);
         Log.i("COLOR", color);
