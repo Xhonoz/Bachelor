@@ -33,6 +33,7 @@ public class PlayFragment extends Fragment implements OpponentHand.Callback, Tri
 
 
     private OpponentHand opponentHand;
+    private boolean started = false;
 
 
     public void playCardFromOpponent(Card card){
@@ -57,6 +58,15 @@ public class PlayFragment extends Fragment implements OpponentHand.Callback, Tri
     public void playAnimationStart(Player player, Card card) {
         if(player == Player.SOUTH)
             mCallback.startSouthPlayingAnimation(card);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!started) {
+            started = true;
+            mCallback.readyToStart();
+        }
     }
 
     @Override
@@ -125,22 +135,21 @@ public class PlayFragment extends Fragment implements OpponentHand.Callback, Tri
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             trickLinearLayout.setZ(100f);
         }
-        trickAdapter = new TrickAdapter(getContext(), trickLinearLayout);
-        trickAdapter.setCallback(this);
-        if (contract != null)
-            ((TextView) view.findViewById(R.id.contractView)).setText(contract.toStringWithPlayer());
+        if(contract != null)
+            ((TextView)view.findViewById(R.id.contractView)).setText(contract.toString());
         ((TextView)view.findViewById(R.id.northTrickView)).setText("N: 0");
         ((TextView)view.findViewById(R.id.southTrickView)).setText("S: 0");
-
+        trickAdapter = new TrickAdapter(getContext(), trickLinearLayout);
+        trickAdapter.setCallback(this);
 
         // Inflate the layout for this fragment
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    public void setStartPlayer(Player player){
+        trickAdapter.setStartPlayer(player);
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -194,6 +203,7 @@ public class PlayFragment extends Fragment implements OpponentHand.Callback, Tri
 //        opponentHand.removeCard(0);
 
     }
+
 
     public void southPlayCard(Card card, View fromView){
         trickAdapter.addCard(Player.SOUTH, card, fromView);

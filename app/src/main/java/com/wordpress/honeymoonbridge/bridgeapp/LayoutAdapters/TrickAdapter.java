@@ -51,6 +51,11 @@ public class TrickAdapter {
         southCardView = new ImageView(mContext);
         southCardView.setLayoutParams(params2);
         ll.addView(southCardView);
+
+    }
+
+    public void setStartPlayer(Player player){
+        clearCards(player);
     }
 
     public void addCard(Player player, Card card) {
@@ -132,16 +137,16 @@ public class TrickAdapter {
     }
 
     private void clearCards(Player playerWhoWon) {
-        southCard = null;
-        if (playerWhoWon != Player.SOUTH) {
-            southCardView.setImageBitmap(null);
-            northCardView.setImageResource(R.drawable.green_arrow_up);
-        } else {
-            northCardView.setImageBitmap(null);
+        southCardView.setImageBitmap(null);
+        northCardView.setImageBitmap(null);
+        if (playerWhoWon == Player.SOUTH) {
             southCardView.setImageResource(R.drawable.green_arrow_down);
+        } else {
+            northCardView.setImageResource(R.drawable.green_arrow_up);
         }
         northCard = null;
-        northCardView.setImageBitmap(null);
+        southCard = null;
+
     }
 
     public boolean addCard(final Player player, final Card card, View fromView) {

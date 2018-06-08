@@ -699,6 +699,7 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void readyToStart() {
+        mPlayFragment.setStartPlayer((game.getGameState().isSouthTurn() ? Player.SOUTH : Player.NORTH));
         game.northTakeTurn();
     }
 
