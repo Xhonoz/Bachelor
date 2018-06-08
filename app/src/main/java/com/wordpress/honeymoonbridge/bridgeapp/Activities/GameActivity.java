@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.Task;
 import com.wordpress.honeymoonbridge.bridgeapp.AI.TopInLong;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.BiddingFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.HandFragment;
+import com.wordpress.honeymoonbridge.bridgeapp.Fragments.InformationFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PickCardFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.PlayFragment;
 import com.wordpress.honeymoonbridge.bridgeapp.Fragments.ResultFragment;
@@ -80,6 +81,7 @@ public class GameActivity extends AppCompatActivity
     private Player lastWinner;
 
     private Bid firstNorthBid = null;
+    private boolean firstTime = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -326,6 +328,21 @@ public class GameActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         game.startPickingPhase();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean on = prefs.getBoolean("tutorial", true);
+
+        if(firstTime) {
+            firstTime = false;
+            String str = (getResources().getText(R.string.pickingInformation)).toString();
+            if(on) {
+                InformationFragment i = InformationFragment.newInstance(str);
+
+                i.show(getFragmentManager(), "information");
+
+
+            }
+        }
+
         mPickCardFragment.newCardsUI();
     }
 
@@ -396,7 +413,7 @@ public class GameActivity extends AppCompatActivity
         else if (!game.getGameState().getSouthHand().getCardsOfSuit(card.getSuit()).isEmpty())
             mPlayingHandFragment.setPlayableSuit(card.getSuit());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        boolean on = prefs.getBoolean("readCards", true);
+        boolean on = prefs.getBoolean("readCards", false);
 
         if (on)
             mTTS.speak(card.toTTSString(), TextToSpeech.QUEUE_FLUSH, null);
@@ -435,6 +452,12 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void startPlaying() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean on = prefs.getBoolean("tutorial", true);
+        if(on) {
+            InformationFragment i = InformationFragment.newInstance(getResources().getString(R.string.playingInformation));
+            i.show(getFragmentManager(), "information");
+        }
         mPlayingHandFragment.setCardsArePlayable(true);
         mPlayFragment.setContract(game.getGameState().getContract());
         switchToFragment(mPlayFragment);
@@ -448,12 +471,16 @@ public class GameActivity extends AppCompatActivity
         Log.i("GameActivity: ", "" + game.getGameState().getInitialSouthHand().getSize());
         if (GooglePlayServices.achievementsClient != null)
             GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_playAGame));
+
         donePlaying = true;
 //        if both pass
         if (!doneBidding) {
             endPlaying();
+
         }
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        prefs.edit().putBoolean("tutorial", false).commit();
 
     }
 
@@ -516,9 +543,11 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     public void pickCard(boolean first) {
+        boolean b = game.getGameState().isSouthTurn();
         if (donePicking) {
             turnOffTapIcon();
             startBidding();
+
         } else {
             if (game.getGameState().getPhase() == Phase.PICKING && game.getGameState().isSouthTurn()) {
 
@@ -549,6 +578,15 @@ public class GameActivity extends AppCompatActivity
             findViewById(R.id.fragment_container).setZ(10f);
         }
         switchToFragment(mBiddingFragment);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        boolean on = prefs.getBoolean("tutorial", true);
+
+        if(on) {
+            InformationFragment i = InformationFragment.newInstance(getResources().getString(R.string.biddingInformation));
+
+            i.show(getFragmentManager(), "information");
+        }
     }
 
     private void endPlaying() {

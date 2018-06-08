@@ -24,6 +24,14 @@
         android:summary="@string/onOff"
         android:title="@string/readText"/>
 
+        <SwitchPreference
+            android:key="tutorial"
+            android:defaultValue="true"
+            android:summary="@string/onOff"
+            android:title="@string/tutorial"
+
+            />
+
         <ListPreference
             android:entries="@array/backgroundcolor_list"
             android:key="backgroundcolor"
@@ -45,6 +53,7 @@
             android:entryValues="@array/anmation_speedValues"
             android:title="Animation speed"
             />
+
 
 
 
