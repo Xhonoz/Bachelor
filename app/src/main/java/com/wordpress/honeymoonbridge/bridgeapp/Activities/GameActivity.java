@@ -103,8 +103,11 @@ public class GameActivity extends AppCompatActivity
         mFullHandFragment = new HandFragment();
 
         mPlayingHandFragment = new HandFragment();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            game = new Game(GlobalInformation.southStarts, new HoneymoonBridgePlayer(3, 22));
+        else
+            game = new Game(GlobalInformation.southStarts, new TopInLong());
 
-        game = new Game(GlobalInformation.southStarts, new HoneymoonBridgePlayer(3, 22));
         GlobalInformation.southStarts = !GlobalInformation.southStarts;
         game.getGameState().getStack().shuffleCardStack();
         game.setCallback(this);
@@ -123,10 +126,8 @@ public class GameActivity extends AppCompatActivity
         Intent checkIntent = new Intent();
         checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(checkIntent, 1);
-
-        Games.getGamesClient(GameActivity.this, GoogleSignIn.getLastSignedInAccount(this)).setViewForPopups(findViewById(android.R.id.content));
-
-
+        if (GoogleSignIn.getLastSignedInAccount(this) != null)
+            Games.getGamesClient(GameActivity.this, GoogleSignIn.getLastSignedInAccount(this)).setViewForPopups(findViewById(android.R.id.content));
 
 
     }
@@ -350,10 +351,10 @@ public class GameActivity extends AppCompatActivity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean on = prefs.getBoolean("tutorial", true);
 
-        if(firstTime) {
+        if (firstTime) {
             firstTime = false;
             String str = (getResources().getText(R.string.pickingInformation)).toString();
-            if(on) {
+            if (on) {
                 InformationFragment i = InformationFragment.newInstance(str);
 
                 i.show(getFragmentManager(), "information");
@@ -473,7 +474,7 @@ public class GameActivity extends AppCompatActivity
     public void startPlaying() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean on = prefs.getBoolean("tutorial", true);
-        if(on) {
+        if (on) {
             InformationFragment i = InformationFragment.newInstance(getResources().getString(R.string.playingInformation));
             i.show(getFragmentManager(), "information");
         }
@@ -601,7 +602,7 @@ public class GameActivity extends AppCompatActivity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         boolean on = prefs.getBoolean("tutorial", true);
 
-        if(on) {
+        if (on) {
             InformationFragment i = InformationFragment.newInstance(getResources().getString(R.string.biddingInformation));
 
             i.show(getFragmentManager(), "information");
