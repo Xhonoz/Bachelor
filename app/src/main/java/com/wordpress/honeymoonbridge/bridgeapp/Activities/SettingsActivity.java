@@ -47,8 +47,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
-            Log.i("Preference", "stringValue: " + stringValue);
-
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list.
@@ -183,6 +181,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("gameMode"));
             bindPreferenceSummaryToValue(findPreference("readCards"));
             bindPreferenceSummaryToValue(findPreference("animationSpeed"));
+            bindPreferenceSummaryToValue(findPreference("tutorial"));
 
 
 

@@ -123,6 +123,30 @@
     <string name="readText">Sound</string>
     <string name="discarded">Discarded</string>
 
+    <string name="tutorial">Tutorial</string>
+    <string name="pickingInformation">
+        The goal is to collect 13 cards to your hand
+        , where ace is the highest and 2 is the lowest.
+        If you choose the faced-up card, the card beside it will be discarded.
+        If you choose the second card, the first card will be discarded.
+        Press on the card you want.\n\nTips: It’s wise to choose high cards, and collect cards in the same suit
+</string>
+
+    <string name="biddingInformation">
+The rows on the top shows the bidding, where you are south and the opponent are north.
+        The bidding describes how many tricks you think you could take.
+        You can choose between ♣ ♦ ♥ and ♠
+contract or no trump contract (NT).\n\nFor example, if you bid 1 ♥ level it means that you have to take at least  7 ♥ tricks.
+        How many tricks is always the level that are shown + 6.
+        You can never bid lower than the opponent, and if you think the opponent can’t take the tricks that are bidden then you can press X.
+
+    </string>
+
+    <string name="playingInformation">
+        Press on the card you want to play. You must play the same suit as the opponent, if you have it on your hand.\n\nTips: It’s smart to play from the longest suit, and take out the opponent’s trump (if the contract have trump).
+
+    </string>
+
 
 
 </resources>

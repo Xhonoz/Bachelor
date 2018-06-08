@@ -66,11 +66,12 @@ public class Game {
     }
 
     public void startPickingPhase() {
-        if (!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.PICKING)
+        if (!gamestate.isSouthTurn() && gamestate.getPhase() == Phase.PICKING) {
             AITakesTurnPicking();
+        }
 
     }
-    
+
     public void startBiddingPhase() {
         Log.i("GAME", "startBiddingPhase");
         gamestate.setPhase(Phase.BIDDING);
@@ -311,7 +312,6 @@ public class Game {
         if (gamestate.getPhase().equals(Phase.PICKING) && gamestate.isSouthTurn()) {
             Card c = PickCard(Player.SOUTH, first);
             gamestate.setSouthTurn(false);
-            //TODO: Should later be a seperate thread
             AITakesTurnPicking();
             return c;
         }
