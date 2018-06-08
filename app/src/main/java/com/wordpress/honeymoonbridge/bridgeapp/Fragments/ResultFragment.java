@@ -15,6 +15,8 @@ import com.wordpress.honeymoonbridge.bridgeapp.Activities.GameActivity;
 import com.wordpress.honeymoonbridge.bridgeapp.Activities.MainActivity;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Game;
 import com.wordpress.honeymoonbridge.bridgeapp.GameLogic.Player;
+import com.wordpress.honeymoonbridge.bridgeapp.GooglePlayGames.GooglePlayServices;
+import com.wordpress.honeymoonbridge.bridgeapp.Model.Contract;
 import com.wordpress.honeymoonbridge.bridgeapp.R;
 
 import org.w3c.dom.Text;
@@ -38,28 +40,68 @@ public class ResultFragment extends Fragment implements View.OnClickListener {
 
         View view = inflater.inflate(R.layout.fragment_result, container, false);
         int tricksTaken = 0;
-        if(game.getGameState().getContract() != null) {
+        Contract contract = game.getGameState().getContract();
+        if(contract != null) {
             if (game.getGameState().getContract().getPlayer() == Player.NORTH) {
                 tricksTaken = game.getGameState().getNorthTricks();
-                ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.contract) + " " + game.getGameState().getContract().toStringWithPlayerAndWithTricks(tricksTaken));
-                ((TextView) view.findViewById(R.id.trickScore)).setText("-" + game.getGameState().getContract().contractTrickscore(tricksTaken));
-                if(game.getGameState().getContract().contractOverUnder(tricksTaken) == 0) {
-                    ((TextView) view.findViewById(R.id.overUnder)).setText("" + game.getGameState().getContract().contractOverUnder(tricksTaken));
-                }else{
-                    ((TextView) view.findViewById(R.id.overUnder)).setText("-" + game.getGameState().getContract().contractOverUnder(tricksTaken));
+                if (GooglePlayServices.achievementsClient != null) {
+//                Double Trouble
+                    if (contract.isDoubled() && !contract.made(tricksTaken))
+                        GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_double_trouble));
+//                Winning game achievments
+                    if(!contract.made(tricksTaken)) {
+                        GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_first_win));
+                        GooglePlayServices.achievementsClient.increment(getString(R.string.achievement_champion), 1);
+                        GooglePlayServices.achievementsClient.increment(getString(R.string.achievement_master), 1);
+                        GooglePlayServices.achievementsClient.increment(getString(R.string.achievement_grand_master), 1);
+                    }
 
                 }
-                ((TextView) view.findViewById(R.id.bonus)).setText("-" + game.getGameState().getContract().contractBonus(tricksTaken));
-                ((TextView) view.findViewById(R.id.totalPoints)).setText("-" + (game.getGameState().getContract().Points(tricksTaken)));
+
+                ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.contract) + " " + contract.toStringWithPlayerAndWithTricks(tricksTaken));
+                ((TextView) view.findViewById(R.id.trickScore)).setText("" + -contract.contractTrickscore(tricksTaken));
+                ((TextView) view.findViewById(R.id.overUnder)).setText("" + -contract.contractOverUnder(tricksTaken));
+                ((TextView) view.findViewById(R.id.bonus)).setText("" + -contract.contractBonus(tricksTaken));
+                ((TextView) view.findViewById(R.id.totalPoints)).setText("" + -(contract.Points(tricksTaken)));
             }
             else if (game.getGameState().getContract().getPlayer() == Player.SOUTH) {
                 tricksTaken = game.getGameState().getSouthTricks();
 
-                ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.contract) + " " + game.getGameState().getContract().toStringWithPlayerAndWithTricks(tricksTaken));
-                ((TextView) view.findViewById(R.id.trickScore)).setText("" + game.getGameState().getContract().contractTrickscore(tricksTaken));
-                ((TextView) view.findViewById(R.id.overUnder)).setText("" + game.getGameState().getContract().contractOverUnder(tricksTaken));
-                ((TextView) view.findViewById(R.id.bonus)).setText("" + game.getGameState().getContract().contractBonus(tricksTaken));
-                ((TextView) view.findViewById(R.id.totalPoints)).setText("" + (game.getGameState().getContract().Points(tricksTaken)));
+
+                if (GooglePlayServices.achievementsClient != null) {
+//                In your face
+                    if (contract.isDoubled() && contract.made(tricksTaken))
+                        GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_in_your_face));
+//                  Jackpot!
+                    if (contract.isRedoubled() && contract.made(tricksTaken))
+                        GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_jackpot));
+//                  Make Game
+                    if(contract.IsGame() && contract.made(tricksTaken))
+                        GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_make_game));
+//                  Slam
+                    if(contract.IsSlam() && contract.made(tricksTaken))
+                        GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_slam));
+//                  Grand Slam
+                    if(contract.IsGrandSlam() && contract.made(tricksTaken))
+                        GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_grand_slam));
+//                Winning game achievments
+                    if(contract.made(tricksTaken)) {
+                        GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_first_win));
+                        GooglePlayServices.achievementsClient.increment(getString(R.string.achievement_champion), 1);
+                        GooglePlayServices.achievementsClient.increment(getString(R.string.achievement_master), 1);
+                        GooglePlayServices.achievementsClient.increment(getString(R.string.achievement_grand_master), 1);
+                    }
+
+
+
+//
+                }
+
+                ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.contract) + " " + contract.toStringWithPlayerAndWithTricks(tricksTaken));
+                ((TextView) view.findViewById(R.id.trickScore)).setText("" + contract.contractTrickscore(tricksTaken));
+                ((TextView) view.findViewById(R.id.overUnder)).setText("" + contract.contractOverUnder(tricksTaken));
+                ((TextView) view.findViewById(R.id.bonus)).setText("" + contract.contractBonus(tricksTaken));
+                ((TextView) view.findViewById(R.id.totalPoints)).setText("" + (contract.Points(tricksTaken)));
             }
         }else{
             ((TextView) view.findViewById(R.id.contract)).setText(getString(R.string.passed_out));

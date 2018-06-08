@@ -389,8 +389,8 @@ public class GameActivity extends AppCompatActivity
             AnimationSpeed.setSpeed(Speed.FAST);
         }
 
-        if (GooglePlayServices.signedIn)
-            Games.getGamesClient(GameActivity.this, GoogleSignIn.getLastSignedInAccount(this)).setViewForPopups(findViewById(android.R.id.content));
+//        if (GooglePlayServices.signedIn)
+//            Games.getGamesClient(GameActivity.this, GoogleSignIn.getLastSignedInAccount(this)).setViewForPopups(findViewById(android.R.id.content));
 
         signInSilently();
 
@@ -512,7 +512,7 @@ public class GameActivity extends AppCompatActivity
         mPlayingHandFragment.setCardsArePlayable(false);
         Log.i("GameActivity: ", "" + game.getGameState().getInitialSouthHand().getSize());
         if (GooglePlayServices.achievementsClient != null)
-            GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_playAGame));
+            GooglePlayServices.achievementsClient.unlock(getString(R.string.achievement_play_a_game));
 
         donePlaying = true;
 //        if both pass

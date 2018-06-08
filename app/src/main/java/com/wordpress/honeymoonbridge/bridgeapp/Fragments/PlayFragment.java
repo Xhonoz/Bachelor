@@ -135,12 +135,18 @@ public class PlayFragment extends Fragment implements OpponentHand.Callback, Tri
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             trickLinearLayout.setZ(100f);
         }
-        if(contract != null)
-            ((TextView)view.findViewById(R.id.contractView)).setText(contract.toString());
+        if(contract != null) {
+            ((TextView) view.findViewById(R.id.contractView)).setText(contract.toString());
+            ((TextView) view.findViewById(R.id.northTrickView)).setTextSize(20);
+        }
         ((TextView)view.findViewById(R.id.northTrickView)).setText("N: 0");
         ((TextView)view.findViewById(R.id.southTrickView)).setText("S: 0");
         trickAdapter = new TrickAdapter(getContext(), trickLinearLayout);
         trickAdapter.setCallback(this);
+
+
+        ((TextView)view.findViewById(R.id.southTrickView)).setTextSize(20);
+        ((TextView)view.findViewById(R.id.contractView)).setTextSize(20);
 
         // Inflate the layout for this fragment
         return view;

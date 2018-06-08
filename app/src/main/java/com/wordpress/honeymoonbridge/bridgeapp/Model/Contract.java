@@ -55,6 +55,10 @@ public class Contract extends Bid {
         return points;
     }
 
+    public boolean made(int result){
+        return result >= tricks + TrickOffset;
+    }
+
     private int PenaltyPoints(int result)
     {
         // Assume at least one trick down, split the rest into 2nd and 3rd, and subsequent
@@ -250,7 +254,7 @@ public int contractBonus(int result){
         return points;
     }
 
-    private boolean IsGame()
+    public boolean IsGame()
     {
         int trickScore = FirstTrickPoints();
         for (int i = 1; i < tricks; i++)
@@ -258,12 +262,12 @@ public int contractBonus(int result){
         return trickScore >= 100;
     }
 
-    private boolean IsSlam()
+    public boolean IsSlam()
     {
         return tricks >= 6;
     }
 
-    private boolean IsGrandSlam()
+    public boolean IsGrandSlam()
     {
         return tricks == 7;
     }

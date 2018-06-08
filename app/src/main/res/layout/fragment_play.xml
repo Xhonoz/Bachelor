@@ -61,7 +61,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:layout_marginLeft="5dp"/>
 
             <TextView
                 android:id="@+id/southTrickView"
@@ -70,6 +71,7 @@
                 android:layout_weight="1"
                 android:gravity="right"
                 android:textAlignment="gravity"
+                android:layout_marginRight="5dp"
                 android:textColor="@color/black"/>
 
         </LinearLayout>
